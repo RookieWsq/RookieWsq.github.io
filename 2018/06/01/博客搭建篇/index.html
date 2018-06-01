@@ -79,18 +79,27 @@
 
 
 
-<meta name="description" content="别在机会来临之时却无法握住。">
+<meta name="description" content="概要这是本博客开通之后正经的第一篇文章，博客搭建也是别人的经验才成功的，但是期间也遇到了挺多的坑。写这篇博客权当是记录一下这些坑吧。 博客搭建大纲:  申请一个github pages 在电脑中配置Hexo的环境 设置 Hexo 主题 绑定自己的域名(可以不绑定，绑定之后有逼格) 开始写博客  一、申请github pages What is GitHub Pages? GitHub Pages">
 <meta name="keywords" content="iOS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="博客搭建篇">
 <meta property="og:url" content="http://yoursite.com/2018/06/01/博客搭建篇/index.html">
 <meta property="og:site_name" content="John 的技术博客">
-<meta property="og:description" content="别在机会来临之时却无法握住。">
+<meta property="og:description" content="概要这是本博客开通之后正经的第一篇文章，博客搭建也是别人的经验才成功的，但是期间也遇到了挺多的坑。写这篇博客权当是记录一下这些坑吧。 博客搭建大纲:  申请一个github pages 在电脑中配置Hexo的环境 设置 Hexo 主题 绑定自己的域名(可以不绑定，绑定之后有逼格) 开始写博客  一、申请github pages What is GitHub Pages? GitHub Pages">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-06-01T06:09:45.571Z">
+<meta property="og:image" content="http://yoursite.com/2018/06/01/博客搭建篇/images/搭建博客/创建仓库.png">
+<meta property="og:image" content="http://yoursite.com/2018/06/01/博客搭建篇/images/搭建博客/%20创建仓库详情.png">
+<meta property="og:image" content="http://yoursite.com/2018/06/01/博客搭建篇/images/搭建博客/GitHubPage%20地址.png">
+<meta property="og:image" content="http://yoursite.com/2018/06/01/博客搭建篇/images/搭建博客/修改%20DNS.png">
+<meta property="og:image" content="http://yoursite.com/2018/06/01/博客搭建篇/images/搭建博客/添加域名信息.png">
+<meta property="og:image" content="http://yoursite.com/2018/06/01/博客搭建篇/images/搭建博客/DNSpod.png">
+<meta property="og:image" content="http://yoursite.com/2018/06/01/博客搭建篇/images/搭建博客/添加记录.png">
+<meta property="og:image" content="http://yoursite.com/2018/06/01/博客搭建篇/images/搭建博客/pingGitHubPages.png">
+<meta property="og:updated_time" content="2018-06-01T09:20:36.526Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="博客搭建篇">
-<meta name="twitter:description" content="别在机会来临之时却无法握住。">
+<meta name="twitter:description" content="概要这是本博客开通之后正经的第一篇文章，博客搭建也是别人的经验才成功的，但是期间也遇到了挺多的坑。写这篇博客权当是记录一下这些坑吧。 博客搭建大纲:  申请一个github pages 在电脑中配置Hexo的环境 设置 Hexo 主题 绑定自己的域名(可以不绑定，绑定之后有逼格) 开始写博客  一、申请github pages What is GitHub Pages? GitHub Pages">
+<meta name="twitter:image" content="http://yoursite.com/2018/06/01/博客搭建篇/images/搭建博客/创建仓库.png">
 
 
 
@@ -300,7 +309,91 @@
       
 
       
-        
+        <h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><p>这是本博客开通之后正经的第一篇文章，博客搭建也是别人的经验才成功的，但是期间也遇到了挺多的坑。写这篇博客权当是记录一下这些坑吧。</p>
+<p>博客搭建大纲:</p>
+<ol>
+<li>申请一个<code>github pages</code></li>
+<li>在电脑中配置<code>Hexo</code>的环境</li>
+<li>设置 Hexo 主题</li>
+<li>绑定自己的域名(可以不绑定，绑定之后有逼格)</li>
+<li>开始写博客</li>
+</ol>
+<h2 id="一、申请github-pages"><a href="#一、申请github-pages" class="headerlink" title="一、申请github pages"></a>一、申请github pages</h2><blockquote>
+<p><a href="https://help.github.com/articles/what-is-github-pages/" target="_blank" rel="noopener">What is GitHub Pages?</a></p>
+<p>GitHub Pages is a static site hosting service designed to host your personal, organization, or project pages directly from a GitHub repository.</p>
+</blockquote>
+<p>github pages是一个静态网站托管服务。GitHub Pages 被设计来管理你的来自一个GitHub 库的个人的、组织的、或者项目的页面。了解更多不同的类型的GitHub Pages网站，你可以点击：”个人、组织和项目页”。</p>
+<h3 id="创建-GitHub-账号"><a href="#创建-GitHub-账号" class="headerlink" title="创建 GitHub 账号"></a>创建 GitHub 账号</h3><ol>
+<li>登录 <a href="https://github.com/" target="_blank" rel="noopener">GitHub</a>网站注册账号.</li>
+<li>账号注册成功之后创建仓库</li>
+</ol>
+<p><img src="/2018/06/01/博客搭建篇/images/搭建博客/创建仓库.png" alt="创建仓库"></p>
+<p>仓库名需要设置<code>yourusername.github.io</code>样式,其中yourusername要改为你 GitHub 用户名，例如你叫<code>jjjjjohn</code>那么这里设置为<code>jjjjjohn.github.io</code></p>
+<p><img src="/2018/06/01/博客搭建篇/images/搭建博客/ 创建仓库详情.png" alt=" 创建仓库详情"></p>
+<h2 id="二、配置-Hexo-环境"><a href="#二、配置-Hexo-环境" class="headerlink" title="二、配置 Hexo 环境"></a>二、配置 Hexo 环境</h2><p>Hexo 是一个快速、简洁且高效的博客框架。 Hexo 使用Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。</p>
+<h3 id="安装-Hexo"><a href="#安装-Hexo" class="headerlink" title="安装 Hexo"></a>安装 Hexo</h3><blockquote>
+<p><a href="https://hexo.io/zh-cn/docs/" target="_blank" rel="noopener">Hexo 安装</a></p>
+<p>由于安装教程很可能过期，所以推荐各位读者参考 Hexo 官网教程一步一步来安装。</p>
+</blockquote>
+<h3 id="建站"><a href="#建站" class="headerlink" title="建站"></a>建站</h3><p>在 Hexo 环境安装好之后就可以进行建站，打开终端 cd 进入桌面并使用如下命令即可建好。</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo init folderName</span><br><span class="line">cd folderName</span><br><span class="line">npm install</span><br></pre></td></tr></table></figure>
+<p>其中 <code>folderName</code> 是一个你可以随意设置的名字。本文章假设<code>folderName</code>的文件夹名称是<code>Hexo</code>。</p>
+<p>创建成功后会在桌面创建一个文件夹，该文件夹的名字是<code>folderName</code>。</p>
+<blockquote>
+<p>建好之后更多关于Hexo 的信息请查看<a href="https://hexo.io/zh-cn/docs/setup.html" target="_blank" rel="noopener">官方文档</a></p>
+</blockquote>
+<h3 id="关联-GitHub-Pages"><a href="#关联-GitHub-Pages" class="headerlink" title="关联 GitHub Pages"></a>关联 GitHub Pages</h3><p>首先进入你刚才创建的名为<code>folderName</code>的文件夹，找到其中名为<code>_config.yml</code>的文件，用文本编辑器打开，并且滚动到最下面添加如下配置信息(注意最下边有 <code>deploy</code>和<code>type</code>字段),覆盖这两个字段或者删除这两个字段后复制如下代码:</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">deploy:</span></span><br><span class="line"><span class="symbol">type:</span> git</span><br><span class="line"><span class="symbol">repo:</span> <span class="symbol">https:</span>/<span class="regexp">/github.com/</span>RookieWsq/RookieWsq.github.io.git</span><br><span class="line"><span class="symbol">branch:</span> master</span><br></pre></td></tr></table></figure>
+<p>注意这里<code>repo</code>字段所对应的值需要改为你刚才创建的GitHub Pages的地址。如果你刚才忘了自己的GitHub Pages地址，打开 GitHub 网站，选择刚才创建的仓库，复制该仓库浏览器的地址栏。复制的时候注意空格,在 repo:字段之后有一个空格。<img src="/2018/06/01/博客搭建篇/images/搭建博客/GitHubPage 地址.png" alt="GitHubPage 地址"></p>
+<p>此时你的网站就已经建好了，接下来就是开启本地服务器，检查是否配置成功。首先使用终端进入你刚才创建的名为 <code>folderName</code> 的文件夹，然后使用<code>hexo s</code>(完整命令<code>hexo server</code>)命令开启本地服务器,如果成功会打印类似<code>Hexo is running at http://localhost:4000/. Press Ctrl+C to stop</code>的一句话。接着用浏览器打开<code>localhost:4000</code>,就可以看到你刚才搭建的博客了。</p>
+<h3 id="发布"><a href="#发布" class="headerlink" title="发布"></a>发布</h3><p>这时候按捺一下你的心情，接下来我们还有好多的事情需要做。</p>
+<p>此时只是在本地服务器上搭建成功了，但是还未发布到 <code>GitHub Page</code>远端服务器。接下来需要做的就是发布到远端服务器。使用终端进入你刚才创建的名为 <code>folderName</code> 的文件夹接着输入如下代码：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo clean</span><br><span class="line">hexo g</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
+<p><code>hexo g</code>完整命令:<code>hexo generate</code>  生成静态页面</p>
+<p><code>hexo d</code>完整命令<code>hexo deploy</code>  发布到远端</p>
+<blockquote>
+<p><a href="https://hexo.io/zh-cn/docs/commands.html" target="_blank" rel="noopener">Hexo 命令</a></p>
+</blockquote>
+<h2 id="三、配置-Hexo-主题"><a href="#三、配置-Hexo-主题" class="headerlink" title="三、配置 Hexo 主题"></a>三、配置 Hexo 主题</h2><p>配置 Hexo 主题是为了让博客页面看起来更加生动美观，但这个却不是搭建博客必要的。</p>
+<h3 id="下载主题"><a href="#下载主题" class="headerlink" title="下载主题"></a>下载主题</h3><p>选择指定主题之后就可以下载主题，假设我们这里的主题是著名额 NexT。</p>
+<p>下载主题</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/<span class="regexp">/ 进入你的hexo项目(即名为 folderName 的文件夹)中</span></span><br><span class="line"><span class="regexp">git clone https:/</span><span class="regexp">/github.com/iissnan</span><span class="regexp">/hexo-theme-next themes/next</span> <span class="comment"># 下载主题到themes下面的next文件夹下</span></span><br></pre></td></tr></table></figure>
+<h3 id="设置主题"><a href="#设置主题" class="headerlink" title="设置主题"></a>设置主题</h3><p>在<code>folderName</code>文件夹下打开<code>_config.yml</code>并找到<code>theme</code>字段，修改该字段所对应的值</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">theme:</span> <span class="keyword">next</span>        /<span class="regexp">/ 注意主题名前有一个空格,这个名字是刚才主题下载到的文件夹</span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ 接着重启服务，并使用 debug 模式启动</span></span><br><span class="line"><span class="regexp">hexo s --debug</span></span><br></pre></td></tr></table></figure>
+<h2 id="四、域名绑定"><a href="#四、域名绑定" class="headerlink" title="四、域名绑定"></a>四、域名绑定</h2><p>本篇文章最装逼的时刻到了——域名绑定。渴望像大神一样拥有一个自己的狂霸酷炫吊炸天的域名，并且输入这个域名就能跳转到你的网站？敬请欣赏装*时刻。</p>
+<h3 id="购买域名"><a href="#购买域名" class="headerlink" title="购买域名"></a>购买域名</h3><ol>
+<li>首先去<a href="https://wanwang.aliyun.com/" target="_blank" rel="noopener">万网</a>购买域名。</li>
+<li>将域名和 GitHub Pages 绑定。</li>
+</ol>
+<p>假设你此时拥有一个可用的域名，修改该域名的 <code>DNS</code>,将 DNS 修改为<code>f1g1ns1.dnspod.net</code>和<code>f1g1ns2.dnspod.net</code>。</p>
+<p><img src="/2018/06/01/博客搭建篇/images/搭建博客/修改 DNS.png" alt="修改 DNS"></p>
+<h3 id="绑定域名"><a href="#绑定域名" class="headerlink" title="绑定域名"></a>绑定域名</h3><p>接着打开你之前创建的 <code>folderName</code>中的<code>source</code> 文件夹，并在该文件夹中使用<code>touch CNAME</code>创建一个名为<code>CNAME</code>文件。</p>
+<p>然后使用文本编辑器打开，在里面添加你的域名信息。</p>
+<p><img src="/2018/06/01/博客搭建篇/images/搭建博客/添加域名信息.png" alt="添加域名信息"></p>
+<blockquote>
+<p>填写完毕之后重新部署到 GitHub Pages 上。（部署简写命令hexo d -g)</p>
+</blockquote>
+<h3 id="域名解析"><a href="#域名解析" class="headerlink" title="域名解析"></a>域名解析</h3><p>下一步注册 <a href="https://www.dnspod.cn/" target="_blank" rel="noopener">DNSpod</a>，然后添加域名，添加两条记录。<img src="/2018/06/01/博客搭建篇/images/搭建博客/DNSpod.png" alt="DNSpod"></p>
+<p><img src="/2018/06/01/博客搭建篇/images/搭建博客/添加记录.png" alt="添加记录"></p>
+<p>这里的 <code>CNAME</code>字段填写为你的 <code>githu Pages</code> 的地址。</p>
+<p>一个<code>@</code>类型的记录值，该值填写你<code>GitHub Pages 的 IP</code> 地址。</p>
+<blockquote>
+<p>如何获取 GitHub Pages 的 IP 地址:在终端中输入命令</p>
+<p>ping &lt;你的 GitHub Pages 地址&gt;    // 使用的时候去除尖括号</p>
+</blockquote>
+<p><img src="/2018/06/01/博客搭建篇/images/搭建博客/pingGitHubPages.png" alt="pingGitHubPages"></p>
+<h2 id="五、开始写博客"><a href="#五、开始写博客" class="headerlink" title="五、开始写博客"></a>五、开始写博客</h2><p>打开你的博客网址，此时你会发现已经有了一篇博文了。这篇博文是保存在<code>folderName/source/_posts</code>中，以后所有的发布的博文都会被放在这里。</p>
+<h3 id="创建一篇文章"><a href="#创建一篇文章" class="headerlink" title="创建一篇文章"></a>创建一篇文章</h3><ul>
+<li>创建文章</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new &apos;文件名&apos; //会在source/_posts创建一个文件名.md文件</span><br></pre></td></tr></table></figure>
+<ul>
+<li>编辑文章，关于编辑文章，由于 Hexo 支持 Markdown 语法所以我选择使用可视化的工具<a href="https://www.typora.io/" target="_blank" rel="noopener">Typora</a>来帮助我。</li>
+<li>发布文章</li>
+</ul>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">进入 folderName文件夹，并输入以下命令</span><br><span class="line">输入：hexo generate，回车，生成静态页面， </span><br><span class="line">再输入：hexo server，回车，到<span class="symbol">localhost:</span><span class="number">4000</span>预览博客效果， </span><br><span class="line">最后输入：hexo deploy，回车，同步到github上去就行了。</span><br></pre></td></tr></table></figure>
+<h2 id="六、参考资料"><a href="#六、参考资料" class="headerlink" title="六、参考资料"></a>六、参考资料</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">我的博客是如何搭建的:https://www.jianshu.com/p/834d7cc0668d</span><br><span class="line">Markdown语法:https://www.appinn.com/markdown/</span><br><span class="line">Hexo更改主题:https://blog.csdn.net/zhy421202048/article/details/77877580</span><br></pre></td></tr></table></figure>
+
       
     </div>
     
@@ -390,8 +483,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -442,6 +544,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概要"><span class="nav-number">1.</span> <span class="nav-text">概要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一、申请github-pages"><span class="nav-number">2.</span> <span class="nav-text">一、申请github pages</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建-GitHub-账号"><span class="nav-number">2.1.</span> <span class="nav-text">创建 GitHub 账号</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、配置-Hexo-环境"><span class="nav-number">3.</span> <span class="nav-text">二、配置 Hexo 环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装-Hexo"><span class="nav-number">3.1.</span> <span class="nav-text">安装 Hexo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#建站"><span class="nav-number">3.2.</span> <span class="nav-text">建站</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关联-GitHub-Pages"><span class="nav-number">3.3.</span> <span class="nav-text">关联 GitHub Pages</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#发布"><span class="nav-number">3.4.</span> <span class="nav-text">发布</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、配置-Hexo-主题"><span class="nav-number">4.</span> <span class="nav-text">三、配置 Hexo 主题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#下载主题"><span class="nav-number">4.1.</span> <span class="nav-text">下载主题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置主题"><span class="nav-number">4.2.</span> <span class="nav-text">设置主题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、域名绑定"><span class="nav-number">5.</span> <span class="nav-text">四、域名绑定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#购买域名"><span class="nav-number">5.1.</span> <span class="nav-text">购买域名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#绑定域名"><span class="nav-number">5.2.</span> <span class="nav-text">绑定域名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#域名解析"><span class="nav-number">5.3.</span> <span class="nav-text">域名解析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五、开始写博客"><span class="nav-number">6.</span> <span class="nav-text">五、开始写博客</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建一篇文章"><span class="nav-number">6.1.</span> <span class="nav-text">创建一篇文章</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#六、参考资料"><span class="nav-number">7.</span> <span class="nav-text">六、参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
