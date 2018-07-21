@@ -79,18 +79,20 @@
 
 
 
-<meta name="description" content="别在机会来临之时却无法握住。">
+<meta name="description" content="ReactiveCocoa教程 - 权威介绍：第1/2部分 五月初来到新公司之后，新公司开发使用的是 RAC+MVVM 的开发模式。以前就想学这样的响应式编程，现在正好趁着这个机会学习一下。就从翻译一篇好文章开始。 原文:ReactiveCocoa Tutorial – The Definitive Introduction: Part 1/2 作者:Colin Eberhardt  作为一个 i">
 <meta name="keywords" content="iOS 翻译">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ReactiveCocoa教程 - 权威介绍：第1&#x2F;2部分">
 <meta property="og:url" content="http://yoursite.com/2018/06/04/ReactiveCocoa教程-权威介绍：第1-2部分/index.html">
 <meta property="og:site_name" content="John 的技术博客">
-<meta property="og:description" content="别在机会来临之时却无法握住。">
+<meta property="og:description" content="ReactiveCocoa教程 - 权威介绍：第1/2部分 五月初来到新公司之后，新公司开发使用的是 RAC+MVVM 的开发模式。以前就想学这样的响应式编程，现在正好趁着这个机会学习一下。就从翻译一篇好文章开始。 原文:ReactiveCocoa Tutorial – The Definitive Introduction: Part 1/2 作者:Colin Eberhardt  作为一个 i">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-06-04T02:26:52.766Z">
+<meta property="og:image" content="http://yoursite.com/2018/06/04/ReactiveCocoa教程-权威介绍：第1-2部分/ReactivePlaygroundStarter.jpg">
+<meta property="og:updated_time" content="2018-07-20T06:00:33.987Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ReactiveCocoa教程 - 权威介绍：第1&#x2F;2部分">
-<meta name="twitter:description" content="别在机会来临之时却无法握住。">
+<meta name="twitter:description" content="ReactiveCocoa教程 - 权威介绍：第1/2部分 五月初来到新公司之后，新公司开发使用的是 RAC+MVVM 的开发模式。以前就想学这样的响应式编程，现在正好趁着这个机会学习一下。就从翻译一篇好文章开始。 原文:ReactiveCocoa Tutorial – The Definitive Introduction: Part 1/2 作者:Colin Eberhardt  作为一个 i">
+<meta name="twitter:image" content="http://yoursite.com/2018/06/04/ReactiveCocoa教程-权威介绍：第1-2部分/ReactivePlaygroundStarter.jpg">
 
 
 
@@ -300,7 +302,27 @@
       
 
       
-        
+        <h1 id="ReactiveCocoa教程-权威介绍：第1-2部分"><a href="#ReactiveCocoa教程-权威介绍：第1-2部分" class="headerlink" title="ReactiveCocoa教程 - 权威介绍：第1/2部分"></a>ReactiveCocoa教程 - 权威介绍：第1/2部分</h1><blockquote>
+<p>五月初来到新公司之后，新公司开发使用的是 RAC+MVVM 的开发模式。以前就想学这样的响应式编程，现在正好趁着这个机会学习一下。就从翻译一篇好文章开始。</p>
+<p>原文:<a href="https://www.raywenderlich.com/62699/reactivecocoa-tutorial-pt1" target="_blank" rel="noopener">ReactiveCocoa Tutorial – The Definitive Introduction: Part 1/2</a></p>
+<p>作者:Colin Eberhardt</p>
+</blockquote>
+<p>作为一个 iOS 开发者，你写的每一行代码基本上都是对一个事件的响应。例如:一个按钮的点击、一个受到的网络消息、一个属性的变化(通过键值观察)或者是通过CoreLocation更改了用户位置，这些都是一些很好的例子。然而这些事件都以不同的方式编码。例如动作(actions)、代理(delegate)、键值观察(KVO)、回调(callbacks)和其他的一些事件。ReactiveCocoa为这些事件定义了一个标准的接口，所以他们能够更轻松的被链接，并使用一组基本工具进行过滤和组合。</p>
+<p>听起来很困惑、很奇妙？感觉很兴奋？让我们继续看下去:]</p>
+<p>ReactiveCocoa结合了几种编程风格：</p>
+<ul>
+<li>[函数式编程(Functional Programming)][<a href="http://en.wikipedia.org/wiki/Functional_programming]：通过高阶函数实现的范式，例如接收其他函数作为函数的参数。" target="_blank" rel="noopener">http://en.wikipedia.org/wiki/Functional_programming]：通过高阶函数实现的范式，例如接收其他函数作为函数的参数。</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Reactive_programming" target="_blank" rel="noopener">响应式编程(Reactive Programming)</a>：只专注于数据流和数据变化传播的编程范式。</li>
+</ul>
+<p>介于此原因，你可能听说过ReactiveCocoa同样被描述为函数响应式编程(或FRP)框架。</p>
+<p>但是你尽可放心，虽然编程范式的确是一个十分吸引人的课题，但是在 ReactiveCocoa 教程中，我们并不会去深入探讨，在我们的教程中更加注重的是其使用价值，我们会用实例去演示其价值。</p>
+<h2 id="The-Reactive-Playground"><a href="#The-Reactive-Playground" class="headerlink" title="The Reactive Playground"></a>The Reactive Playground</h2><p>在此ReactiveCocoa教程中你将会在一个非常简单的应用程序——ReactivePlayground中去认识反应时编程。下载<a href="https://koenig-media.raywenderlich.com/uploads/2014/01/ReactivePlayground-Starter.zip" target="_blank" rel="noopener">此项目</a>编译并运行以确保项目能够正常的运行。</p>
+<p>ReactivePlayground是一个非常简单的App，它只显示一个登录的界面。并当你输入了正确的用户名和密码之后，你会看到一只可爱的小猫咪。</p>
+<p><img src="/2018/06/04/ReactiveCocoa教程-权威介绍：第1-2部分/ReactivePlaygroundStarter.jpg" alt="ReactivePlaygroundStarter"></p>
+<p>哇，多可爱的一只猫咪啊！</p>
+<p>现在我们需要花一点时间去看这个演示项目的源代码，这并不会花费你很多时间，因为这个项目非常简单。</p>
+<p>打开 <em>RWViewController.m</em> 文件并随便看看。你多快才能看出 <em>Sign In</em>按钮可用的条件？</p>
+
       
     </div>
     
@@ -394,8 +416,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -410,7 +441,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -423,7 +454,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">标签</span>
                 
               </div>
@@ -446,6 +477,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ReactiveCocoa教程-权威介绍：第1-2部分"><span class="nav-number">1.</span> <span class="nav-text">ReactiveCocoa教程 - 权威介绍：第1/2部分</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#The-Reactive-Playground"><span class="nav-number">1.1.</span> <span class="nav-text">The Reactive Playground</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

@@ -232,6 +232,431 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/20/iOS-中的指针、指针变量和对象/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Wong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="John 的技术博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/20/iOS-中的指针、指针变量和对象/" itemprop="url">iOS 中的指针、指针变量和对象</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-20T11:03:02+08:00">
+                2018-07-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/20/iOS-中的拷贝-copy-和-mutableCopy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Wong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="John 的技术博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/20/iOS-中的拷贝-copy-和-mutableCopy/" itemprop="url">iOS 中的拷贝(copy 和 mutableCopy)</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-20T09:06:02+08:00">
+                2018-07-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="iOS-中的拷贝-copy-和-mutableCopy"><a href="#iOS-中的拷贝-copy-和-mutableCopy" class="headerlink" title="iOS 中的拷贝(copy 和 mutableCopy)"></a>iOS 中的拷贝(copy 和 mutableCopy)</h1><h2 id="NSCopying和NSMutableCopying协议"><a href="#NSCopying和NSMutableCopying协议" class="headerlink" title="NSCopying和NSMutableCopying协议"></a>NSCopying和NSMutableCopying协议</h2><p>在 iOS 中并不是所有的的对象都具有拷贝功能，而是只有遵守了NSCopying 或 NSMutableCopying协议的类的对象才能具有拷贝功能。遵守了NSMutableCopying类的对象可以发送 mutableCopy 消息，遵守了NSCopying的类的对象可以发送 copy 消息。</p>
+<p>对于NSCopying协议我们先看看官方文档是怎么写的:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">NSCopying declares one method, copyWithZone:, but copying is commonly invoked with </span><br><span class="line">the convenience method copy. The copy method is defined for all objects inheriting </span><br><span class="line">from NSObject and simply invokes copyWithZone: with the default zone.</span><br></pre></td></tr></table></figure>
+<p>NSCopying 声明了一个copyWithZone:方法，但是通常使用便捷方法(convenience method)copy 方法进行拷贝。copy 方法是为所有继承了 NSObject 类的对象所定义的，其使用时默认调用传入一个默认 zone 的 copyWithZone: 方法。</p>
+<p>遵守 NSCoping 也是有要求的。官方文档描述如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Your options for implementing this protocol are as follows:</span><br><span class="line"></span><br><span class="line">1.Implement NSCopying using alloc and init... in classes that don’t inherit copyWithZone:.</span><br><span class="line"></span><br><span class="line">2.Implement NSCopying by invoking the superclass’s copyWithZone: when NSCopying behavior is inherited. If the superclass implementation might use the NSCopyObject function, make explicit assignments to pointer instance variables for retained objects.</span><br><span class="line"></span><br><span class="line">3.Implement NSCopying by retaining the original instead of creating a new copy when the class and its contents are immutable.</span><br><span class="line">    </span><br><span class="line">4.If a subclass inherits NSCopying from its superclass and declares additional instance variables, the subclass has to override copyWithZone: to properly handle its own instance variables, invoking the superclass’s implementation first.</span><br></pre></td></tr></table></figure>
+<p>遵守该协议的注意点：</p>
+<ol>
+<li>如果一个类不是继承自实现了 NSCopying 协议的超类，那么需要使用 alloc 和 init 来初始化对象。</li>
+<li>当继承了超类的 NSCopying 协议，需要调用超类的 copyWithZone: 方法实现 NSCopying:。如果超类实现了可能使用 NSCopyObject 方法，则显式地为持有对象的指针实例变量进行赋值。</li>
+<li>当类和其内容是不可变的情况下，会使用保留其原始内容的方式代替创建一个新的副本来实现 NSCopying。</li>
+<li>如果当子类从其超类继承了 NSCopying 协议并且声明了额外的实例变量，那么子类在覆写 copyWithZone: 方法时必须先调用父类的实现才能确保正确处理本身的实例变量。</li>
+</ol>
+<p>对于 NSMutableCopying 协议我们来看看官方文档是怎么说明的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">The NSMutableCopying protocol declares a method for providing mutable copies of an</span><br><span class="line">object. Only classes that define an “immutable vs. mutable” distinction should </span><br><span class="line">adopt this protocol. Classes that don’t define such a distinction should adopt </span><br><span class="line">NSCopying instead.</span><br></pre></td></tr></table></figure>
+<p>NSMutableCopying 协议定义了一个提供对象可变拷贝的方法。只有定义了“可变和不可变”区别的类才可以采用此协议。否则需要采用 NSCopying协议。</p>
+<p>当然NSMutableCopying也有其需要注意的地方。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1.NSMutableCopying declares one method, mutableCopyWithZone:, but mutable copying is commonly invoked with the convenience method mutableCopy. The mutableCopy method is defined for all NSObjects and simply invokes mutableCopyWithZone: with the default zone.</span><br><span class="line"></span><br><span class="line">2.If a subclass inherits NSMutableCopying from its superclass and declares additional instance variables, the subclass has to override mutableCopyWithZone: to properly handle its own instance variables, invoking the superclass’s implementation first.</span><br></pre></td></tr></table></figure>
+<p>1.NSMutableString定义了一个方法：mutableCopyWithZone:但通常都调用便捷方法 mutableCopy 来实现拷贝。mutableCopy 方法是为所有的 NSObject 定义的，并且只需传入默认的 zone 调用mutableCopyWithZone: 方法。</p>
+<p>2.如果一个子类继承自一个遵循了NSMutableCopying协议的超类并定义了一个额外的实例变量，那么子类必须覆写 mutableCopyWithZone: 方法并先调用超类的实现以确保正确处理了其本身的实例变量。</p>
+<h2 id="深拷贝和浅拷贝"><a href="#深拷贝和浅拷贝" class="headerlink" title="深拷贝和浅拷贝"></a>深拷贝和浅拷贝</h2><p>我们着重讨论NSCopying 的第三条，第三条注意点引出了 iOS 中一个重要的概念——深拷贝(Deep copy)和浅拷贝(Shallow copy)。</p>
+<p>浅拷贝(Shallow copy):拷贝对象的指针，而不拷贝对象的内容。</p>
+<p>深拷贝(Deep copy):将对象的内容拷贝至新的内存空间。</p>
+<p>简单来说就是浅拷贝拷贝了对象的指针，而深拷贝开辟一块新的内存空间并拷贝了对象的内容。</p>
+<p>关于指针可以看我这篇文章——<a href="/2018/07/20/iOS-中的指针、指针变量和对象/" title="iOS 中的指针、指针变量和对象">iOS 中的指针、指针变量和对象</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Object_copying" target="_blank" rel="noopener">这里</a>是维基百科对深拷贝和浅拷贝的释义。</p>
+<p><strong>深拷贝：</strong></p>
+<p>深拷贝过程：</p>
+<p><img src="/2018/07/20/iOS-中的拷贝-copy-和-mutableCopy/Deep_copy_in_progress.svg.png" alt="深拷贝过程"></p>
+<p>深拷贝结束：</p>
+<p><img src="/2018/07/20/iOS-中的拷贝-copy-和-mutableCopy/400px-Deep_copy_done.svg.png" alt="深拷贝结束"></p>
+<p><strong>浅拷贝：</strong></p>
+<p>浅拷贝过程：</p>
+<p><img src="/2018/07/20/iOS-中的拷贝-copy-和-mutableCopy/400px-Shallow_copy_in_progress.svg.png" alt="浅拷贝过程"></p>
+<p>浅拷贝结束：</p>
+<p><img src="/2018/07/20/iOS-中的拷贝-copy-和-mutableCopy/400px-Shallow_copy_done.svg.png" alt="浅拷贝结束"></p>
+<p>根据深拷贝和浅拷贝的定义再结合NSCopying 的第三条注意点，我们可以得出结论，<strong>对于一个类和内容都不可变的对象来说 copy 方法是进行了浅拷贝。</strong></p>
+<p>所以判断是浅拷贝还是深拷贝的依据就是查看新的指针变量所指向的对象的地址是否和原指针对象所指向的对象的地址一致。</p>
+<p>接下来我们开始做实验</p>
+<p><strong>NSString</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">NSString *str1 = @&quot;11111&quot;;</span><br><span class="line">NSString *str2 = [str1 copy];</span><br><span class="line">NSString *str3 = [str1 mutableCopy];</span><br><span class="line">NSString *str4 = str1;</span><br><span class="line"></span><br><span class="line">NSLog(@&quot;str1 address%p&quot;,str1);</span><br><span class="line">NSLog(@&quot;str2 address%p&quot;,str2);</span><br><span class="line">NSLog(@&quot;str3 address%p&quot;,str3);</span><br><span class="line">NSLog(@&quot;str4 address%p&quot;,str4);</span><br></pre></td></tr></table></figure>
+<p>结果:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">str1 address0x100a4c238</span><br><span class="line">str2 address0x100a4c238</span><br><span class="line">str3 address0x1c02564a0</span><br><span class="line">str4 address0x100a4c238</span><br></pre></td></tr></table></figure>
+<p>从结果上来看可以说明，NSString 的 copy 是浅拷贝，而 mutableCopy 是深拷贝。</p>
+<p><strong>NSMutableString</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">NSMutableString *mStr1 = [NSMutableString stringWithString: @&quot;11111&quot;];</span><br><span class="line">   NSMutableString *mStr2 = [mStr1 copy];</span><br><span class="line">   NSMutableString *mStr3 = [mStr1 mutableCopy];</span><br><span class="line">   NSMutableString *mStr4 = mStr1;</span><br><span class="line"></span><br><span class="line">   NSLog(@&quot;mStr1 address%p&quot;,mStr1);</span><br><span class="line">   NSLog(@&quot;mStr2 address%p&quot;,mStr2);</span><br><span class="line">   NSLog(@&quot;mStr3 address%p&quot;,mStr3);</span><br><span class="line">   NSLog(@&quot;mStr4 address%p&quot;,mStr4);</span><br></pre></td></tr></table></figure>
+<p>结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mStr1 address0x1c4649660</span><br><span class="line">mStr2 address0xa000031313131315</span><br><span class="line">mStr3 address0x1c4648160</span><br><span class="line">mStr4 address0x1c4649660</span><br></pre></td></tr></table></figure>
+<p>这说明对于 NSMutableString 来说 copy 和 mutableCopy 方法都是深拷贝。</p>
+<h2 id="copy-标识符"><a href="#copy-标识符" class="headerlink" title="copy 标识符"></a><strong>copy 标识符</strong></h2><p>讲到 copy 操作可能你会觉得非常的眼熟——属性标识符也有一个 copy。</p>
+<p>copy 标识符：由 copy 标识符所标识的变量其设置方法不会保留新值，而是将其”拷贝(copy)”</p>
+<p>我们来测试一下改变自定义对象 copy 属性。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@interface CopyTest : NSObject&lt;NSCopying&gt;</span><br><span class="line"></span><br><span class="line">@property (copy,nonatomic) NSMutableString *name;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line">    </span><br><span class="line">self.test1 = [[CopyTest alloc]init];</span><br><span class="line">self.test1.name = [NSMutableString stringWithString:@&quot;测试&quot;];</span><br><span class="line">[self.test1.name appendString:@&quot;1&quot;];</span><br><span class="line">NSLog(@&quot;name%@&quot;,self.test1.name);</span><br></pre></td></tr></table></figure>
+<p>运行程序，程序会崩溃并报错</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*** Terminating app due to uncaught exception &apos;NSInvalidArgumentException&apos;, reason: &apos;Attempt to mutate immutable object with appendString:&apos;</span><br></pre></td></tr></table></figure>
+<p>造成崩溃的原因是:name 属性是由 copy 声明的，所以在其 setter 方法中，并不是利用‘=’赋值而是使用 copy 方法赋值。类似如下代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (void)setName:(NSMutableString *)name</span><br><span class="line">&#123;</span><br><span class="line">    _name = [name copy];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>copy 方法默认创建的是’其不可变‘的副本，所以此时_name 指向的是一个不可变的副本，因此给 name 调用 appendString 方法其实是使用一个不可变的字符串调用 appendString 所以会报错。</p>
+<p>对于 NSArray和 NSmutableArray、NSDictionary 和 NSMutableDictionary 进行相同的实现，会发现结果如下图所示：</p>
+<p><img src="/2018/07/20/iOS-中的拷贝-copy-和-mutableCopy/copy_table.png" alt="总结"></p>
+<blockquote>
+<p>参考资料：</p>
+<p>Deep vs. Shallow与Lazy copy:<a href="https://blog.csdn.net/orzorz/article/details/5350152" target="_blank" rel="noopener">https://blog.csdn.net/orzorz/article/details/5350152</a></p>
+<p>Object copying:<a href="https://en.wikipedia.org/wiki/Object_copying" target="_blank" rel="noopener">https://en.wikipedia.org/wiki/Object_copying</a></p>
+<p>iOS 之对象复制:<a href="https://www.jianshu.com/p/ac07c26f467d" target="_blank" rel="noopener">https://www.jianshu.com/p/ac07c26f467d</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/19/iOS-面试题-一/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Wong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="John 的技术博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/19/iOS-面试题-一/" itemprop="url">iOS 面试题(一)</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-19T19:30:13+08:00">
+                2018-07-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="iOS-面试题-一"><a href="#iOS-面试题-一" class="headerlink" title="iOS 面试题(一)"></a>iOS 面试题(一)</h1><p>1.如何令自己所写的对象具有拷贝功能?</p>
+<p>在 iOS 让对象具有拷贝功能即是让对象具备发送 <code>copy</code> 消息或者是 <code>mutableCopy</code> 消息。但是在 iOS 中并不是所有对象都能发送这两个消息，而是只有在遵循了<code>NSCopying</code> 或者是<code>NSMutableCopying</code>的协议的类才能发送这两个消息。详细请看这里——<a href="/2018/07/20/iOS-中的拷贝-copy-和-mutableCopy/" title="iOS 中的拷贝(copy 和 mutableCopy)">iOS 中的拷贝(copy 和 mutableCopy)</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/16/读书笔记-一/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -305,15 +730,13 @@
           
             <h2 id="Effective-Objective-C-2-0笔记-一"><a href="#Effective-Objective-C-2-0笔记-一" class="headerlink" title="Effective Objective-C 2.0笔记(一)"></a>Effective Objective-C 2.0笔记(一)</h2><p>一直在看大神博客，虽然讲的很详细，很透彻，但是对于我而言总是少了一个系统的学习。只是在我脑中是散乱着分布的。我就想找一本书来看看，更加系统的去接触和了解系统底层的一些组成。这次我买的是一本非常受人推崇，并且我自己看了也觉得非常好，非常有深度却又不晦涩的一本书——<code>Effective Objective-C 2.0</code>。</p>
 <p>这是记录我自己学习历程的一篇文章,希望我能够在技术这条路上越走越远。</p>
-<h4 id="第一条：了解-Objective-C-语言的起源"><a href="#第一条：了解-Objective-C-语言的起源" class="headerlink" title="第一条：了解 Objective-C 语言的起源"></a>第一条：了解 Objective-C 语言的起源</h4><p><code>Objective-C</code> 使用的是<code>消息结构(messaging structure)</code>而非函数调用<code>(function calling)</code>。</p>
+<h4 id="第一条：了解-Objective-C-语言的起源"><a href="#第一条：了解-Objective-C-语言的起源" class="headerlink" title="第一条：了解 Objective-C 语言的起源"></a>第一条：了解 Objective-C 语言的起源</h4><p><code>Objective-C</code> 使用的是<code>消息结构(messaging structure)</code>而非<code>函数调用(function calling)</code>。</p>
 <p>首先让我们了解消息结构和函数调用的含义。</p>
-<font color="red"><code>消息结构(messaging structure)</code>:使用消息结构的语言其执行的代码是由运行时环境所决定。所以消息结构是动态语言，只有在运行时才知道调用了那个方法函数。所以消息结构语言的多态也只有在运行时才回去查找所要执行的方法，实际上编译器甚至不关心执行方法的对象是何种类型，收到消息的对象问题也需要在运行时处理，其过程叫做<code>动态绑定(dynamic binding)</code>。</font>
-
-<p><br></p>
-<p><font color="red"><code>函数调用(function calling)</code>:使用函数调用的语言其执行的代码是由编译器决定的，并且如果函数是多态的，那么在运行时需要按照“<code>虚方法表(virtual table)</code>来查出到底要执行那个函数。”</font><br></p>
-<p><code>虚方法表(virtual table)</code>:虚方法表是由编程语言为实现“<code>动态派发(dynamic dispatch)</code>“或”<code>运行时方法绑定(runtime method binding)</code>”而采用的一种机制。</p>
-<p><code>Objective-C</code>的重要工作全部都由”<code>运行时组件(runtime component)</code>“而非编译器来完成。使用<code>Objective-C</code>的面向对象特性所需的全部数据结构及函数都在运行时组件里。举例来说，运行期组件中包括所有的内存管理方法。运行期组件本质上就是一种与开发者所编写代码相链接的”<code>动态库(dynamic library)</code>“，其代码能把开发者所编写的所有程序粘合起来。这样的话，只需更新运行时组件，即可提升应用程序性能。而函数调用的语言若想获得类似的提升，则必须重新编译应用程序代码。</p>
-<p>Objective-C 是 c 的超集，所有C语言中所有功能在编写 Objective-C 代码时依然适用。其中尤为重要的是要理解 C语言中的<code>内存模型(memory model)</code>(参考文献中附有链接)。这有助于理解 Objective-C 中的内存模型及其<code>&quot;自动引用计数(reference countinng)&quot;</code>机制的工作原理。若要理解内存模型，则需明白：<code>Objective-C</code>语言中指针是用来只是对象的。要想声明一个变量，令其指代某个对象，可用如下语法:</p>
+<p><strong><code>消息结构(messaging structure)</code>:使用消息结构的语言其执行的代码是由运行时环境所决定。所以消息结构是动态语言，只有在运行时才知道调用了那个方法函数。所以消息结构语言的多态也只有在运行时才回去查找所要执行的方法，实际上编译器甚至不关心执行方法的对象是何种类型，收到消息的对象问题也需要在运行时处理，其过程叫做<code>动态绑定(dynamic binding)</code>。</strong></p>
+<p><strong><code>函数调用(function calling)</code>:使用函数调用的语言其执行的代码是由编译器决定的，并且如果函数是多态的，那么在运行时需要按照“<code>虚方法表(virtual table)</code>来查出到底要执行那个函数。”</strong></p>
+<p><strong><code>虚方法表(virtual table)</code>:虚方法表是由编程语言为实现“<code>动态派发(dynamic dispatch)</code>“或”<code>运行时方法绑定(runtime method binding)</code>”而采用的一种机制。</strong></p>
+<p><strong><code>Objective-C</code>的重要工作全部都由”<code>运行时组件(runtime component)</code>“而非编译器来完成</strong>。使用<code>Objective-C</code>的面向对象特性所需的全部数据结构及函数都在运行时组件里。举例来说，运行期组件中包括所有的内存管理方法。运行期组件本质上就是一种与开发者所编写代码相链接的”<code>动态库(dynamic library)</code>“，其代码能把开发者所编写的所有程序粘合起来。这样的话，只需更新运行时组件，即可提升应用程序性能。而函数调用的语言若想获得类似的提升，则必须重新编译应用程序代码。</p>
+<p><strong>Objective-C 是 c 的超集</strong>，所有C语言中所有功能在编写 Objective-C 代码时依然适用。其中尤为重要的是要理解 C语言中的<code>内存模型(memory model)</code>(参考文献中附有链接)。这有助于理解 Objective-C 中的内存模型及其<code>&quot;自动引用计数(reference countinng)&quot;</code>机制的工作原理。若要理解内存模型，则需明白：<code>Objective-C</code>语言中指针是用来指示对象的。要想声明一个变量，令其指代某个对象，可用如下语法:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSString *someString = @&quot;The string&quot;;</span><br></pre></td></tr></table></figure>
 <p>它声明了一个名为 someString 的变量，其类型是 NSString*。也就是说，此变量指向 NSString 的指针。所有的 Objective-C 对象必然是这样声明的。因为<strong>对象所占内存总是分配在<code>“堆空间(heap space)”</code>中，而绝不会分配在“栈(stack)”上。</strong></p>
 <p><strong>分配在堆中的内存必须直接管理，而分配在栈上用于保存变量的内存则会在其栈帧弹出时自动清理。</strong>在 Objective-C 中将堆内存管理抽象了出来。不需要主动使用 malloc 以及 free 来分配或者释放对象所占用的内存。Objective-C 运行期环境把这部分工作抽象为一套内存管理架构，名为”引用计数”。</p>
@@ -561,7 +984,27 @@
       
         
           
-            
+            <h1 id="ReactiveCocoa教程-权威介绍：第1-2部分"><a href="#ReactiveCocoa教程-权威介绍：第1-2部分" class="headerlink" title="ReactiveCocoa教程 - 权威介绍：第1/2部分"></a>ReactiveCocoa教程 - 权威介绍：第1/2部分</h1><blockquote>
+<p>五月初来到新公司之后，新公司开发使用的是 RAC+MVVM 的开发模式。以前就想学这样的响应式编程，现在正好趁着这个机会学习一下。就从翻译一篇好文章开始。</p>
+<p>原文:<a href="https://www.raywenderlich.com/62699/reactivecocoa-tutorial-pt1" target="_blank" rel="noopener">ReactiveCocoa Tutorial – The Definitive Introduction: Part 1/2</a></p>
+<p>作者:Colin Eberhardt</p>
+</blockquote>
+<p>作为一个 iOS 开发者，你写的每一行代码基本上都是对一个事件的响应。例如:一个按钮的点击、一个受到的网络消息、一个属性的变化(通过键值观察)或者是通过CoreLocation更改了用户位置，这些都是一些很好的例子。然而这些事件都以不同的方式编码。例如动作(actions)、代理(delegate)、键值观察(KVO)、回调(callbacks)和其他的一些事件。ReactiveCocoa为这些事件定义了一个标准的接口，所以他们能够更轻松的被链接，并使用一组基本工具进行过滤和组合。</p>
+<p>听起来很困惑、很奇妙？感觉很兴奋？让我们继续看下去:]</p>
+<p>ReactiveCocoa结合了几种编程风格：</p>
+<ul>
+<li>[函数式编程(Functional Programming)][<a href="http://en.wikipedia.org/wiki/Functional_programming]：通过高阶函数实现的范式，例如接收其他函数作为函数的参数。" target="_blank" rel="noopener">http://en.wikipedia.org/wiki/Functional_programming]：通过高阶函数实现的范式，例如接收其他函数作为函数的参数。</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Reactive_programming" target="_blank" rel="noopener">响应式编程(Reactive Programming)</a>：只专注于数据流和数据变化传播的编程范式。</li>
+</ul>
+<p>介于此原因，你可能听说过ReactiveCocoa同样被描述为函数响应式编程(或FRP)框架。</p>
+<p>但是你尽可放心，虽然编程范式的确是一个十分吸引人的课题，但是在 ReactiveCocoa 教程中，我们并不会去深入探讨，在我们的教程中更加注重的是其使用价值，我们会用实例去演示其价值。</p>
+<h2 id="The-Reactive-Playground"><a href="#The-Reactive-Playground" class="headerlink" title="The Reactive Playground"></a>The Reactive Playground</h2><p>在此ReactiveCocoa教程中你将会在一个非常简单的应用程序——ReactivePlayground中去认识反应时编程。下载<a href="https://koenig-media.raywenderlich.com/uploads/2014/01/ReactivePlayground-Starter.zip" target="_blank" rel="noopener">此项目</a>编译并运行以确保项目能够正常的运行。</p>
+<p>ReactivePlayground是一个非常简单的App，它只显示一个登录的界面。并当你输入了正确的用户名和密码之后，你会看到一只可爱的小猫咪。</p>
+<p><img src="/2018/06/04/ReactiveCocoa教程-权威介绍：第1-2部分/ReactivePlaygroundStarter.jpg" alt="ReactivePlaygroundStarter"></p>
+<p>哇，多可爱的一只猫咪啊！</p>
+<p>现在我们需要花一点时间去看这个演示项目的源代码，这并不会花费你很多时间，因为这个项目非常简单。</p>
+<p>打开 <em>RWViewController.m</em> 文件并随便看看。你多快才能看出 <em>Sign In</em>按钮可用的条件？</p>
+
           
         
       
@@ -982,7 +1425,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -995,7 +1438,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">标签</span>
                 
               </div>
