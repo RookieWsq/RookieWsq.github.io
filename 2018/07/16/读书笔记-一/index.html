@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="John 的技术博客">
 <meta property="og:description" content="Effective Objective-C 2.0笔记(一)一直在看大神博客，虽然讲的很详细，很透彻，但是对于我而言总是少了一个系统的学习。只是在我脑中是散乱着分布的。我就想找一本书来看看，更加系统的去接触和了解系统底层的一些组成。这次我买的是一本非常受人推崇，并且我自己看了也觉得非常好，非常有深度却又不晦涩的一本书——Effective Objective-C 2.0。 这是记录我自己学习历程的">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-07-18T11:15:30.972Z">
+<meta property="og:updated_time" content="2018-07-23T14:19:21.937Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="读书笔记(一)">
 <meta name="twitter:description" content="Effective Objective-C 2.0笔记(一)一直在看大神博客，虽然讲的很详细，很透彻，但是对于我而言总是少了一个系统的学习。只是在我脑中是散乱着分布的。我就想找一本书来看看，更加系统的去接触和了解系统底层的一些组成。这次我买的是一本非常受人推崇，并且我自己看了也觉得非常好，非常有深度却又不晦涩的一本书——Effective Objective-C 2.0。 这是记录我自己学习历程的">
@@ -302,7 +302,7 @@
       
         <h2 id="Effective-Objective-C-2-0笔记-一"><a href="#Effective-Objective-C-2-0笔记-一" class="headerlink" title="Effective Objective-C 2.0笔记(一)"></a>Effective Objective-C 2.0笔记(一)</h2><p>一直在看大神博客，虽然讲的很详细，很透彻，但是对于我而言总是少了一个系统的学习。只是在我脑中是散乱着分布的。我就想找一本书来看看，更加系统的去接触和了解系统底层的一些组成。这次我买的是一本非常受人推崇，并且我自己看了也觉得非常好，非常有深度却又不晦涩的一本书——<code>Effective Objective-C 2.0</code>。</p>
 <p>这是记录我自己学习历程的一篇文章,希望我能够在技术这条路上越走越远。</p>
-<h4 id="第一条：了解-Objective-C-语言的起源"><a href="#第一条：了解-Objective-C-语言的起源" class="headerlink" title="第一条：了解 Objective-C 语言的起源"></a>第一条：了解 Objective-C 语言的起源</h4><p><code>Objective-C</code> 使用的是<code>消息结构(messaging structure)</code>而非<code>函数调用(function calling)</code>。</p>
+<h2 id="第一条：了解-Objective-C-语言的起源"><a href="#第一条：了解-Objective-C-语言的起源" class="headerlink" title="第一条：了解 Objective-C 语言的起源"></a>第一条：了解 Objective-C 语言的起源</h2><p><code>Objective-C</code> 使用的是<code>消息结构(messaging structure)</code>而非<code>函数调用(function calling)</code>。</p>
 <p>首先让我们了解消息结构和函数调用的含义。</p>
 <p><strong><code>消息结构(messaging structure)</code>:使用消息结构的语言其执行的代码是由运行时环境所决定。所以消息结构是动态语言，只有在运行时才知道调用了那个方法函数。所以消息结构语言的多态也只有在运行时才回去查找所要执行的方法，实际上编译器甚至不关心执行方法的对象是何种类型，收到消息的对象问题也需要在运行时处理，其过程叫做<code>动态绑定(dynamic binding)</code>。</strong></p>
 <p><strong><code>函数调用(function calling)</code>:使用函数调用的语言其执行的代码是由编译器决定的，并且如果函数是多态的，那么在运行时需要按照“<code>虚方法表(virtual table)</code>来查出到底要执行那个函数。”</strong></p>
@@ -318,6 +318,19 @@
 <p>第一条：了解Objective-C语言的起源：<a href="https://zhuanlan.zhihu.com/p/34752950" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/34752950</a></p>
 <p>c语言内存模型：<a href="https://www.cnblogs.com/haore147/p/3921263.html" target="_blank" rel="noopener">https://www.cnblogs.com/haore147/p/3921263.html</a></p>
 </blockquote>
+<h2 id="第二条：在类的头文件中尽量少引入其他头文件"><a href="#第二条：在类的头文件中尽量少引入其他头文件" class="headerlink" title="第二条：在类的头文件中尽量少引入其他头文件"></a>第二条：在类的头文件中尽量少引入其他头文件</h2><p>与 c 和 C++一样 oc 也使用“头文件(header file)”与”实现文件(implementation file)”来分隔代码。只是 c 和 c++中是使用 #include 引入头文件，这样的引入方式会造成重复引入，例如：ClassA与 ClassB 均引入了 ClassC，当 ClassD 同时引入 ClassA 和 ClassB 时此时会产生重复引用。而 oc 中使用#import 引入头文件，#import 的作用和#include的作用相似，只是#import 会处理重复引用的问题。</p>
+<p>当在头文件中不需要了解另一个类的具体实现的时候，请尽量使用@Class。</p>
+<h3 id="第三条：多用字面量语法少用与之等价的方法"><a href="#第三条：多用字面量语法少用与之等价的方法" class="headerlink" title="第三条：多用字面量语法少用与之等价的方法"></a>第三条：多用字面量语法少用与之等价的方法</h3><p>字面量语法实际上就是一种“语法糖”(syntactic sugar)。</p>
+<ul>
+<li>字面量语法非常简明扼要。</li>
+<li>应该通过取下标语法来访问数组下表或字典中键相对应的元素。</li>
+<li>用字面量语法创建数组或者字典时如果传入 nil 元素则会报错，而使用与之等价的创建方法并不会报错，而是成功创建一个数组或者字典，其值是 nil 之前的元素。</li>
+</ul>
+<h3 id="第四条：多用类型常量，少用-define-预处理指令"><a href="#第四条：多用类型常量，少用-define-预处理指令" class="headerlink" title="第四条：多用类型常量，少用#define 预处理指令"></a>第四条：多用类型常量，少用#define 预处理指令</h3><p>使用#define 创建一个常量:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define ANIMATION_DURATION 0.3</span><br></pre></td></tr></table></figure>
+<p>上述的预处理指令会将代码中所有 ANIMATION_DURATION 字符串替换为 0.3 。但是这样定义并不会有类型信息。并且即使有人重新定义了该值，编译器也不会产生警告信息。所以我们尽量使用类型常量来替换#deifne 预处理指令。现在我们以类型常量来定义：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">static const NSTimeInterval kAnimationDuration = 0.3;</span><br></pre></td></tr></table></figure>
+<p>使用此方法定义的常量包含类型信息，其好处是能清楚的了解常量的含义。还要注意常量的命名法：若常量局限于某“编译单元”(translation unit 也就是“实现文件” ， implementation file)之内，则要在前面添加字幕k；若是常量在类之外可见，通常都是以类名为前缀。</p>
 
       
     </div>
@@ -483,7 +496,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Effective-Objective-C-2-0笔记-一"><span class="nav-number">1.</span> <span class="nav-text">Effective Objective-C 2.0笔记(一)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#第一条：了解-Objective-C-语言的起源"><span class="nav-number">1.0.1.</span> <span class="nav-text">第一条：了解 Objective-C 语言的起源</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Effective-Objective-C-2-0笔记-一"><span class="nav-number">1.</span> <span class="nav-text">Effective Objective-C 2.0笔记(一)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第一条：了解-Objective-C-语言的起源"><span class="nav-number">2.</span> <span class="nav-text">第一条：了解 Objective-C 语言的起源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第二条：在类的头文件中尽量少引入其他头文件"><span class="nav-number">3.</span> <span class="nav-text">第二条：在类的头文件中尽量少引入其他头文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第三条：多用字面量语法少用与之等价的方法"><span class="nav-number">3.1.</span> <span class="nav-text">第三条：多用字面量语法少用与之等价的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第四条：多用类型常量，少用-define-预处理指令"><span class="nav-number">3.2.</span> <span class="nav-text">第四条：多用类型常量，少用#define 预处理指令</span></a></li></ol></li></ol></div>
             
 
           </div>
