@@ -950,7 +950,63 @@
       
         
           
-            
+            <blockquote>
+<p>对于一个四级都没有过的人来说，翻译一篇文章这个过程真的好艰难，第一部分断断续续的翻译耗时有近一个月(期间把 Effective Objective-C 看完了)，耗费的时间很长，并且翻译质量也不是很好，不过在这个过程中，我对这篇文章的理解又加深了很多。翻译外文博客真的是一个能提升自身水平的极好的一个方式，话不多说，接下来就请看我为大家带来的第二篇翻译吧。</p>
+<p>原文:<a href="https://www.raywenderlich.com/62796/reactivecocoa-tutorial-pt2" target="_blank" rel="noopener">ReactiveCocoa Tutorial – The Definitive Introduction: Part 2/2</a></p>
+<p>作者:Colin Eberhardt</p>
+</blockquote>
+<p><a href="https://github.com/ReactiveCocoa/ReactiveCocoa" target="_blank" rel="noopener">ReactiveCocoa</a>是一个允许你使用<a href="http://en.wikipedia.org/wiki/Functional_reactive_programming" target="_blank" rel="noopener">函数响应式编程</a>技术来构建iOS 应用程序的框架。在ReactiveCocoa系列教程的的<a href="https://www.raywenderlich.com/?p=62699" target="_blank" rel="noopener">第一部分</a>带领你了解到了如何使用信号发送事件流来的方式来代替标准的 action 和事件响应逻辑。并且你也应该熟悉了如何转换、分解和组合信号。</p>
+<p>在此系列的第二部分中，你将会了解到ReactiveCocoa的更多高级特性，包括：</p>
+<ul>
+<li>另外两个事件类型:Error 和 Completed</li>
+<li>Throttling</li>
+<li>Threading</li>
+<li>Continuations</li>
+<li>….和更多的特性！</li>
+</ul>
+<p>是时候开始了！</p>
+<h2 id="Twitter时刻"><a href="#Twitter时刻" class="headerlink" title="Twitter时刻"></a>Twitter时刻</h2><p>在此部分中你要开发的应用程序名为Twitter时刻(以 Google 概念为蓝本)，Twitter搜索将会在你输入的时候实时更新你的搜索结果。</p>
+<p>在这个程序的<a href="https://koenig-media.raywenderlich.com/uploads/2014/01/TwitterInstant-Starter2.zip" target="_blank" rel="noopener">初始项目</a>中包含了一些基础的用户接口和一些你在项目开始时需要的普通代码。和<a href="https://www.raywenderlich.com/?p=62699" target="_blank" rel="noopener">第一部分</a>一样，你需要使用<a href="http://cocoapods.org/" target="_blank" rel="noopener">CocoaPods</a>来获得并整合ReactiveCocoa到你的框架中。初始化项目已经包含了必须的 Podfile文件，所以你只需要打开终端并输入如下代码即可：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod install</span><br></pre></td></tr></table></figure>
+<p>如果执行正常，则你会看到如下输入信息：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Analyzing dependencies</span><br><span class="line">Downloading dependencies</span><br><span class="line">Using ReactiveCocoa (<span class="number">2.1</span>.<span class="number">8</span>)</span><br><span class="line">Generating Pods project</span><br><span class="line">Integrating client project</span><br></pre></td></tr></table></figure>
+<p>这时候应该会产生一个 Xcode workspace 文件，名为 <em>TwitterInstant.xcworkspace</em> 。打开这个 workspace 并确认是否包含了如下两个项目：</p>
+<ul>
+<li><em>TwitterInstant</em>：保存你应用逻辑的地方。</li>
+<li><em>Pods</em>：这是你项目中第三方依赖存在的地方，此时只包含一个<em>ReactiveCocoa</em>。</li>
+</ul>
+<p>构建并运行程序，你将看到以下内容：</p>
+<p><img src="/2018/06/04/ReactiveCocoa教程-权威介绍：第2-2部分/TwitterInstantStarter.png" alt="TwitterInstantStarter"></p>
+<p>先花点时间熟悉一下项目代码。这是非常简单的基于split view controller的应用程序。左侧的面板是<em>RWSearchFormViewController</em>，这个控制器通过 storyboard添加了少量的UI 控件，并将搜索输入框连接为一个 outlet。右侧面板则是<em>RWSearchResultsViewController</em>，它是一个<em>UITableViewController</em>的子类。</p>
+<p>如果你打开<em>RWSearchFormViewController.m</em>文件，你会看到在 viewDidLoad 方法中，将结果控制器关联到<em>resultsViewController</em>这个私有属性。程序中的大部分逻辑将会存在于<em>RWSearchFormViewController</em>中，并且<em>resultsViewController</em>属性将向<em>RWSearchResultsViewController</em>提供搜索结果。</p>
+<h2 id="验证搜索内容"><a href="#验证搜索内容" class="headerlink" title="验证搜索内容"></a>验证搜索内容</h2><p>首先你将要验证的是确保搜索内容的长度应该要大于两个字符的长度。如果你完成了此系列中的<a href="https://www.raywenderlich.com/?p=62699" target="_blank" rel="noopener">第一部分</a>,那么这将是一个愉快的复习。</p>
+<p>在<em>RWSearchFormViewController.m</em> 的 <em>viewDidLoad</em> 方法之后添加如下方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (BOOL)isValidSearchText:(NSString *)text &#123;</span><br><span class="line">  return text.length &gt; 2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个简单的操作确保了搜索字符必须长度大于两个字符。对于这个简单的逻辑，你可能会感到疑问：为什么将这个方法在文件中独立出来？</p>
+<p>目前的逻辑非常简单，如果万一以后的逻辑变得非常的复杂呢？在上述例子中，你只需要在一个地方改变就行。此外，上述代码能够让你的代码变得更加直观和指示出为什么你要检查字符串的长度。我们都应该遵循良好的编程习惯，不是吗？</p>
+<p>在相同文件的顶部导入ReactiveCocoa：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;ReactiveCocoa.h&gt;</span><br></pre></td></tr></table></figure>
+<p>并在此文件中的 <em>viewdidLoad</em> 方法中加入如下代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[[self.searchText.rac_textSignal</span><br><span class="line">  map:^id(NSString *text) &#123;</span><br><span class="line">    return [self isValidSearchText:text] ?</span><br><span class="line">      [UIColor whiteColor] : [UIColor yellowColor];</span><br><span class="line">  &#125;]</span><br><span class="line">  subscribeNext:^(UIColor *color) &#123;</span><br><span class="line">    self.searchText.backgroundColor = color;</span><br><span class="line">  &#125;];</span><br></pre></td></tr></table></figure>
+<p>不清楚上述代码有什么作用？请看如下解析：</p>
+<ul>
+<li>获取搜索框的文字信号</li>
+<li>将其转换为用以指示是否有效的颜色</li>
+<li>接着在<em>subscribeNext:</em>的 block 中应用到搜索框的背景颜色的属性上</li>
+</ul>
+<p>构建并运行程序，接着观察如果目前的搜索字符串长度过于短的情况下输入框如何使用黄色的背景颜色指示其无效。</p>
+<p><img src="/2018/06/04/ReactiveCocoa教程-权威介绍：第2-2部分/ValidatedTextField.png" alt="ValidatedTextField"></p>
+<p>这个简单的响应式管道如下图所示：</p>
+<p><img src="/2018/06/04/ReactiveCocoa教程-权威介绍：第2-2部分/TextValidationPipeline.png" alt="TextValidationPipeline"></p>
+<p>每次搜索框内容改变时<em>rac_textSignal</em>信号都会发出包含当前搜索框内容的next 事件。在<em>subscribeNext:</em>操作要将值赋值给搜索框的background属性时，map 操作会将文本值转换为颜色。</p>
+<p>当然，你应该还记得从<a href="https://www.raywenderlich.com/?p=62699" target="_blank" rel="noopener">第一部分</a>学到的这些知识对吗？如果你不记得了，你可能需要重新阅读一下上篇文章。</p>
+<p>在我们添加 Twitter 的逻辑之前，我们要先提到一些更有意思的主题。</p>
+<h2 id="管道格式化"><a href="#管道格式化" class="headerlink" title="管道格式化"></a>管道格式化</h2><p>当你在深入研究<em>ReactiveCocoa</em>代码格式的时候，被普遍接受的公约是每个操作符都另起一行，并且在竖直方向对其所有操作。</p>
+<p>在下面这张图片中，你会看到从上个部分中更加复杂的例子的对齐方式：</p>
+<p><img src="/2018/06/04/ReactiveCocoa教程-权威介绍：第2-2部分/PipelineFormatting.png" alt="PipelineFormatting"></p>
+<p>这种方式能让你更清楚，更直观的看到管道的操作。此外还能最小化每个block 中的代码量，任何需要多行展示的代码都应该使用私有方法来替代。</p>
+<p>不幸的是，Xcode 并不喜欢这种风格的编程格式，所以你会发现你会和自动缩进逻辑在做斗争。</p>
+<h2 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h2>
           
         
       
