@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="John 的技术博客">
 <meta property="og:description" content="Effective Objective-C 2.0笔记(一)一直在看大神博客，虽然讲的很详细，很透彻，但是对于我而言总是少了一个系统的学习。只是在我脑中是散乱着分布的。我就想找一本书来看看，更加系统的去接触和了解系统底层的一些组成。这次我买的是一本非常受人推崇，并且我自己看了也觉得非常好，非常有深度却又不晦涩的一本书——Effective Objective-C 2.0。 这是记录我自己学习历程的">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-07-23T14:19:21.937Z">
+<meta property="og:updated_time" content="2018-08-11T04:44:44.392Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="读书笔记(一)">
 <meta name="twitter:description" content="Effective Objective-C 2.0笔记(一)一直在看大神博客，虽然讲的很详细，很透彻，但是对于我而言总是少了一个系统的学习。只是在我脑中是散乱着分布的。我就想找一本书来看看，更加系统的去接触和了解系统底层的一些组成。这次我买的是一本非常受人推崇，并且我自己看了也觉得非常好，非常有深度却又不晦涩的一本书——Effective Objective-C 2.0。 这是记录我自己学习历程的">
@@ -302,7 +302,7 @@
       
         <h2 id="Effective-Objective-C-2-0笔记-一"><a href="#Effective-Objective-C-2-0笔记-一" class="headerlink" title="Effective Objective-C 2.0笔记(一)"></a>Effective Objective-C 2.0笔记(一)</h2><p>一直在看大神博客，虽然讲的很详细，很透彻，但是对于我而言总是少了一个系统的学习。只是在我脑中是散乱着分布的。我就想找一本书来看看，更加系统的去接触和了解系统底层的一些组成。这次我买的是一本非常受人推崇，并且我自己看了也觉得非常好，非常有深度却又不晦涩的一本书——<code>Effective Objective-C 2.0</code>。</p>
 <p>这是记录我自己学习历程的一篇文章,希望我能够在技术这条路上越走越远。</p>
-<h2 id="第一条：了解-Objective-C-语言的起源"><a href="#第一条：了解-Objective-C-语言的起源" class="headerlink" title="第一条：了解 Objective-C 语言的起源"></a>第一条：了解 Objective-C 语言的起源</h2><p><code>Objective-C</code> 使用的是<code>消息结构(messaging structure)</code>而非<code>函数调用(function calling)</code>。</p>
+<h1 id="第一章熟悉-Objective-C"><a href="#第一章熟悉-Objective-C" class="headerlink" title="第一章熟悉 Objective-C"></a>第一章熟悉 Objective-C</h1><h2 id="第一条：了解-Objective-C-语言的起源"><a href="#第一条：了解-Objective-C-语言的起源" class="headerlink" title="第一条：了解 Objective-C 语言的起源"></a>第一条：了解 Objective-C 语言的起源</h2><p><code>Objective-C</code> 使用的是<code>消息结构(messaging structure)</code>而非<code>函数调用(function calling)</code>。</p>
 <p>首先让我们了解消息结构和函数调用的含义。</p>
 <p><strong><code>消息结构(messaging structure)</code>:使用消息结构的语言其执行的代码是由运行时环境所决定。所以消息结构是动态语言，只有在运行时才知道调用了那个方法函数。所以消息结构语言的多态也只有在运行时才回去查找所要执行的方法，实际上编译器甚至不关心执行方法的对象是何种类型，收到消息的对象问题也需要在运行时处理，其过程叫做<code>动态绑定(dynamic binding)</code>。</strong></p>
 <p><strong><code>函数调用(function calling)</code>:使用函数调用的语言其执行的代码是由编译器决定的，并且如果函数是多态的，那么在运行时需要按照“<code>虚方法表(virtual table)</code>来查出到底要执行那个函数。”</strong></p>
@@ -320,18 +320,52 @@
 </blockquote>
 <h2 id="第二条：在类的头文件中尽量少引入其他头文件"><a href="#第二条：在类的头文件中尽量少引入其他头文件" class="headerlink" title="第二条：在类的头文件中尽量少引入其他头文件"></a>第二条：在类的头文件中尽量少引入其他头文件</h2><p>与 c 和 C++一样 oc 也使用“头文件(header file)”与”实现文件(implementation file)”来分隔代码。只是 c 和 c++中是使用 #include 引入头文件，这样的引入方式会造成重复引入，例如：ClassA与 ClassB 均引入了 ClassC，当 ClassD 同时引入 ClassA 和 ClassB 时此时会产生重复引用。而 oc 中使用#import 引入头文件，#import 的作用和#include的作用相似，只是#import 会处理重复引用的问题。</p>
 <p>当在头文件中不需要了解另一个类的具体实现的时候，请尽量使用@Class。</p>
-<h3 id="第三条：多用字面量语法少用与之等价的方法"><a href="#第三条：多用字面量语法少用与之等价的方法" class="headerlink" title="第三条：多用字面量语法少用与之等价的方法"></a>第三条：多用字面量语法少用与之等价的方法</h3><p>字面量语法实际上就是一种“语法糖”(syntactic sugar)。</p>
+<h2 id="第三条：多用字面量语法少用与之等价的方法"><a href="#第三条：多用字面量语法少用与之等价的方法" class="headerlink" title="第三条：多用字面量语法少用与之等价的方法"></a>第三条：多用字面量语法少用与之等价的方法</h2><p>字面量语法实际上就是一种“语法糖”(syntactic sugar)。</p>
 <ul>
 <li>字面量语法非常简明扼要。</li>
 <li>应该通过取下标语法来访问数组下表或字典中键相对应的元素。</li>
 <li>用字面量语法创建数组或者字典时如果传入 nil 元素则会报错，而使用与之等价的创建方法并不会报错，而是成功创建一个数组或者字典，其值是 nil 之前的元素。</li>
 </ul>
-<h3 id="第四条：多用类型常量，少用-define-预处理指令"><a href="#第四条：多用类型常量，少用-define-预处理指令" class="headerlink" title="第四条：多用类型常量，少用#define 预处理指令"></a>第四条：多用类型常量，少用#define 预处理指令</h3><p>使用#define 创建一个常量:</p>
+<h2 id="第四条：多用类型常量，少用-define-预处理指令"><a href="#第四条：多用类型常量，少用-define-预处理指令" class="headerlink" title="第四条：多用类型常量，少用#define 预处理指令"></a>第四条：多用类型常量，少用#define 预处理指令</h2><p>使用#define 创建一个常量:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define ANIMATION_DURATION 0.3</span><br></pre></td></tr></table></figure>
 <p>上述的预处理指令会将代码中所有 ANIMATION_DURATION 字符串替换为 0.3 。但是这样定义并不会有类型信息。并且即使有人重新定义了该值，编译器也不会产生警告信息。所以我们尽量使用类型常量来替换#deifne 预处理指令。现在我们以类型常量来定义：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">static const NSTimeInterval kAnimationDuration = 0.3;</span><br></pre></td></tr></table></figure>
 <p>使用此方法定义的常量包含类型信息，其好处是能清楚的了解常量的含义。还要注意常量的命名法：若常量局限于某“编译单元”(translation unit 也就是“实现文件” ， implementation file)之内，则要在前面添加字幕k；若是常量在类之外可见，通常都是以类名为前缀。</p>
-
+<h2 id="第五条：用枚举表示状态、选项、状态码"><a href="#第五条：用枚举表示状态、选项、状态码" class="headerlink" title="第五条：用枚举表示状态、选项、状态码"></a>第五条：用枚举表示状态、选项、状态码</h2><p>由于 Objective-C 是基于 C语言的，所以 C语言拥有的枚举功能(enum)，Objective-C 也拥有。</p>
+<p>但是由于传统定义枚举的方式太不简洁，所以我们可以采用typedef关键字为枚举设置一个别名。示例如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">enum EOCConnectionState</span><br><span class="line">&#123;</span><br><span class="line">    EOCConnectionStateDisconnected,</span><br><span class="line">    EOCConnectionStateConnecting,</span><br><span class="line">    EOCConnectionStateConnected</span><br><span class="line">&#125;;</span><br><span class="line">typedef enum EOCConnectionState EOCConnectionState;</span><br></pre></td></tr></table></figure>
+<p>这时候我们就可以使用简写的EOCConnectionState来替代完整的 enum EOCConnectionState了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 现在定义的表达式</span><br><span class="line">EOCConnectionState state = EOCConnectionStateDisconnected;</span><br><span class="line">// 原来复杂的表达式</span><br><span class="line">enum EOCConnectionState state = EOCConnectionStateDisconnected;</span><br></pre></td></tr></table></figure>
+<p>C++11标准修订了枚举的某些特性，其中一项改动是：可以指明用何种“底层数据类型”(underlying type)来保存枚举类型的变量。这样做的好处是，可以向前声明枚举变量了。若是不指定底层数据类型，则无法向前声明枚举类型，因为<strong>编译器不清楚底层数据类型的大小</strong>，所以在用到此枚举类型时，也就不指定究竟该给变量分配多少空间。</p>
+<p>指定底层数据类型所用的语法是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">enum EOCConnetionStateConnectionState : NSInterger &#123;/* .....  */&#125;</span><br></pre></td></tr></table></figure>
+<p>上面这行代码确保枚举的底层数据类型是 NSInteger。也可以在向前声明时指定底层数据类型：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">enum EOCConnectionStateConnectionState : NSInteger;</span><br></pre></td></tr></table></figure>
+<p>还可以并不使用编译器所分配的信号，而是手工指定某个枚举成员变量所对应的值。语法如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">enum EOCConnectionStateConnectionState</span><br><span class="line">&#123;</span><br><span class="line">    EOCConnectionStateDisconnected = 1,</span><br><span class="line">    EOCConnectionStateConnecting,</span><br><span class="line">    EOCConnectionStateConnected</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>上述代码把EOCConnectionStateConnectionState的值设置为1，而不是编译器所分配的0。如前所述，接下来的几个枚举的值都会在上一个的基础上递增1。比如说，EOCConnectionStateConnected的值就是3。</p>
+<p>定义选项选项的时候也需要使用枚举。只要枚举定义的对，各选项之间就可以通过“按位或操作符”(bitwise OR operator) 来组合。下面的代码是 iOS框架中用以表示视图应该如何在水平或垂直方向上调整大小:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">typedef NS_OPTIONS(NSUInteger, UIViewAutoresizing) &#123;</span><br><span class="line">    UIViewAutoresizingNone                 = 0,</span><br><span class="line">    UIViewAutoresizingFlexibleLeftMargin   = 1 &lt;&lt; 0,</span><br><span class="line">    UIViewAutoresizingFlexibleWidth        = 1 &lt;&lt; 1,</span><br><span class="line">    UIViewAutoresizingFlexibleRightMargin  = 1 &lt;&lt; 2,</span><br><span class="line">    UIViewAutoresizingFlexibleTopMargin    = 1 &lt;&lt; 3,</span><br><span class="line">    UIViewAutoresizingFlexibleHeight       = 1 &lt;&lt; 4,</span><br><span class="line">    UIViewAutoresizingFlexibleBottomMargin = 1 &lt;&lt; 5</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>每个选项均可以启用或者禁用，使用上述方式来定义枚举值即可保证这一点，因为在每个枚举值所对应的二进制表示中，只有一个二进制的值是1。用“按位或操作”可组合多个选项，例如UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight。用“按位与操作符”即可判断出是否已启用某个选项：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">enum UIViewAutoresizing resizing = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;</span><br><span class="line">if (resizing &amp; UIViewAutoresizingFlexibleWidth)</span><br><span class="line">&#123;</span><br><span class="line">    // UIViewAutoresizingFlexibleWidth is set</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>根据是否要将代码按C++模式编译，NS_OPTIONS 宏的定义方式也有不同。如果不按 C++编译，那么其展开方式就和 NS_ENUM 相同。若按照 C++编译，则展开后的代码略有不同。原因在于，用按位或运算符来操作两个枚举时，C++编译模式的处理办法与非 C++模式不一样。作为选项的枚举值经常需要使用按位或运算符来组合。在用或运算操作两个枚举值时。C++认为运算结果的类型应该是枚举的底层数据类型本身，也就是 NSInteger。而且 C++类型不允许这个底层类型隐式转换为枚举类型本身。我们用 EOCPermittedDirection 来演示一下，假设按照 NS_ENUM 方式将其展开：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">typedef enum EOCPermittedDirection : int EOCPermittedDirection;</span><br><span class="line">enum EOCPermittedDirection : int</span><br><span class="line">&#123;</span><br><span class="line">    EOCPermittedDirectionUp		= 1&lt;&lt;0,</span><br><span class="line">    EOCPermittedDirectionDown	= 1&lt;&lt;0,</span><br><span class="line">    EOCPermittedDirectionLeft	= 1&lt;&lt;0,</span><br><span class="line">    EOCPermittedDirectionRight	= 1&lt;&lt;0</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 然后考虑下列代码:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">EOCPermittedDirection permittedDirections = EOCPermittedDirectionLeft|EOCPermittedDirectionUp;</span><br></pre></td></tr></table></figure>
+<p>若编译器按照 C++(或 Objective-C)模式编译，则会给出下列错误信息：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">error : cannot initalize a variable of type</span><br><span class="line"><span class="string">'EOCPermittedDirection'</span> with an rvalue of type <span class="string">'int'</span></span><br></pre></td></tr></table></figure>
+<p>如果想要编译这行代码，就要将按位操作的结果显示转换为EOCPermittedDirection。所以，在 C++模式下应该使用另一种方式定义 NS_OPTIONS 宏，以便省去类型转换操作。鉴于此，<strong>凡是需要使用按位操作的枚举都应该使用 NS_OPTIONS 定义。若是枚举不需要组合，则使用 NS_ENUM。</strong></p>
+<p>温馨提醒：若是对枚举类型进行 switch 判断操作，则最好不要加上 default 分支，因为这样就可以再枚举类型增加的时候提醒何处未处理这个新的状态。</p>
+<p>要点：</p>
+<ul>
+<li>应该使用枚举表示状态机的状态、传递给方法的选项以及状态码码等值，给这个值去个通俗易懂的名字。</li>
+<li>如果传递给某给方法的的选项表示为枚举值，而多个选项又可以同时使用，那么就将各选项值定义为2的幂，以便通过按位或操作符将其组合起来。</li>
+<li>使用 NS_ENUM 和 NS_OPTIONS 宏来定义枚举类型，并指明其底层数据类型。这样做可以确保枚举是使用开发者所选的底层数据类型实现出来的，而不会采用编译器所所选的类型。</li>
+<li>在处理枚举类型的 switch 选项中，不要实现 default 分支。这样的话再加入新枚举状态的时候就会通知给开发者：switch 语句并未处理所有枚举。</li>
+</ul>
+<h1 id="对象、消息、运行期"><a href="#对象、消息、运行期" class="headerlink" title="对象、消息、运行期"></a>对象、消息、运行期</h1><p><strong>“对象”就是”基本构造单元”(buliding block)</strong>，开发者可以通过对象来储存并传递数据。<strong>在对象之间传递并执行任务的过程就叫做消息传递。</strong></p>
+<p><strong>当程序运行起来之后，为其提供相关支持的代码就叫做“Objective-C 运行时环境”。</strong>它提供了一些使得对象之间能够传递消息的重要函数，并且包含创建类实例所用的全部逻辑。</p>
+<h2 id="第六条：理解“属性”这一概念"><a href="#第六条：理解“属性”这一概念" class="headerlink" title="第六条：理解“属性”这一概念"></a>第六条：理解“属性”这一概念</h2>
       
     </div>
     
@@ -496,7 +530,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Effective-Objective-C-2-0笔记-一"><span class="nav-number">1.</span> <span class="nav-text">Effective Objective-C 2.0笔记(一)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第一条：了解-Objective-C-语言的起源"><span class="nav-number">2.</span> <span class="nav-text">第一条：了解 Objective-C 语言的起源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第二条：在类的头文件中尽量少引入其他头文件"><span class="nav-number">3.</span> <span class="nav-text">第二条：在类的头文件中尽量少引入其他头文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第三条：多用字面量语法少用与之等价的方法"><span class="nav-number">3.1.</span> <span class="nav-text">第三条：多用字面量语法少用与之等价的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第四条：多用类型常量，少用-define-预处理指令"><span class="nav-number">3.2.</span> <span class="nav-text">第四条：多用类型常量，少用#define 预处理指令</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Effective-Objective-C-2-0笔记-一"><span class="nav-number">1.</span> <span class="nav-text">Effective Objective-C 2.0笔记(一)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第一章熟悉-Objective-C"><span class="nav-number"></span> <span class="nav-text">第一章熟悉 Objective-C</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#第一条：了解-Objective-C-语言的起源"><span class="nav-number">1.</span> <span class="nav-text">第一条：了解 Objective-C 语言的起源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第二条：在类的头文件中尽量少引入其他头文件"><span class="nav-number">2.</span> <span class="nav-text">第二条：在类的头文件中尽量少引入其他头文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第三条：多用字面量语法少用与之等价的方法"><span class="nav-number">3.</span> <span class="nav-text">第三条：多用字面量语法少用与之等价的方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第四条：多用类型常量，少用-define-预处理指令"><span class="nav-number">4.</span> <span class="nav-text">第四条：多用类型常量，少用#define 预处理指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第五条：用枚举表示状态、选项、状态码"><span class="nav-number">5.</span> <span class="nav-text">第五条：用枚举表示状态、选项、状态码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#对象、消息、运行期"><span class="nav-number"></span> <span class="nav-text">对象、消息、运行期</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#第六条：理解“属性”这一概念"><span class="nav-number">1.</span> <span class="nav-text">第六条：理解“属性”这一概念</span></a></li></ol></div>
             
 
           </div>
