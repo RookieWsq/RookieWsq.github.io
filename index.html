@@ -320,32 +320,26 @@
 <li>此特性定义了一种“非拥有关系”。为这个属性设置新值的时候，设置方法既不会保留新值，也不会释放旧值。此特性同 assign 类似，然而在此属性所知的对象被设置摧毁之后，属性值会被设置为 nil。</li>
 </ul>
 </li>
-<li><p>release | retain： </p>
+<li><p>retain： </p>
 <ul>
-<li>release 的作用是将这个变量指向的内存中的对象的引用计数减一，直到引用计数为零时释放这块内存。ps.一般在release之后要设置这个对象为nil(置空这个指针不指向任何地址),否则会出现野指针， </li>
 <li>retain (基本等价于 Strong) :</li>
-<li><ul>
 <li>retain不能修饰用来代表简单数据类型的property，否则编译器会报错</li>
 <li>如果一个property被retain修饰，这代表着这个property应该持有它所指向的对象。<a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/MemoryMgmt/Articles/mmPractical.html#//apple_ref/doc/uid/TP40004447-SW1" target="_blank" rel="noopener">官方文档</a>中展示了一个被retain修饰的property：</li>
-</ul>
-</li>
 </ul>
 </li>
 <li><p>atomic(默认)：单线程使用 ， 线程安全  ， 速度慢</p>
 </li>
 <li><p>nonatomic：可多线程使用 ， 线程不安全   ， 速度快</p>
 </li>
-<li><p>Copy：</p>
+<li><p>copy：</p>
 <ul>
 <li><p>copy也不能修饰用来代表简单数据类型的property，否则编译器会报错</p>
-<p><img src="/2018/08/14/内存管理语义/assinPropertyCopyError.png" alt="image-20180814160130252"></p>
 </li>
 <li><p>如果一个property被copy修饰，那么赋值到这个property的对象，应该是原有对象的一份拷贝且不会增加引用计数。</p>
 </li>
-<li><p>只有实现了NSCopying协议，并且实现了其中的copyWithZone:方法的对象才能被拷贝。</p>
-</li>
-<li><p>但是并不是所有的拷贝都产生了新的对象，有些类在实现copyWithZone:方法时，有着它们自己的考虑。比如NSString： NSString 在Copy之后两个对象的内存地址相同</p>
-</li>
+<li>对使用 copy 修饰的属性，若是调用了自定义的 setter 则一定要注意要使用 copy 方法。</li>
+<li>只有实现了NSCopying协议，并且实现了其中的copyWithZone:方法的对象才能被拷贝。</li>
+<li>但是并不是所有的拷贝都产生了新的对象，有些类在实现copyWithZone:方法时，有着它们自己的考虑。比如NSString： NSString 在Copy之后两个对象的内存地址相同</li>
 <li><p>深拷贝和浅拷贝——具体请看<a href="/2018/07/20/iOS-中的拷贝-copy-和-mutableCopy/" title="iOS 中的拷贝(copy 和 mutableCopy)">iOS 中的拷贝(copy 和 mutableCopy)</a></p>
 <ul>
 <li>深拷贝 : 拷贝出来的对象与源对象地址不一致! 这意味着我修改拷贝对象的值对源对象的值没有任何影响.</li>
@@ -2171,7 +2165,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">标签</span>
                 
               </div>
