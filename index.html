@@ -232,6 +232,177 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/14/内存管理语义/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Wong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="John 的技术博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/14/内存管理语义/" itemprop="url">内存管理语义</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-14T15:34:35+08:00">
+                2018-08-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>每个属性都有其内存管理语义，要么默认设置，要么主动设置。内存管理语义定义了其属性的所有权。属性所有权仅影响 setter。</p>
+<ul>
+<li><p>assign： </p>
+<p>assign一般用来修饰基本数据类型 int 、 float (基础类型没有引用关系)</p>
+<p>意义：如果这个用assign属性修饰的property代表一个指向对象的指针，那么当这个指针指向某个对象时，这个对象的引用计数不应该被改变。也就是说，用assign属性修饰的property，不应该持有一个对象(引用计数不增加)。因为这个property不持有对象，所以它所指向的对象很可能已经在别处被释放了。这时它就有可能成为一枚悬垂指针，访问它指向的内存地址时，可能会发生意想不到的状况。 </p>
+</li>
+<li><p>strong：</p>
+<p>在ARC内存管理模式下，strong是一个代表对象类型的property的默认属性，并且它不能修饰用来代表简单数据类型的property。编译器在合成实例变量时，将使用__strong修饰符。</p>
+<p>此特性表明该属性定义了一种”拥有关系“。为这种属性设置新值的时候，会先保留新值然后释放旧值，接着将新值赋值上去。(注意这里的顺序，一定是先保留新值然后释放旧值，不能相反，否则假设新值和旧值是同一个值的话会造成值被释放被设为 nil)。</p>
+</li>
+<li><p>weak: </p>
+<ul>
+<li>weak也不能修饰用来代表简单数据类型的property。</li>
+<li>编译器将为weak修饰的property生成带__weak所有权修饰符的实例变量。</li>
+<li>此特性定义了一种“非拥有关系”。为这个属性设置新值的时候，设置方法既不会保留新值，也不会释放旧值。此特性同 assign 类似，然而在此属性所知的对象被设置摧毁之后，属性值会被设置为 nil。</li>
+</ul>
+</li>
+<li><p>release | retain： </p>
+<ul>
+<li>release 的作用是将这个变量指向的内存中的对象的引用计数减一，直到引用计数为零时释放这块内存。ps.一般在release之后要设置这个对象为nil(置空这个指针不指向任何地址),否则会出现野指针， </li>
+<li>retain (基本等价于 Strong) :</li>
+<li><ul>
+<li>retain不能修饰用来代表简单数据类型的property，否则编译器会报错</li>
+<li>如果一个property被retain修饰，这代表着这个property应该持有它所指向的对象。<a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/MemoryMgmt/Articles/mmPractical.html#//apple_ref/doc/uid/TP40004447-SW1" target="_blank" rel="noopener">官方文档</a>中展示了一个被retain修饰的property：</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>atomic(默认)：单线程使用 ， 线程安全  ， 速度慢</p>
+</li>
+<li><p>nonatomic：可多线程使用 ， 线程不安全   ， 速度快</p>
+</li>
+<li><p>Copy：</p>
+<ul>
+<li><p>copy也不能修饰用来代表简单数据类型的property，否则编译器会报错</p>
+<p><img src="/2018/08/14/内存管理语义/assinPropertyCopyError.png" alt="image-20180814160130252"></p>
+</li>
+<li><p>如果一个property被copy修饰，那么赋值到这个property的对象，应该是原有对象的一份拷贝且不会增加引用计数。</p>
+</li>
+<li><p>只有实现了NSCopying协议，并且实现了其中的copyWithZone:方法的对象才能被拷贝。</p>
+</li>
+<li><p>但是并不是所有的拷贝都产生了新的对象，有些类在实现copyWithZone:方法时，有着它们自己的考虑。比如NSString： NSString 在Copy之后两个对象的内存地址相同</p>
+</li>
+<li><p>深拷贝和浅拷贝——具体请看<a href="/2018/07/20/iOS-中的拷贝-copy-和-mutableCopy/" title="iOS 中的拷贝(copy 和 mutableCopy)">iOS 中的拷贝(copy 和 mutableCopy)</a></p>
+<ul>
+<li>深拷贝 : 拷贝出来的对象与源对象地址不一致! 这意味着我修改拷贝对象的值对源对象的值没有任何影响.</li>
+<li>浅拷贝 : 拷贝出来的对象与源对象地址一致! 这意味着我修改拷贝对象的值会直接影响到源对象.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/20/iOS-中的指针、指针变量和对象/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -865,7 +1036,37 @@
 </ul>
 <h1 id="对象、消息、运行期"><a href="#对象、消息、运行期" class="headerlink" title="对象、消息、运行期"></a>对象、消息、运行期</h1><p><strong>“对象”就是”基本构造单元”(buliding block)</strong>，开发者可以通过对象来储存并传递数据。<strong>在对象之间传递并执行任务的过程就叫做消息传递。</strong></p>
 <p><strong>当程序运行起来之后，为其提供相关支持的代码就叫做“Objective-C 运行时环境”。</strong>它提供了一些使得对象之间能够传递消息的重要函数，并且包含创建类实例所用的全部逻辑。</p>
-<h2 id="第六条：理解“属性”这一概念"><a href="#第六条：理解“属性”这一概念" class="headerlink" title="第六条：理解“属性”这一概念"></a>第六条：理解“属性”这一概念</h2>
+<h2 id="第六条：理解“属性”这一概念"><a href="#第六条：理解“属性”这一概念" class="headerlink" title="第六条：理解“属性”这一概念"></a>第六条：理解“属性”这一概念</h2><p>Objective-C 对象通常会把其所需要的数据保存成为各种实例变量。实例变量一般通过”读取方法”(access method)来访问。</p>
+<p>下述代码是声明实例变量的一种方式:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@interface EOCPerson : NSObject</span><br><span class="line">&#123;</span><br><span class="line">    @public</span><br><span class="line">    NSString *_firstName;</span><br><span class="line">    NSString *_lastName;</span><br><span class="line">    @private</span><br><span class="line">    NSString *_someInternalData;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>这是很多语言采用的写法，但是在 Objective-C 中并使用这种方法来做。这种写法的问题如下：<strong>对象布局在编译器(compile time)就已经固定了，只要碰到_firstName 变量的代码，编译器就把其替换为”偏移量”(offset)，这个偏移量是”硬编码”(hardcode)，表示该变量距离存放对象的内存区域的起始地址有多远。</strong></p>
+<p>但是此时就会出现一个问题，就是当你又添加了一个实例变量，那就比较麻烦了。例如在_firstName 变量之前添加一个新的变量NSDate *_dateOfBirth。此时原本表示_firstName 的偏移量现在却指向了_dateOfBirth。运用了偏移量硬编码的代码都会受到错误的值。</p>
+<p>如果代码使用了编译器计算出来的偏移量，那么在修改类定义之后必须要重新编译，否则就会出错(如上例所示)。每种语言都有其解决方式，Objective-C 的做法是：<strong>把实例变量作为一种存储偏移量所用的“特殊变量”，加油类的对象保管。偏移量会在运行期查找，如果类的定义变了，那么存储的偏移量也就变了</strong>，这样的话无论何时访问实例变量，总能使用正确的偏移量。甚至可以在运行期向类中新增实力变量，这就是稳固的<strong>“应用程序二进制接口”(Application Binary Interface,ABI)</strong>。ABI 定义了许多的内容，其中一项就是生成代码时所应遵循的规范。</p>
+<p>如果使用了属性，那么<strong>编译器就会自动编写访问这些属性所需的方法</strong>，此过程叫做”自动合成”。需要强调的是，<strong>这个过程由编译器在编译期执行</strong>，所以编辑器里看不到这些“合成方法”的源代码。除了生成方法代码以外，编译器还要自动向类中添加适当类型的实例变量，并在属性名前面添加下划线(‘_’)，以此作为实例变量的名字。当然，在<strong>代码中也可以使用@synthesize语法来制定实例变量的名字</strong>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@implementation EOCPerson</span><br><span class="line"></span><br><span class="line">@synthesize firstName = _myFirstName;</span><br><span class="line">@synthesize lastName = _myLastName;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>但是一般情况下尽量少用或者不用这个语法。</p>
+<p>若是不想要编译器自动合成存取方法，则可以自己实现，如果你只实现了其中一个存取方法， 则另一个方法也会由编译器来合成。如果想要阻止编译器自动合成存取方法，那就要使用@dynamic关键字。它会告诉编译器不要为其创建存取方法，也不用自动创建实现属性所用的实例变量。而且，在编译访问属性代码的时候，即使编译器发现没有定义存取方法，也不会报错，因为它相信这些方法能够在运行期找到。</p>
+<h3 id="属性性质"><a href="#属性性质" class="headerlink" title="属性性质"></a>属性性质</h3><h4 id="原子性"><a href="#原子性" class="headerlink" title="原子性"></a>原子性</h4><p>默认情况下，由编译器所合成的方法会通过锁定机制确保其原子性。如果属性具备 nonatomic 性质，则不使用同步锁。</p>
+<h4 id="读-写权限"><a href="#读-写权限" class="headerlink" title="读/写权限"></a>读/写权限</h4><ul>
+<li>具备readwrite特性的属性拥有setter 和 getter。若改属性由@synthesize实现，则编译器会自动生成这两个方法。</li>
+<li>具备 readonly 特性的属性只拥有获取方法。只有当该属性由@synthesize 实现时，编译器才会为其合成获取方法。</li>
+</ul>
+<h4 id="内存管理语义"><a href="#内存管理语义" class="headerlink" title="内存管理语义"></a>内存管理语义</h4><p>属性用于封装数据，而数据则要有”具体的所有权语义”。下面这一组特质仅会影响 setter。</p>
+<ul>
+<li>assign：setter 仅会针对“纯量类型”(例如，CGFloat 或者 NSInteger 等)的简单赋值操作。</li>
+<li>strong：此特性表明该属性定义了一种”拥有关系“。为这种属性设置新值的时候，会先保留新值然后释放旧值，接着将新值赋值上去。(注意这里的顺序，一定是先保留新值然后释放旧值，不能相反，否则假设新值和旧值是同一个值的话会造成值被释放被设为 nil)。</li>
+<li>weak：此特性定义了一种“非拥有关系”。为这个属性设置新值的时候，设置方法既不会保留新值，也不会释放旧值。此特性同 assign 类似，然而在此属性所知的对象被设置摧毁之后，属性值会被设置为 nil。</li>
+<li>unsafe_unretained：此特性的语义和 assign相同，但是它适用于“对象类型”，该特质表示一种“非拥有关系”(unretained)，当该属性所指向的对象遭到摧毁时，属性值不会自动清空(nil,unsafe)，这一点与 weak 有区别。</li>
+<li>copy：此特性所表达的属性关系和 strong 类似。然而设置方法并不保留新值，而是将其“拷贝”(copy)。</li>
+</ul>
+<p>详细请看——<a href="/2018/08/14/内存管理语义/" title="内存管理语义">内存管理语义</a></p>
+<h4 id="方法名"><a href="#方法名" class="headerlink" title="方法名"></a>方法名</h4><p>可以使用如下特质来指定存取方法的方法名:</p>
+<ul>
+<li>getter=<name>：指定getter 的方法名。在系统中有很多BOOL 属性其方法名被加上“is”前缀。</name></li>
+<li>setter=<name>：指定setter 的方法名，这种用法不太常见。</name></li>
+</ul>
+<p>需要注意的是：若是自己来实现这些存取方法，那么应该保证<strong>其具备相关属性所声明的特质</strong>。</p>
+
           
         
       
@@ -1957,7 +2158,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
