@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="John 的技术博客">
 <meta property="og:description" content="每个属性都有其内存管理语义，要么默认设置，要么主动设置。内存管理语义定义了其属性的所有权。属性所有权仅影响 setter。  assign：  assign一般用来修饰基本数据类型 int 、 float (基础类型没有引用关系) 意义：如果这个用assign属性修饰的property代表一个指向对象的指针，那么当这个指针指向某个对象时，这个对象的引用计数不应该被改变。也就是说，用assign属性">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-08-14T14:37:47.494Z">
+<meta property="og:updated_time" content="2018-08-15T02:19:50.622Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="内存管理语义">
 <meta name="twitter:description" content="每个属性都有其内存管理语义，要么默认设置，要么主动设置。内存管理语义定义了其属性的所有权。属性所有权仅影响 setter。  assign：  assign一般用来修饰基本数据类型 int 、 float (基础类型没有引用关系) 意义：如果这个用assign属性修饰的property代表一个指向对象的指针，那么当这个指针指向某个对象时，这个对象的引用计数不应该被改变。也就是说，用assign属性">
@@ -346,6 +346,17 @@
 </ul>
 </li>
 </ul>
+<blockquote>
+<p>参考资料:</p>
+<ul>
+<li>IOS 内存管理机制  <a href="http://blog.devtang.com/2016/07/30/ios-memory-management/" target="_blank" rel="noopener">http://blog.devtang.com/2016/07/30/ios-memory-management/</a> </li>
+<li>IOS 内存管理机制 <a href="http://www.jianshu.com/p/8b1ed04b3ba9" target="_blank" rel="noopener">http://www.jianshu.com/p/8b1ed04b3ba9</a> </li>
+<li>iOS 从创建对象到销毁 <a href="https://juejin.im/entry/58a178060ce463005644ee4a" target="_blank" rel="noopener">https://juejin.im/entry/58a178060ce463005644ee4a</a></li>
+<li>assign，retain，strong，weak，unsafe_unretained，还有copy : <a href="http://www.jianshu.com/p/4a1d1921284b" target="_blank" rel="noopener">http://www.jianshu.com/p/4a1d1921284b</a> </li>
+<li>oc 属性修饰符讲解: <a href="http://rdcworld-iphone.blogspot.in/2012/12/variable-property-attributes-or.html" target="_blank" rel="noopener">http://rdcworld-iphone.blogspot.in/2012/12/variable-property-attributes-or.html</a></li>
+<li>打印引用计数 <a href="http://www.jianshu.com/p/e059a54fb5f3" target="_blank" rel="noopener">http://www.jianshu.com/p/e059a54fb5f3</a></li>
+</ul>
+</blockquote>
 
       
     </div>
@@ -385,6 +396,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/08/15/类和-isa-指针/" rel="prev" title="类和 isa 指针">
+                类和 isa 指针 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -452,7 +467,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -465,7 +480,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">标签</span>
                 
               </div>

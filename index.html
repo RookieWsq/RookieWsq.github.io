@@ -232,6 +232,191 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/15/类和-isa-指针/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Wong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="John 的技术博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/15/类和-isa-指针/" itemprop="url">类和 isa 指针</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-15T15:56:14+08:00">
+                2018-08-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="对于普通对象来说，isa-指针包含对象的类"><a href="#对于普通对象来说，isa-指针包含对象的类" class="headerlink" title="对于普通对象来说，isa 指针包含对象的类"></a>对于普通对象来说，isa 指针包含对象的类</h2><p>oc 中所有的 isa 指针指向的都是类。</p>
+<p>在 oc 中每一个类的对象都都有一个指向类的指针 isa。并且在 oc 中任何数据结构也在一个正确的位置上都有一个指向类的指针，使其能够被视为对象。</p>
+<p>所以一个对象的类型是由 isa 指针决定的，isa 指针指向对象的类。</p>
+<p><del>接下来我们查看类的定义，首先我们使用如下代码导入所需框架:</del>(这样查看的是旧的定义)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;objc/runtime.h&gt;</span><br><span class="line">#import &lt;objc/objc.h&gt;</span><br></pre></td></tr></table></figure>
+<p><del>首先我们先查看对象的定义,找到objc_object ，并查看:</del></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">typedef struct objc_class *Class;</span><br><span class="line"></span><br><span class="line">struct objc_object &#123;</span><br><span class="line">    Class _Nonnull isa  OBJC_ISA_AVAILABILITY;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">typedef struct objc_object *id;</span><br></pre></td></tr></table></figure>
+<p><del>我们看到objc_object中只定义了一个 Class 类型的变量，Class类型其实我们可以从上述代码第一条得知 Class其实就是一个objc_class类型的指针。<strong>对于对象来说isa指针就是指向对象所对应的类。</strong></del></p>
+<p>新定义:</p>
+<p>首先<a href="https://opensource.apple.com/tarballs/objc4/objc4-723.tar.gz" target="_blank" rel="noopener">下载文档</a>，然后我们打开它objc-private.h 文件。我们查看objc_object 定义:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">struct objc_object &#123;</span><br><span class="line">private:</span><br><span class="line">    isa_t isa;</span><br><span class="line">public:</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在 objc_object 中，isa 是一个 isa_t 类型的变量，继续在这个文件中查找 “union isa_t ”，然后我们看这个变量的定义:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">union isa_t </span><br><span class="line">&#123;</span><br><span class="line">    isa_t() &#123; &#125;</span><br><span class="line">    isa_t(uintptr_t value) : bits(value) &#123; &#125;</span><br><span class="line"></span><br><span class="line">    Class cls;</span><br><span class="line">    uintptr_t bits;</span><br><span class="line">    .....</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个 isa_t 是一个union类型的结构体(或者称为联合体)。这个 isa_t 中定义了一个 Class 类型的cls 变量。然后我们接着查找这个 Class 类型。在同一个文件中搜索’objc_class *Class’，你会看到Class 类型的定义:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">typedef struct objc_class *Class;</span><br></pre></td></tr></table></figure>
+<p>你会看到其实 cls 变量是一个指针，其值指向的对象是objc_class结构体。接着我们打开objc-runtime-new.h 文件，搜索“objc_class ”：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">struct objc_class : objc_object &#123;</span><br><span class="line">    // Class ISA;</span><br><span class="line">    Class superclass;</span><br><span class="line">    cache_t cache;             // formerly cache pointer and vtable</span><br><span class="line">    class_data_bits_t bits;    // class_rw_t * plus custom rr/alloc flags</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个结构体就是类的结构，所以我们说<strong>对于普通对象来说，isa 指针包含对象的类</strong>。为什么特指普通对象呢，我们继续看下去。</p>
+<h2 id="类其实也是一个对象"><a href="#类其实也是一个对象" class="headerlink" title="类其实也是一个对象"></a>类其实也是一个对象</h2><p>首先我们着重看上述几个变量,并逐条分析。objc_class 继承自objc_obbject，所以我们 objc_class 中也存在一个isa 变量。而且由这个继承结构我们可以得出：<strong>类其实也是一个对象</strong>。只不过这个对象并不是由我们来创建，而是由系统来创建。既然类也是一个对象，那么其 isa 指针中必定也包含对象的类，即<strong>“类对象的类“</strong>。那么”类对象的类“是什么呢？其实它就是<a href="https://zh.wikipedia.org/wiki/%E5%85%83%E7%B1%BB" target="_blank" rel="noopener">元类(metaclass)</a>，但是，元类有什么作用呢？先别急，我们等会讨论。</p>
+<h3 id="类对象中保存类的父类"><a href="#类对象中保存类的父类" class="headerlink" title="类对象中保存类的父类"></a>类对象中保存类的父类</h3><p>superclass 也是一个objc_class类型，就是一个类，按照其字面意思理解是指向本对象的父类，事实上真是这个意思，在这里就是元类的父类。这具体是指向的什么呢，这等我们讨论元类的时候再讨论。</p>
+<p>然后下一个就是cache，这个变量是cache_t类型的，它是一个散列表，缓存的是曾经调用过的方法列表，并且它可以使用键值对的方式去读取，这样效率肯定比遍历快得多。如果你想了解更多请看<a href="https://juejin.im/post/5b1b45c36fb9a01e5b10f96b" target="_blank" rel="noopener">方法缓存与查找</a>。</p>
+<h3 id="类对象保存属性、实例所能执行的普通方法和所遵守的协议"><a href="#类对象保存属性、实例所能执行的普通方法和所遵守的协议" class="headerlink" title="类对象保存属性、实例所能执行的普通方法和所遵守的协议"></a>类对象保存属性、实例所能执行的普通方法和所遵守的协议</h3><p>接下来就是一个bits，它是class_data_bits_t类型的变量，在讲解这个变量之前，我们先看一个例子:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[@&quot;stringValue&quot;</span><br><span class="line">    writeToFile:@&quot;/file.txt&quot; atomically:YES encoding:NSUTF8StringEncoding error:NULL];</span><br></pre></td></tr></table></figure>
+<p>当字符串实例调用实例方法writeToFile:的时候，这个方法也是存在于内存中的，那么它是在哪里被定义的呢？在没有接触过 runtime 之前，你可能会对此感到疑惑，可能觉得它就是保存在对象里的，也可能觉得它是保存在对象的类中的，或者说根本就没有想法(刚开始我就是一脸懵逼)。我们接下来就来探讨这个问题，首先看对象类型objc_object 结构体。在这结构体中，大部分的函数和变量都是和 ARC 与 isa 有关的，你找了很久也没有找到名称类似的函数和变量。接着我们看objc_class 结构体，因为变量才是保存信息所用的单元，所以我们先看变量。在 objc_class 中，我们讲过了前面几个变量，接着就是要讲class_data_bits_t类型的变量bits。我们在”objc-runtime-new.h”中搜索class_data_bits_t，我们可以看到这个类型的定义:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">struct class_data_bits_t &#123;</span><br><span class="line"></span><br><span class="line">    // Values are the FAST_ flags above.</span><br><span class="line">    uintptr_t bits;</span><br><span class="line">    class_rw_t* data() &#123;</span><br><span class="line">        return (class_rw_t *)(bits &amp; FAST_DATA_MASK);</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们可以看到，我们发现了两个新的类型，分别是uintptr_t和class_rw_t。我们依次查看这两个类型的定义：首先我们使用快捷键 cmd+shift+o 调出快速搜索栏填入uintptr_t。</p>
+<p><img src="/2018/08/15/类和-isa-指针/快速查找uintptr_t.png" alt="image-20180817093327289"></p>
+<p>打开这个文件，你会看到uintptr_t 的定义如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#ifndef _UINTPTR_T</span><br><span class="line">#define _UINTPTR_T</span><br><span class="line">typedef unsigned long		uintptr_t;</span><br><span class="line">#endif /* _UINTPTR_T */</span><br></pre></td></tr></table></figure>
+<p>其实它就是一个长整型的别名，它不保存方法，我们接着看下一个变量类型class_rw_t。</p>
+<p>还是在objc-runtime-new.h 中，搜索class_rw_t，你会看到他的定义如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">struct class_rw_t &#123;</span><br><span class="line">    // Be warned that Symbolication knows the layout of this structure.</span><br><span class="line">    uint32_t flags;</span><br><span class="line">    uint32_t version;</span><br><span class="line"></span><br><span class="line">    const class_ro_t *ro;</span><br><span class="line"></span><br><span class="line">    method_array_t methods;</span><br><span class="line">    property_array_t properties;</span><br><span class="line">    protocol_array_t protocols;</span><br><span class="line"></span><br><span class="line">    Class firstSubclass;</span><br><span class="line">    Class nextSiblingClass;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>首先查看变量，你会惊喜的发现有一个类型为method_array_t的变量methods。这个变量难道就是我们需要找的保存方法的变量？对没错，他就是保存对象方法列表的变量。查看它的定义</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">class method_array_t : </span><br><span class="line">    public list_array_tt&lt;method_t, method_list_t&gt; </span><br><span class="line">&#123;</span><br><span class="line">    typedef list_array_tt&lt;method_t, method_list_t&gt; Super;</span><br><span class="line"></span><br><span class="line"> public:</span><br><span class="line">    method_list_t **beginCategoryMethodLists() &#123;</span><br><span class="line">        return beginLists();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    method_list_t **endCategoryMethodLists(Class cls);</span><br><span class="line"></span><br><span class="line">    method_array_t duplicate() &#123;</span><br><span class="line">        return Super::duplicate&lt;method_array_t&gt;();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>这里有多个新的类型，我们先查看第一个类型list_array_tt。同样的在”objc-runtime-new.h”中搜索list_array_tt，看到其定义如下:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Element, <span class="keyword">typename</span> List&gt;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">list_array_tt</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">array_t</span> &#123;</span></span><br><span class="line">        <span class="keyword">uint32_t</span> count;</span><br><span class="line">        List* lists[<span class="number">0</span>];</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">static</span> size_t <span class="title">byteSize</span><span class="params">(<span class="keyword">uint32_t</span> count)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">sizeof</span>(<span class="keyword">array_t</span>) + count*<span class="keyword">sizeof</span>(lists[<span class="number">0</span>]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">size_t</span> byteSize() &#123;</span><br><span class="line">            <span class="keyword">return</span> byteSize(count);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>有关template 关键字请看<a href="https://blog.csdn.net/hycoldrain/article/details/3716131" target="_blank" rel="noopener">这里</a>，所以我们可以知道，其实method_array_t就是一个二维数组，这个二维数组中保存的就是method_list_t数组，method_list_t数组中保存的是method_t。我们接着查看 method_t。我们继续在”objc-runtime-new.h”中搜索method_t ，我们可以看到 method_t 的定义:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">struct method_t &#123;</span><br><span class="line">    SEL name;</span><br><span class="line">    const char *types;</span><br><span class="line">    IMP imp;</span><br><span class="line"></span><br><span class="line">    struct SortBySELAddress :</span><br><span class="line">        public std::binary_function&lt;const method_t&amp;,</span><br><span class="line">                                    const method_t&amp;, bool&gt;</span><br><span class="line">    &#123;</span><br><span class="line">        bool operator() (const method_t&amp; lhs,</span><br><span class="line">                         const method_t&amp; rhs)</span><br><span class="line">        &#123; return lhs.name &lt; rhs.name; &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>wow，这不就是我们熟知的方法的结构吗！name 是 SEL 类型的表示方法名。imp 是 IMP 类型，表示指向方法的实现地址。<strong>所以，类对象保存着对象所能执行的普通方法。</strong>为什么是普通方法呢，等我们讨论元类的时候再做解释，接下来我们来看它们的定义:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// An opaque type that represents a method selector.</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">objc_selector</span> *<span class="title">SEL</span>;</span></span><br><span class="line"><span class="comment">/// A pointer to the function of a method implementation. </span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> !OBJC_OLD_DISPATCH_PROTOTYPES</span></span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">void</span> <span class="params">(*IMP)</span><span class="params">(<span class="keyword">void</span> <span class="comment">/* id, SEL, ... */</span> )</span></span>; </span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line"><span class="keyword">typedef</span> id _Nullable (*IMP)(id _Nonnull, SEL _Nonnull, ...); </span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+<p>我们先看 IMP，IMP 类型我们根据新的 IMP 定义可以这样理解：<strong>IMP 作为一个指向 “一个拥有 至少一个 id 类型，一个 SEL 类型当作参数并回传不可为空的  id 的函数” 的指针的别名</strong>(如果对 typedef 不太了解的可以看<a href="https://zh.wikipedia.org/wiki/Typedef" target="_blank" rel="noopener">这里</a>)。IMP是最终消息执行所调用的代码，是方法真正实现的代码。</p>
+<p>接着我们看 SEL，SEL 类型是一个指针类型，其内容指向objc_selector。但是在 runtime 源码中找不到其定义，所以我们无法了解到这里面写了什么(但是有兴趣的同学可以看<a href="https://blog.csdn.net/jeffasd/article/details/52084639" target="_blank" rel="noopener">这篇文章</a>所写的内容，这文章中大胆的猜测了objc_selector类型定义)，所以我们没办法知道其具体定义，只知道 <strong>SEL 代表着方法的’’标识符’’</strong>。就像”人民大会堂”这个名字就代表着人民大会堂这个建筑一样。</p>
+<p>如果我们继续观察class_rw_t中的property_array_t类型和protocol_array_t类型，我们会发现这和list_array_tt类似，只不过property_array_t中保存的是<strong>对象所有的属性</strong>，protocol_array_t保存<strong>对象所遵守的协议</strong>。</p>
+<h2 id="元类"><a href="#元类" class="headerlink" title="元类"></a>元类</h2><p>我们在讨论类的时候多次出现了”元类“这个概念，我们说类对象的 isa 指针指向元类。但是什么是元类呢？我们引用<a href="https://zh.wikipedia.org/wiki/%E5%85%83%E7%B1%BB" target="_blank" rel="noopener">维基的释义</a>——<strong>元类</strong>（英语：metaclass）是一种实例是<a href="https://zh.wikipedia.org/wiki/%E7%B1%BB" target="_blank" rel="noopener">类</a>的类。普通的类定义的是特定对象的行为，元类定义的则是特定的类及其对象的行为。</p>
+<p>即：类对象的行为在元类中定义。</p>
+<p>看到这里你可能会感到疑惑：类对象的行为是什么呢？我们看如下例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSString *string = [NSString stringWithFormat:@&quot;%@&quot;,@&quot;class method&quot;];</span><br></pre></td></tr></table></figure>
+<p>我们知道实例对象的方法保存在类对象中，但是上述代码并不是实例对象调用，而是类调用，那么这个方法也是保存在类中的吗？目前我们还不知道答案，但是我们换一个角度思考。类调用方法既是类对象调用方法，按之前我们分析得到的结果：<strong>对象的方法保存在对象所对应的类中</strong>。类一个一个对象，那么其方法必定也保存在类所对应的类中，即：元类中，但是请注意这并不是一个新的结构，只是一个名词而已其结构还是 objc_class。</p>
+<p>元类我们从结构上知道，它也是一个 objc_class 的结构体。所以其中保存着类对象所执行的方法——类方法。既然是元类那么其必定也有 isa 指针，这个指针指向什么呢？请耐心看下去。</p>
+<h2 id="对象和类的继承机构"><a href="#对象和类的继承机构" class="headerlink" title="对象和类的继承机构"></a>对象和类的继承机构</h2><p>普通对象中有 isa 指针指向其类，类对象中也有superclass指向其父类，元类中的 superclass 指针指向的也是其父类，就是元类的父类。元类的父类是什么呢？我们看一张图来了解一下(一图胜千言):</p>
+<p><img src="/2018/08/15/类和-isa-指针/对象和类的结构.jpg" alt="F46657E4-1C70-45F0-A09D-FBC0A20E0C51"></p>
+<p>在这张图中我们可以看到：</p>
+<ul>
+<li><strong>实例对象的 isa 指针指向其类，类的 isa 指针指向元类，元类的 isa 指针指向根元类(即 NSObject 的元类)，根元类的 isa 指针指向自己。</strong></li>
+<li><strong>实例对象的类的 superclass 指向父类，父类的 superclass 指针指向其父类，最终指向 NSObject，NSObject 的 superclass 指针指向 nil。</strong></li>
+<li><strong>元类的superclass 指向其类对象父类的元类，并最终指向 NSObject 类的元类，NSObject 的元类的 isa 指针指向 NSObject。</strong></li>
+</ul>
+<blockquote>
+<p>参考资料:</p>
+<p>浅谈 Objective-C 中的元类 (meta-class):<a href="https://www.jianshu.com/p/79b06fabb459" target="_blank" rel="noopener">https://www.jianshu.com/p/79b06fabb459</a> </p>
+<p>iOS 常见知识点（一）：Runtime：<a href="https://www.jianshu.com/p/965bd18cb056" target="_blank" rel="noopener">https://www.jianshu.com/p/965bd18cb056</a> </p>
+<p>What is a meta-class in Objective-C?：<a href="https://www.cocoawithlove.com/2010/01/what-is-meta-class-in-objective-c.html" target="_blank" rel="noopener">https://www.cocoawithlove.com/2010/01/what-is-meta-class-in-objective-c.html</a></p>
+<p>方法缓存与查找：<a href="https://juejin.im/post/5b1b45c36fb9a01e5b10f96b" target="_blank" rel="noopener">https://juejin.im/post/5b1b45c36fb9a01e5b10f96b</a></p>
+<p>c++模板中的 typename 和 template 关键字用法:<a href="https://blog.csdn.net/hycoldrain/article/details/3716131" target="_blank" rel="noopener">https://blog.csdn.net/hycoldrain/article/details/3716131</a></p>
+<p>OC 中 objc_selector 结构体详解:<a href="https://blog.csdn.net/jeffasd/article/details/52084639" target="_blank" rel="noopener">https://blog.csdn.net/jeffasd/article/details/52084639</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/14/内存管理语义/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -349,6 +534,17 @@
 </ul>
 </li>
 </ul>
+<blockquote>
+<p>参考资料:</p>
+<ul>
+<li>IOS 内存管理机制  <a href="http://blog.devtang.com/2016/07/30/ios-memory-management/" target="_blank" rel="noopener">http://blog.devtang.com/2016/07/30/ios-memory-management/</a> </li>
+<li>IOS 内存管理机制 <a href="http://www.jianshu.com/p/8b1ed04b3ba9" target="_blank" rel="noopener">http://www.jianshu.com/p/8b1ed04b3ba9</a> </li>
+<li>iOS 从创建对象到销毁 <a href="https://juejin.im/entry/58a178060ce463005644ee4a" target="_blank" rel="noopener">https://juejin.im/entry/58a178060ce463005644ee4a</a></li>
+<li>assign，retain，strong，weak，unsafe_unretained，还有copy : <a href="http://www.jianshu.com/p/4a1d1921284b" target="_blank" rel="noopener">http://www.jianshu.com/p/4a1d1921284b</a> </li>
+<li>oc 属性修饰符讲解: <a href="http://rdcworld-iphone.blogspot.in/2012/12/variable-property-attributes-or.html" target="_blank" rel="noopener">http://rdcworld-iphone.blogspot.in/2012/12/variable-property-attributes-or.html</a></li>
+<li>打印引用计数 <a href="http://www.jianshu.com/p/e059a54fb5f3" target="_blank" rel="noopener">http://www.jianshu.com/p/e059a54fb5f3</a></li>
+</ul>
+</blockquote>
 
           
         
@@ -1060,6 +1256,102 @@
 <li>setter=<name>：指定setter 的方法名，这种用法不太常见。</name></li>
 </ul>
 <p>需要注意的是：若是自己来实现这些存取方法，那么应该保证<strong>其具备相关属性所声明的特质</strong>。</p>
+<h2 id="第七条：在对象内部尽量直接访问实例变量"><a href="#第七条：在对象内部尽量直接访问实例变量" class="headerlink" title="第七条：在对象内部尽量直接访问实例变量"></a>第七条：在对象内部尽量直接访问实例变量</h2><p>使用访问方法和使用变量设置值，有如下几个区别：</p>
+<ul>
+<li>又不不经过 Objective-C 的“方法派发”步骤，所以直接访问实例变量的速度当然比较快。在这种情况下，编译器所生成的代码会直接访问保存对象实例变量的那块内存。</li>
+<li>直接访问实例变量时，就绕过了其内存管理语义。例如，在 ARC 下直接访问一个声明为 copy 的属性，那么并不会拷贝该属性，只会保留新值释放旧值。</li>
+<li>若是直接访问实例变量，则不会触发 KVO(键值观察)。</li>
+<li>通过属性来访问有助于错误排查，因为可以在访问方法里添加断点调试。</li>
+</ul>
+<p>要点:</p>
+<ul>
+<li>在对象内部读取数据时，应该直接通过实例变量来读，而写入数据的时候，则应该通过属性来写。</li>
+<li>在某个页面或者程序启动的时候不需要立刻初始化的数据，我们可以使用“懒加载”的方式适时加载。</li>
+</ul>
+<h2 id="第八条：理解“对象等同性”这一概念"><a href="#第八条：理解“对象等同性”这一概念" class="headerlink" title="第八条：理解“对象等同性”这一概念"></a>第八条：理解“对象等同性”这一概念</h2><p>在比较变量或者属性相等的时候我们在其他语言中可能用到的最多的就是==操作符。但是==操作符却有其弊端，即该操作只是比较两个对象的指针本身，而不是对其所指的对象。所以有时候比较出来的结果并不是我们想要的，这时候我们应该使用 NSObject 协议中声明的”isEqual:”方法来判断两个对象的等同性。</p>
+<p>NSObject 协议中有两个用于判断等同性的方法:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">- (BOOL)isEqual:(id)object ;</span><br><span class="line">- (NSUInteger)hash;</span><br></pre></td></tr></table></figure>
+<p>NSObject 类对这两个方法的默认实现是：<strong>当且仅当”指针值”完全相同的时候，才能意味着这两个对象相等</strong>。<strong>如果”isEqual:”方法判断这两个对象相等，那么它们 hash 必定也会返回一个相同的值。但是如果其 hash 值相同的，却并不一定表示它们相等</strong>。</p>
+<p>如下是一个 isEqual 的例子:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">@interface CopyTest : NSObject</span><br><span class="line"></span><br><span class="line">@property (copy,nonatomic) NSMutableString *firstName;</span><br><span class="line">@property (copy,nonatomic) NSString *lastName;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (BOOL)isEqual:(id)object</span><br><span class="line">&#123;</span><br><span class="line">    if (object == self) return true;</span><br><span class="line">    if ([object class] != [self class]) return false;</span><br><span class="line">    CopyTest *anotherObject = (CopyTest *)object;</span><br><span class="line">    </span><br><span class="line">    if (![self.lastName isEqualToString:anotherObject.lastName]) return false;</span><br><span class="line">    else if (![self.firstName isEqualToString:anotherObject.firstName]) return false;</span><br><span class="line">    </span><br><span class="line">    return true;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面说过”isEqual:”相等，则 hash 必定相等。接下来我们就实现 hash。</p>
+<p>hash 有多种实现方式。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">// 第一种:给定一个固定的值</span><br><span class="line">- (NSUInteger)hash</span><br><span class="line">&#123;</span><br><span class="line">    return 1170;</span><br><span class="line">&#125;</span><br><span class="line">// 第二种：将属性都格式化为字符串，然后返回字符串的 hash</span><br><span class="line">- (NSUInteger)hash</span><br><span class="line">&#123;</span><br><span class="line">    NSString *hashString = [NSString stringWithFormat:@&quot;%@%@&quot;,self.firstName,self.lastName];</span><br><span class="line">    return [hashString hash];</span><br><span class="line">&#125;</span><br><span class="line">// 第三种：返回各个属性的 hash，并取其值的异或。</span><br><span class="line">- (NSUInteger)hash</span><br><span class="line">&#123;</span><br><span class="line">    NSUInteger firstNameHash = [_firstName hash];</span><br><span class="line">    NSUInteger lastNameHash = [_lastName hash];</span><br><span class="line">    return firstNameHash ^ lastNameHash;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接下来我们来分析一下这三种做法:</p>
+<p>首先，这三种做法都是可行的做法，但是前两种做法都有其比较大的弊端。第一种：该做法给定一个值，在这种做法中，会对 collection 产生性能问题。<strong>因为 collection 在做哈希表(hash table)索引的时候，会用对象的哈希码做索引。</strong>假如某个 collection 使用 set 来实现的，那么 set 可能会根据哈希码将对象分编到不同的分组上。在向 set 中添加新对象时，要根据其哈希码找到与之对应的数组，遍历数组，依次检查其中各个数据，看数组中是否已经存在有对象和即将加入的对象相等。如果相等，就说明该对象已经添加到 set 中了。由此可见，如果每个对象的 hash 都是固定的一个值，那么在 set 中有10000个此类型对象的时候，set 就会遍历10000次，这会十分消耗性能。</p>
+<p>第二种做法：该做法是符合约定的，但是也有一个十分突出的问题，因为在每次调用这个方法的时候还要承担创建字符串的内存开销，所以比返回单一值要慢，并且将其添加到 collection 中也会产生严重的性能问题。</p>
+<p>第三种做法：取属性的哈希码，这种方法相较于上面两种。既能保持高效率，又能将生成的哈希码限定于一定范围之内。但是此算法生成的哈希码还是会碰撞，不过至少可以保证哈希码有多重可能的取值。</p>
+<h2 id="第九条：以“类族模式”隐藏实现细节"><a href="#第九条：以“类族模式”隐藏实现细节" class="headerlink" title="第九条：以“类族模式”隐藏实现细节"></a>第九条：以“类族模式”隐藏实现细节</h2><p>系统框架中存在着许多的类族。大部分的 collection 类都是类族。例如 NSArray 和其可变版本 NSMutableArray。在使用 NSArray 的 alloc 方法获取实例时，该方法首先会分配一个属于某类的实例，此实例充当为”占位数组”。该数组稍后会转为另一个类的实例，那个类则是 NSArray 的实体子类。</p>
+<p>对类族对象判断类型是否相等要使用方法”isKindOfClass:”。</p>
+<p>要点：</p>
+<ul>
+<li>类族方式将一些实现细节隐藏在一套简单的公共接口后面。</li>
+<li>系统框架经常使用类族。</li>
+<li>从类族的公共基类中继承子类时要当心。</li>
+</ul>
+<h2 id="第十条：在既有类中使用关联对象存放自定义数据"><a href="#第十条：在既有类中使用关联对象存放自定义数据" class="headerlink" title="第十条：在既有类中使用关联对象存放自定义数据"></a>第十条：在既有类中使用关联对象存放自定义数据</h2><table>
+<thead>
+<tr>
+<th style="text-align:center">关联类型</th>
+<th style="text-align:center">等效的@property 属性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">OBJC_ASSOCIATION_ASSIGN</td>
+<td style="text-align:center">assign</td>
+</tr>
+<tr>
+<td style="text-align:center">OBJC_ASSOCIATION_RETAIN_NONATOMIC</td>
+<td style="text-align:center">nontomic,retain</td>
+</tr>
+<tr>
+<td style="text-align:center">OBJC_ASSOCIATION_COPY_NONATOMIC</td>
+<td style="text-align:center">nonatomic,copy</td>
+</tr>
+<tr>
+<td style="text-align:center">OBJC_ASSOCIATION_RETAIN</td>
+<td style="text-align:center">retain</td>
+</tr>
+<tr>
+<td style="text-align:center">OBJC_ASSOCIATION_COPY</td>
+<td style="text-align:center">copy</td>
+</tr>
+</tbody>
+</table>
+<p>可以使用如下方法管理关联对象：</p>
+<ul>
+<li><p>objc_setAssociatedObject(id _Nonnull object, const void * _Nonnull key,</p>
+<p>​                         id _Nullable value, objc_AssociationPolicy policy)</p>
+<p>此方法可以使用给定的键和策略为某对象设置关联对象值。</p>
+</li>
+<li><p>objc_getAssociatedObject(id _Nonnull object, const void * _Nonnull key) </p>
+<p>此方法可以根据给定的值从某对象中去除相应的关联对象值。</p>
+</li>
+<li><p>objc_removeAssociatedObjects(id _Nonnull object) </p>
+<p>为指定类移除全部的关联对象。</p>
+</li>
+</ul>
+<p>我们可以将关联对象想象为是字典对象，存取关联对象值就是对字典对象调用[dictionary setObject:obj forKey:key]和[dictionary objectForKey:key]。两者之间有个重要的区别：设置关联对象时用的键是个”<a href="https://en.wikipedia.org/wiki/Opaque_pointer" target="_blank" rel="noopener">不透明指针</a>“(opaque pointer)。如果在两个键上调用”isEqual:”方法的返回值是 YES，那么字典对象就认为二者相等。然而在关联对象设置值的时候只有在二者必须是完全相同的指针才行。鉴于此，设置关联对象时，通常使用静态全局常量。</p>
+<p>使用示例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">//第一种方式:</span><br><span class="line">- (NSObject *)objc</span><br><span class="line">&#123;</span><br><span class="line">    return objc_getAssociatedObject(self, _cmd);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)setObjc:(NSObject *)objc</span><br><span class="line">&#123;</span><br><span class="line">    objc_setAssociatedObject(self, @selector(objc), objc, OBJC_ASSOCIATION_RETAIN_NONATOMIC);</span><br><span class="line">&#125;</span><br><span class="line">// 第二种方式</span><br><span class="line">static const NSString *objcKey = @&quot;objcKey&quot;;</span><br><span class="line">- (NSObject *)objc</span><br><span class="line">&#123;</span><br><span class="line">    return objc_getAssociatedObject(self, &amp;objcKey);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)setObjc:(NSObject *)objc</span><br><span class="line">&#123;</span><br><span class="line">    objc_setAssociatedObject(self, &amp;objcKey, objc, OBJC_ASSOCIATION_RETAIN_NONATOMIC);</span><br><span class="line">&#125;</span><br><span class="line">// 第三种</span><br><span class="line">- (NSObject *)objc</span><br><span class="line">&#123;</span><br><span class="line">    return objc_getAssociatedObject(self, &quot;objcKey&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)setObjc:(NSObject *)objc</span><br><span class="line">&#123;</span><br><span class="line">    objc_setAssociatedObject(self, &quot;objcKey&quot;, objc, OBJC_ASSOCIATION_RETAIN_NONATOMIC);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意键要确保其唯一性，推荐使用第一种方式。</p>
+<p>要点:</p>
+<ul>
+<li>可以通过”关联对象”机制来吧两个对象连起来。</li>
+<li>定义关联对象可指定内存管理语义，用以模仿定义属性时采用的“拥有关系”与“非拥有关系”。</li>
+<li>只有在其他用法不可用的情况下在能考虑使用关联对象，因为这可能会引入难以查找的 bug。</li>
+</ul>
+<h2 id="第十一条：理解-objc-msgSend-的作用"><a href="#第十一条：理解-objc-msgSend-的作用" class="headerlink" title="第十一条：理解 objc_msgSend 的作用"></a>第十一条：理解 objc_msgSend 的作用</h2><p>消息传递是 Objective-C 中不可或缺的一部分。消息有”名称(name)”或”选择子(selector)”,可以接受参数，而且可能还会有返回值。</p>
+<p>在 C语言中使用“静态绑定”，也就是说在编译期就能决定运行时所调用的函数。并且函数地址实际上是硬编码在指令中的。</p>
+<p>在 Objective-C 中，如果想某对象传递消息，那就会使用动态绑定机制来决定需要调用的方法。在底层，所有方法都是普通的 C语言函数，然而对象在收到消息之后，究竟该调用哪个方法完全是由运行期决定的，甚至可以再运行期改变。</p>
+<p>给对象发送消息可以这样来写:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id resultValue = [someObject messageName : parameter];</span><br></pre></td></tr></table></figure>
+<p>在本例中，someObject 叫做”接收者”,messageName 叫做”选择子(selector)”。选择子和参数合起来成为消息。编译器看到此消息后，会将其转换为标准的 C语言调用，所调用的函数乃是消息传递机制中核心函数，叫做 objc_msgSend,其原型如下:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">objc_msgSend</span><span class="params">(id self , SEL cmd,...)</span></span></span><br></pre></td></tr></table></figure>
+<p>这个是参数个数可变的函数，能够接收两个以上的参数。第一个参数代表接收者，第二个参数代表选择子，后续参数就是消息中的参数，其顺序不变。<strong>选择子指的就是方法的名字</strong>。编译器会把刚才那个例子中的消息转换为如下函数:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id returnValue = objc_msgSend(someObject,@selector(messageName:),parameter);</span><br></pre></td></tr></table></figure>
+<p>objc_msgSend 函数会依据接收者与选择子的类型来调用适当的方法。为了完成此操作，该方法需要在接收者所属的类中搜寻其”方法列表”(关于方法列表请看本文——<a href="/2018/08/15/类和-isa-指针/" title="类和 isa 指针">类和 isa 指针</a>);</p>
 
           
         
@@ -2152,7 +2444,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2165,7 +2457,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">标签</span>
                 
               </div>

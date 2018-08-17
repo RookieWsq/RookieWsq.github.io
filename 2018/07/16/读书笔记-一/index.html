@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="John 的技术博客">
 <meta property="og:description" content="Effective Objective-C 2.0笔记(一)一直在看大神博客，虽然讲的很详细，很透彻，但是对于我而言总是少了一个系统的学习。只是在我脑中是散乱着分布的。我就想找一本书来看看，更加系统的去接触和了解系统底层的一些组成。这次我买的是一本非常受人推崇，并且我自己看了也觉得非常好，非常有深度却又不晦涩的一本书——Effective Objective-C 2.0。 这是记录我自己学习历程的">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-08-14T07:37:58.597Z">
+<meta property="og:updated_time" content="2018-08-15T07:56:41.961Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="读书笔记(一)">
 <meta name="twitter:description" content="Effective Objective-C 2.0笔记(一)一直在看大神博客，虽然讲的很详细，很透彻，但是对于我而言总是少了一个系统的学习。只是在我脑中是散乱着分布的。我就想找一本书来看看，更加系统的去接触和了解系统底层的一些组成。这次我买的是一本非常受人推崇，并且我自己看了也觉得非常好，非常有深度却又不晦涩的一本书——Effective Objective-C 2.0。 这是记录我自己学习历程的">
@@ -395,6 +395,102 @@
 <li>setter=<name>：指定setter 的方法名，这种用法不太常见。</name></li>
 </ul>
 <p>需要注意的是：若是自己来实现这些存取方法，那么应该保证<strong>其具备相关属性所声明的特质</strong>。</p>
+<h2 id="第七条：在对象内部尽量直接访问实例变量"><a href="#第七条：在对象内部尽量直接访问实例变量" class="headerlink" title="第七条：在对象内部尽量直接访问实例变量"></a>第七条：在对象内部尽量直接访问实例变量</h2><p>使用访问方法和使用变量设置值，有如下几个区别：</p>
+<ul>
+<li>又不不经过 Objective-C 的“方法派发”步骤，所以直接访问实例变量的速度当然比较快。在这种情况下，编译器所生成的代码会直接访问保存对象实例变量的那块内存。</li>
+<li>直接访问实例变量时，就绕过了其内存管理语义。例如，在 ARC 下直接访问一个声明为 copy 的属性，那么并不会拷贝该属性，只会保留新值释放旧值。</li>
+<li>若是直接访问实例变量，则不会触发 KVO(键值观察)。</li>
+<li>通过属性来访问有助于错误排查，因为可以在访问方法里添加断点调试。</li>
+</ul>
+<p>要点:</p>
+<ul>
+<li>在对象内部读取数据时，应该直接通过实例变量来读，而写入数据的时候，则应该通过属性来写。</li>
+<li>在某个页面或者程序启动的时候不需要立刻初始化的数据，我们可以使用“懒加载”的方式适时加载。</li>
+</ul>
+<h2 id="第八条：理解“对象等同性”这一概念"><a href="#第八条：理解“对象等同性”这一概念" class="headerlink" title="第八条：理解“对象等同性”这一概念"></a>第八条：理解“对象等同性”这一概念</h2><p>在比较变量或者属性相等的时候我们在其他语言中可能用到的最多的就是==操作符。但是==操作符却有其弊端，即该操作只是比较两个对象的指针本身，而不是对其所指的对象。所以有时候比较出来的结果并不是我们想要的，这时候我们应该使用 NSObject 协议中声明的”isEqual:”方法来判断两个对象的等同性。</p>
+<p>NSObject 协议中有两个用于判断等同性的方法:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">- (BOOL)isEqual:(id)object ;</span><br><span class="line">- (NSUInteger)hash;</span><br></pre></td></tr></table></figure>
+<p>NSObject 类对这两个方法的默认实现是：<strong>当且仅当”指针值”完全相同的时候，才能意味着这两个对象相等</strong>。<strong>如果”isEqual:”方法判断这两个对象相等，那么它们 hash 必定也会返回一个相同的值。但是如果其 hash 值相同的，却并不一定表示它们相等</strong>。</p>
+<p>如下是一个 isEqual 的例子:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">@interface CopyTest : NSObject</span><br><span class="line"></span><br><span class="line">@property (copy,nonatomic) NSMutableString *firstName;</span><br><span class="line">@property (copy,nonatomic) NSString *lastName;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (BOOL)isEqual:(id)object</span><br><span class="line">&#123;</span><br><span class="line">    if (object == self) return true;</span><br><span class="line">    if ([object class] != [self class]) return false;</span><br><span class="line">    CopyTest *anotherObject = (CopyTest *)object;</span><br><span class="line">    </span><br><span class="line">    if (![self.lastName isEqualToString:anotherObject.lastName]) return false;</span><br><span class="line">    else if (![self.firstName isEqualToString:anotherObject.firstName]) return false;</span><br><span class="line">    </span><br><span class="line">    return true;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面说过”isEqual:”相等，则 hash 必定相等。接下来我们就实现 hash。</p>
+<p>hash 有多种实现方式。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">// 第一种:给定一个固定的值</span><br><span class="line">- (NSUInteger)hash</span><br><span class="line">&#123;</span><br><span class="line">    return 1170;</span><br><span class="line">&#125;</span><br><span class="line">// 第二种：将属性都格式化为字符串，然后返回字符串的 hash</span><br><span class="line">- (NSUInteger)hash</span><br><span class="line">&#123;</span><br><span class="line">    NSString *hashString = [NSString stringWithFormat:@&quot;%@%@&quot;,self.firstName,self.lastName];</span><br><span class="line">    return [hashString hash];</span><br><span class="line">&#125;</span><br><span class="line">// 第三种：返回各个属性的 hash，并取其值的异或。</span><br><span class="line">- (NSUInteger)hash</span><br><span class="line">&#123;</span><br><span class="line">    NSUInteger firstNameHash = [_firstName hash];</span><br><span class="line">    NSUInteger lastNameHash = [_lastName hash];</span><br><span class="line">    return firstNameHash ^ lastNameHash;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接下来我们来分析一下这三种做法:</p>
+<p>首先，这三种做法都是可行的做法，但是前两种做法都有其比较大的弊端。第一种：该做法给定一个值，在这种做法中，会对 collection 产生性能问题。<strong>因为 collection 在做哈希表(hash table)索引的时候，会用对象的哈希码做索引。</strong>假如某个 collection 使用 set 来实现的，那么 set 可能会根据哈希码将对象分编到不同的分组上。在向 set 中添加新对象时，要根据其哈希码找到与之对应的数组，遍历数组，依次检查其中各个数据，看数组中是否已经存在有对象和即将加入的对象相等。如果相等，就说明该对象已经添加到 set 中了。由此可见，如果每个对象的 hash 都是固定的一个值，那么在 set 中有10000个此类型对象的时候，set 就会遍历10000次，这会十分消耗性能。</p>
+<p>第二种做法：该做法是符合约定的，但是也有一个十分突出的问题，因为在每次调用这个方法的时候还要承担创建字符串的内存开销，所以比返回单一值要慢，并且将其添加到 collection 中也会产生严重的性能问题。</p>
+<p>第三种做法：取属性的哈希码，这种方法相较于上面两种。既能保持高效率，又能将生成的哈希码限定于一定范围之内。但是此算法生成的哈希码还是会碰撞，不过至少可以保证哈希码有多重可能的取值。</p>
+<h2 id="第九条：以“类族模式”隐藏实现细节"><a href="#第九条：以“类族模式”隐藏实现细节" class="headerlink" title="第九条：以“类族模式”隐藏实现细节"></a>第九条：以“类族模式”隐藏实现细节</h2><p>系统框架中存在着许多的类族。大部分的 collection 类都是类族。例如 NSArray 和其可变版本 NSMutableArray。在使用 NSArray 的 alloc 方法获取实例时，该方法首先会分配一个属于某类的实例，此实例充当为”占位数组”。该数组稍后会转为另一个类的实例，那个类则是 NSArray 的实体子类。</p>
+<p>对类族对象判断类型是否相等要使用方法”isKindOfClass:”。</p>
+<p>要点：</p>
+<ul>
+<li>类族方式将一些实现细节隐藏在一套简单的公共接口后面。</li>
+<li>系统框架经常使用类族。</li>
+<li>从类族的公共基类中继承子类时要当心。</li>
+</ul>
+<h2 id="第十条：在既有类中使用关联对象存放自定义数据"><a href="#第十条：在既有类中使用关联对象存放自定义数据" class="headerlink" title="第十条：在既有类中使用关联对象存放自定义数据"></a>第十条：在既有类中使用关联对象存放自定义数据</h2><table>
+<thead>
+<tr>
+<th style="text-align:center">关联类型</th>
+<th style="text-align:center">等效的@property 属性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">OBJC_ASSOCIATION_ASSIGN</td>
+<td style="text-align:center">assign</td>
+</tr>
+<tr>
+<td style="text-align:center">OBJC_ASSOCIATION_RETAIN_NONATOMIC</td>
+<td style="text-align:center">nontomic,retain</td>
+</tr>
+<tr>
+<td style="text-align:center">OBJC_ASSOCIATION_COPY_NONATOMIC</td>
+<td style="text-align:center">nonatomic,copy</td>
+</tr>
+<tr>
+<td style="text-align:center">OBJC_ASSOCIATION_RETAIN</td>
+<td style="text-align:center">retain</td>
+</tr>
+<tr>
+<td style="text-align:center">OBJC_ASSOCIATION_COPY</td>
+<td style="text-align:center">copy</td>
+</tr>
+</tbody>
+</table>
+<p>可以使用如下方法管理关联对象：</p>
+<ul>
+<li><p>objc_setAssociatedObject(id _Nonnull object, const void * _Nonnull key,</p>
+<p>​                         id _Nullable value, objc_AssociationPolicy policy)</p>
+<p>此方法可以使用给定的键和策略为某对象设置关联对象值。</p>
+</li>
+<li><p>objc_getAssociatedObject(id _Nonnull object, const void * _Nonnull key) </p>
+<p>此方法可以根据给定的值从某对象中去除相应的关联对象值。</p>
+</li>
+<li><p>objc_removeAssociatedObjects(id _Nonnull object) </p>
+<p>为指定类移除全部的关联对象。</p>
+</li>
+</ul>
+<p>我们可以将关联对象想象为是字典对象，存取关联对象值就是对字典对象调用[dictionary setObject:obj forKey:key]和[dictionary objectForKey:key]。两者之间有个重要的区别：设置关联对象时用的键是个”<a href="https://en.wikipedia.org/wiki/Opaque_pointer" target="_blank" rel="noopener">不透明指针</a>“(opaque pointer)。如果在两个键上调用”isEqual:”方法的返回值是 YES，那么字典对象就认为二者相等。然而在关联对象设置值的时候只有在二者必须是完全相同的指针才行。鉴于此，设置关联对象时，通常使用静态全局常量。</p>
+<p>使用示例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">//第一种方式:</span><br><span class="line">- (NSObject *)objc</span><br><span class="line">&#123;</span><br><span class="line">    return objc_getAssociatedObject(self, _cmd);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)setObjc:(NSObject *)objc</span><br><span class="line">&#123;</span><br><span class="line">    objc_setAssociatedObject(self, @selector(objc), objc, OBJC_ASSOCIATION_RETAIN_NONATOMIC);</span><br><span class="line">&#125;</span><br><span class="line">// 第二种方式</span><br><span class="line">static const NSString *objcKey = @&quot;objcKey&quot;;</span><br><span class="line">- (NSObject *)objc</span><br><span class="line">&#123;</span><br><span class="line">    return objc_getAssociatedObject(self, &amp;objcKey);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)setObjc:(NSObject *)objc</span><br><span class="line">&#123;</span><br><span class="line">    objc_setAssociatedObject(self, &amp;objcKey, objc, OBJC_ASSOCIATION_RETAIN_NONATOMIC);</span><br><span class="line">&#125;</span><br><span class="line">// 第三种</span><br><span class="line">- (NSObject *)objc</span><br><span class="line">&#123;</span><br><span class="line">    return objc_getAssociatedObject(self, &quot;objcKey&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)setObjc:(NSObject *)objc</span><br><span class="line">&#123;</span><br><span class="line">    objc_setAssociatedObject(self, &quot;objcKey&quot;, objc, OBJC_ASSOCIATION_RETAIN_NONATOMIC);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意键要确保其唯一性，推荐使用第一种方式。</p>
+<p>要点:</p>
+<ul>
+<li>可以通过”关联对象”机制来吧两个对象连起来。</li>
+<li>定义关联对象可指定内存管理语义，用以模仿定义属性时采用的“拥有关系”与“非拥有关系”。</li>
+<li>只有在其他用法不可用的情况下在能考虑使用关联对象，因为这可能会引入难以查找的 bug。</li>
+</ul>
+<h2 id="第十一条：理解-objc-msgSend-的作用"><a href="#第十一条：理解-objc-msgSend-的作用" class="headerlink" title="第十一条：理解 objc_msgSend 的作用"></a>第十一条：理解 objc_msgSend 的作用</h2><p>消息传递是 Objective-C 中不可或缺的一部分。消息有”名称(name)”或”选择子(selector)”,可以接受参数，而且可能还会有返回值。</p>
+<p>在 C语言中使用“静态绑定”，也就是说在编译期就能决定运行时所调用的函数。并且函数地址实际上是硬编码在指令中的。</p>
+<p>在 Objective-C 中，如果想某对象传递消息，那就会使用动态绑定机制来决定需要调用的方法。在底层，所有方法都是普通的 C语言函数，然而对象在收到消息之后，究竟该调用哪个方法完全是由运行期决定的，甚至可以再运行期改变。</p>
+<p>给对象发送消息可以这样来写:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id resultValue = [someObject messageName : parameter];</span><br></pre></td></tr></table></figure>
+<p>在本例中，someObject 叫做”接收者”,messageName 叫做”选择子(selector)”。选择子和参数合起来成为消息。编译器看到此消息后，会将其转换为标准的 C语言调用，所调用的函数乃是消息传递机制中核心函数，叫做 objc_msgSend,其原型如下:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">objc_msgSend</span><span class="params">(id self , SEL cmd,...)</span></span></span><br></pre></td></tr></table></figure>
+<p>这个是参数个数可变的函数，能够接收两个以上的参数。第一个参数代表接收者，第二个参数代表选择子，后续参数就是消息中的参数，其顺序不变。<strong>选择子指的就是方法的名字</strong>。编译器会把刚才那个例子中的消息转换为如下函数:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id returnValue = objc_msgSend(someObject,@selector(messageName:),parameter);</span><br></pre></td></tr></table></figure>
+<p>objc_msgSend 函数会依据接收者与选择子的类型来调用适当的方法。为了完成此操作，该方法需要在接收者所属的类中搜寻其”方法列表”(关于方法列表请看本文——<a href="/2018/08/15/类和-isa-指针/" title="类和 isa 指针">类和 isa 指针</a>);</p>
 
       
     </div>
@@ -514,7 +610,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -527,7 +623,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">标签</span>
                 
               </div>
@@ -560,7 +656,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Effective-Objective-C-2-0笔记-一"><span class="nav-number">1.</span> <span class="nav-text">Effective Objective-C 2.0笔记(一)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第一章熟悉-Objective-C"><span class="nav-number"></span> <span class="nav-text">第一章熟悉 Objective-C</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#第一条：了解-Objective-C-语言的起源"><span class="nav-number">1.</span> <span class="nav-text">第一条：了解 Objective-C 语言的起源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第二条：在类的头文件中尽量少引入其他头文件"><span class="nav-number">2.</span> <span class="nav-text">第二条：在类的头文件中尽量少引入其他头文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第三条：多用字面量语法少用与之等价的方法"><span class="nav-number">3.</span> <span class="nav-text">第三条：多用字面量语法少用与之等价的方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第四条：多用类型常量，少用-define-预处理指令"><span class="nav-number">4.</span> <span class="nav-text">第四条：多用类型常量，少用#define 预处理指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第五条：用枚举表示状态、选项、状态码"><span class="nav-number">5.</span> <span class="nav-text">第五条：用枚举表示状态、选项、状态码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#对象、消息、运行期"><span class="nav-number"></span> <span class="nav-text">对象、消息、运行期</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#第六条：理解“属性”这一概念"><span class="nav-number">1.</span> <span class="nav-text">第六条：理解“属性”这一概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#属性性质"><span class="nav-number">1.1.</span> <span class="nav-text">属性性质</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#原子性"><span class="nav-number">1.1.1.</span> <span class="nav-text">原子性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#读-写权限"><span class="nav-number">1.1.2.</span> <span class="nav-text">读/写权限</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内存管理语义"><span class="nav-number">1.1.3.</span> <span class="nav-text">内存管理语义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#方法名"><span class="nav-number">1.1.4.</span> <span class="nav-text">方法名</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Effective-Objective-C-2-0笔记-一"><span class="nav-number">1.</span> <span class="nav-text">Effective Objective-C 2.0笔记(一)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第一章熟悉-Objective-C"><span class="nav-number"></span> <span class="nav-text">第一章熟悉 Objective-C</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#第一条：了解-Objective-C-语言的起源"><span class="nav-number">1.</span> <span class="nav-text">第一条：了解 Objective-C 语言的起源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第二条：在类的头文件中尽量少引入其他头文件"><span class="nav-number">2.</span> <span class="nav-text">第二条：在类的头文件中尽量少引入其他头文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第三条：多用字面量语法少用与之等价的方法"><span class="nav-number">3.</span> <span class="nav-text">第三条：多用字面量语法少用与之等价的方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第四条：多用类型常量，少用-define-预处理指令"><span class="nav-number">4.</span> <span class="nav-text">第四条：多用类型常量，少用#define 预处理指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第五条：用枚举表示状态、选项、状态码"><span class="nav-number">5.</span> <span class="nav-text">第五条：用枚举表示状态、选项、状态码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#对象、消息、运行期"><span class="nav-number"></span> <span class="nav-text">对象、消息、运行期</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#第六条：理解“属性”这一概念"><span class="nav-number">1.</span> <span class="nav-text">第六条：理解“属性”这一概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#属性性质"><span class="nav-number">1.1.</span> <span class="nav-text">属性性质</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#原子性"><span class="nav-number">1.1.1.</span> <span class="nav-text">原子性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#读-写权限"><span class="nav-number">1.1.2.</span> <span class="nav-text">读/写权限</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内存管理语义"><span class="nav-number">1.1.3.</span> <span class="nav-text">内存管理语义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#方法名"><span class="nav-number">1.1.4.</span> <span class="nav-text">方法名</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第七条：在对象内部尽量直接访问实例变量"><span class="nav-number">2.</span> <span class="nav-text">第七条：在对象内部尽量直接访问实例变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第八条：理解“对象等同性”这一概念"><span class="nav-number">3.</span> <span class="nav-text">第八条：理解“对象等同性”这一概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第九条：以“类族模式”隐藏实现细节"><span class="nav-number">4.</span> <span class="nav-text">第九条：以“类族模式”隐藏实现细节</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第十条：在既有类中使用关联对象存放自定义数据"><span class="nav-number">5.</span> <span class="nav-text">第十条：在既有类中使用关联对象存放自定义数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第十一条：理解-objc-msgSend-的作用"><span class="nav-number">6.</span> <span class="nav-text">第十一条：理解 objc_msgSend 的作用</span></a></li></ol></div>
             
 
           </div>
