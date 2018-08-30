@@ -87,10 +87,12 @@
 <meta property="og:site_name" content="John 的技术博客">
 <meta property="og:description" content="Effective Objective-C 2.0笔记(一)一直在看大神博客，虽然讲的很详细，很透彻，但是对于我而言总是少了一个系统的学习。只是在我脑中是散乱着分布的。我就想找一本书来看看，更加系统的去接触和了解系统底层的一些组成。这次我买的是一本非常受人推崇，并且我自己看了也觉得非常好，非常有深度却又不晦涩的一本书——Effective Objective-C 2.0。 这是记录我自己学习历程的">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-08-15T07:56:41.961Z">
+<meta property="og:image" content="http://yoursite.com/2018/07/16/读书笔记-一/消息转发全流程.png">
+<meta property="og:updated_time" content="2018-08-30T07:14:04.662Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="读书笔记(一)">
 <meta name="twitter:description" content="Effective Objective-C 2.0笔记(一)一直在看大神博客，虽然讲的很详细，很透彻，但是对于我而言总是少了一个系统的学习。只是在我脑中是散乱着分布的。我就想找一本书来看看，更加系统的去接触和了解系统底层的一些组成。这次我买的是一本非常受人推崇，并且我自己看了也觉得非常好，非常有深度却又不晦涩的一本书——Effective Objective-C 2.0。 这是记录我自己学习历程的">
+<meta name="twitter:image" content="http://yoursite.com/2018/07/16/读书笔记-一/消息转发全流程.png">
 
 
 
@@ -302,7 +304,7 @@
       
         <h2 id="Effective-Objective-C-2-0笔记-一"><a href="#Effective-Objective-C-2-0笔记-一" class="headerlink" title="Effective Objective-C 2.0笔记(一)"></a>Effective Objective-C 2.0笔记(一)</h2><p>一直在看大神博客，虽然讲的很详细，很透彻，但是对于我而言总是少了一个系统的学习。只是在我脑中是散乱着分布的。我就想找一本书来看看，更加系统的去接触和了解系统底层的一些组成。这次我买的是一本非常受人推崇，并且我自己看了也觉得非常好，非常有深度却又不晦涩的一本书——<code>Effective Objective-C 2.0</code>。</p>
 <p>这是记录我自己学习历程的一篇文章,希望我能够在技术这条路上越走越远。</p>
-<h1 id="第一章熟悉-Objective-C"><a href="#第一章熟悉-Objective-C" class="headerlink" title="第一章熟悉 Objective-C"></a>第一章熟悉 Objective-C</h1><h2 id="第一条：了解-Objective-C-语言的起源"><a href="#第一条：了解-Objective-C-语言的起源" class="headerlink" title="第一条：了解 Objective-C 语言的起源"></a>第一条：了解 Objective-C 语言的起源</h2><p><code>Objective-C</code> 使用的是<code>消息结构(messaging structure)</code>而非<code>函数调用(function calling)</code>。</p>
+<h1 id="第一章：熟悉-Objective-C"><a href="#第一章：熟悉-Objective-C" class="headerlink" title="第一章：熟悉 Objective-C"></a>第一章：熟悉 Objective-C</h1><h2 id="第一条：了解-Objective-C-语言的起源"><a href="#第一条：了解-Objective-C-语言的起源" class="headerlink" title="第一条：了解 Objective-C 语言的起源"></a>第一条：了解 Objective-C 语言的起源</h2><p><code>Objective-C</code> 使用的是<code>消息结构(messaging structure)</code>而非<code>函数调用(function calling)</code>。</p>
 <p>首先让我们了解消息结构和函数调用的含义。</p>
 <p><strong><code>消息结构(messaging structure)</code>:使用消息结构的语言其执行的代码是由运行时环境所决定。所以消息结构是动态语言，只有在运行时才知道调用了那个方法函数。所以消息结构语言的多态也只有在运行时才回去查找所要执行的方法，实际上编译器甚至不关心执行方法的对象是何种类型，收到消息的对象问题也需要在运行时处理，其过程叫做<code>动态绑定(dynamic binding)</code>。</strong></p>
 <p><strong><code>函数调用(function calling)</code>:使用函数调用的语言其执行的代码是由编译器决定的，并且如果函数是多态的，那么在运行时需要按照“<code>虚方法表(virtual table)</code>来查出到底要执行那个函数。”</strong></p>
@@ -363,7 +365,7 @@
 <li>使用 NS_ENUM 和 NS_OPTIONS 宏来定义枚举类型，并指明其底层数据类型。这样做可以确保枚举是使用开发者所选的底层数据类型实现出来的，而不会采用编译器所所选的类型。</li>
 <li>在处理枚举类型的 switch 选项中，不要实现 default 分支。这样的话再加入新枚举状态的时候就会通知给开发者：switch 语句并未处理所有枚举。</li>
 </ul>
-<h1 id="对象、消息、运行期"><a href="#对象、消息、运行期" class="headerlink" title="对象、消息、运行期"></a>对象、消息、运行期</h1><p><strong>“对象”就是”基本构造单元”(buliding block)</strong>，开发者可以通过对象来储存并传递数据。<strong>在对象之间传递并执行任务的过程就叫做消息传递。</strong></p>
+<h1 id="第二章：对象、消息、运行期"><a href="#第二章：对象、消息、运行期" class="headerlink" title="第二章：对象、消息、运行期"></a>第二章：对象、消息、运行期</h1><p><strong>“对象”就是”基本构造单元”(buliding block)</strong>，开发者可以通过对象来储存并传递数据。<strong>在对象之间传递并执行任务的过程就叫做消息传递。</strong></p>
 <p><strong>当程序运行起来之后，为其提供相关支持的代码就叫做“Objective-C 运行时环境”。</strong>它提供了一些使得对象之间能够传递消息的重要函数，并且包含创建类实例所用的全部逻辑。</p>
 <h2 id="第六条：理解“属性”这一概念"><a href="#第六条：理解“属性”这一概念" class="headerlink" title="第六条：理解“属性”这一概念"></a>第六条：理解“属性”这一概念</h2><p>Objective-C 对象通常会把其所需要的数据保存成为各种实例变量。实例变量一般通过”读取方法”(access method)来访问。</p>
 <p>下述代码是声明实例变量的一种方式:</p>
@@ -461,8 +463,8 @@
 <p>可以使用如下方法管理关联对象：</p>
 <ul>
 <li><p>objc_setAssociatedObject(id _Nonnull object, const void * _Nonnull key,</p>
-<p>​                         id _Nullable value, objc_AssociationPolicy policy)</p>
-<p>此方法可以使用给定的键和策略为某对象设置关联对象值。</p>
+<pre><code>id _Nullable value, objc_AssociationPolicy policy)
+</code></pre><p>此方法可以使用给定的键和策略为某对象设置关联对象值。</p>
 </li>
 <li><p>objc_getAssociatedObject(id _Nonnull object, const void * _Nonnull key) </p>
 <p>此方法可以根据给定的值从某对象中去除相应的关联对象值。</p>
@@ -490,8 +492,113 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">objc_msgSend</span><span class="params">(id self , SEL cmd,...)</span></span></span><br></pre></td></tr></table></figure>
 <p>这个是参数个数可变的函数，能够接收两个以上的参数。第一个参数代表接收者，第二个参数代表选择子，后续参数就是消息中的参数，其顺序不变。<strong>选择子指的就是方法的名字</strong>。编译器会把刚才那个例子中的消息转换为如下函数:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id returnValue = objc_msgSend(someObject,@selector(messageName:),parameter);</span><br></pre></td></tr></table></figure>
-<p>objc_msgSend 函数会依据接收者与选择子的类型来调用适当的方法。为了完成此操作，该方法需要在接收者所属的类中搜寻其”方法列表”(关于方法列表请看本文——<a href="/2018/08/15/类和-isa-指针/" title="类和 isa 指针">类和 isa 指针</a>);</p>
-
+<p>objc_msgSend 函数会依据接收者与选择子的类型来调用适当的方法。为了完成此操作，该方法需要在接收者所属的类中搜寻其”方法列表”(关于方法列表请看本文——<a href="/2018/08/15/类和-isa-指针/" title="类和 isa 指针">类和 isa 指针</a>)，如果能找得到与选择子名称相符的方法，就跳转至实现代码。若是找不到相符的方法，那就沿着继承体系继续向上查找，等找到合适的方法后再跳转。如果最终还是找不到相符的方法，那就执行“消息转发”(message forwrarding)操作。消息跳转会在第十二条中详解。</p>
+<p>这么说来，想要调用一个方法是有很多个步骤的。<strong>所幸objc_msgSend 会将匹配结果缓存到”快速映射表”中，每个类都有这样一块缓存</strong>，若是稍后还向该类发送与选择子相同的消息，那么执行就会快了。</p>
+<p>上面讲的就是部分的消息调用过程，还有一些特殊情况需要运行时的其他函数来处理:</p>
+<ul>
+<li>objc_msgSend_stret：若是消息返回的结构体，则由此函数处理。只有将CPU 寄存器能够容纳消息返回的类型时，才能处理此消息。若是返回值无法容纳于寄存器(例如返回的结构体太大了)，那么就由另一个函数执行派发。此时，那个函数会通过分配在栈上的某个变量来处理消息所返回的结构体。</li>
+<li>objc_msgSend_fpret：如果消息返回的是浮点数，那么将交由此函数处理。在某些架构的的 CPU 中调用函数时，需要对“浮点寄存器”做特殊处理，也就是说，通常所用的 objc_msgSend 在这中情况下并不合适。这个函数是为了处理 x86等架构 CPU 中某些令人稍觉惊讶的情况。</li>
+<li>objc_msgSendSuper：如果需要给超类发送消息，例如:[super message:parameter]，那么就交由此函数处理。也有另外两个与 objc_msgSend_stret和objc_msgSend_fpret等效的函数，用于给 super 发送相应的消息。</li>
+</ul>
+<p>每一个Objective-C 对象的每一个方法都可以视为简单的函数，其原型如下:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;return_type&gt; Class_selector(id self , SEL _cmd , ...)</span><br></pre></td></tr></table></figure>
+<p>要点:</p>
+<ul>
+<li>消息由接收者、选择子和参数构成。给对象”发送消息”也就相当于在该对象上”调用方法”。</li>
+<li>给对象发送全部的消息都要经过“动态消息派发系统”来处理，该系统会查出对应的方法，并执行其代码。</li>
+</ul>
+<h2 id="第十二条：理解消息转发机制"><a href="#第十二条：理解消息转发机制" class="headerlink" title="第十二条：理解消息转发机制"></a>第十二条：理解消息转发机制</h2><p>第十一条讲的是对象的消息传递机制，而本条要讲解的是<strong>对象收到无法解读的消息会如何处理</strong>。</p>
+<p>在编译期向类发送其无法解读的消息并不会报错，因为运行时的强大特性允许它能够在运行期添加方法。<strong>当对象接收到无法解读的消息后，就会启动“消息转发”机制</strong>。</p>
+<p>消息转发分为两大阶段。<strong>第一阶段先征询接收者所属的类，看其是否能动态添加方法</strong>，以处理当前这个“未知的选择子”，这叫做”动态方法解析“。<strong>第二阶段涉及”完整的消息转发机制“</strong>。如果运行期系统已经把第一阶段执行完毕，那么接收者自己就无法再以动态新增方法的手段来响应包含该选择子的消息了。此时运行期系统会请求接收者以其他手段来处理与消息相关的方法调用。<strong>这里又细分为两小步</strong>。首先接收者看看有没有其他对象能够处理这条消息。若有，则运行期系统会把消息交给那个对象来处理，于是消息转发过程结束，一切如常。若没有”备援的接收者“，则启动完整的消息转发机制，运行期系统会把与消息有关的全部细节都封装到 NSInvocation 对象中，再给接收者最后一次机会令其设法解决当前还未处理的这条消息。</p>
+<h3 id="动态方法解析"><a href="#动态方法解析" class="headerlink" title="动态方法解析"></a>动态方法解析</h3><p>对象在接收到无法解析的消息时，会调用所在类的下列类方法:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">+ (BOOL)resolveInstanceMethod:(SEL)sel</span><br></pre></td></tr></table></figure>
+<p>首先我们看苹果官方的解释:<code>Dynamically provides an implementation for a given selector for an instance method</code>。就是动态的为给定的选择子提供实现。该方法的返回值是一个 BOOL 类型，表示该类能否新增一个实例方法来处理此选择子。而其参数是 SEL 类型，就是代表那个无法解析的消息。再继续往下执行转发机制之前，本类有机会新增一个处理此选择子的方法。若尚未实现的方法是类方法则会调用下方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">+ (BOOL)resolveClassMethod:(SEL)sel;</span><br></pre></td></tr></table></figure>
+<h3 id="备援接收者"><a href="#备援接收者" class="headerlink" title="备援接收者"></a>备援接收者</h3><p>若是在上一步中无法处理未知的消息，则还会有第二次机会处理未知的选择子，在这一步系统会问它：能否将此消息转给其他接收者来处理。该步骤对应的处理方法如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (id)forwardingTargetForSelector:(SEL)aSelector;</span><br></pre></td></tr></table></figure>
+<p>首先我们看苹果官方文档的解释:<code>Returns the object to which unrecognized messages should first be directed</code>。中文解释为:返回未知消息首先要执行的对象。该方法的参数表示未知的方法，若有备援对象可以处理此未知方法，则返回该对象，否则返回 nil。通过此方案，我们可以”模拟“出“多继承”的某些特性。</p>
+<h3 id="完整的消息转发"><a href="#完整的消息转发" class="headerlink" title="完整的消息转发"></a>完整的消息转发</h3><p>如果转发算法已经进行到了这一步，那么唯一能做的就是启用完整的消息转发机制了。<strong>首先创建 NSInvocation 对象，把与尚未处理的那条消息有关的全部细节都封装于其中。包括此对象的选择子、目标以及参数。在触发 NSInvocation 对象时，“消息派发系统”将亲自出马，把消息指派给目标对象。</strong></p>
+<p>此步骤会调用如下方法来转发消息:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (void)forwardInvocation:(NSInvocation *)anInvocation</span><br></pre></td></tr></table></figure>
+<p>来自苹果官方的解释:<code>Overridden by subclasses to forward messages to other objects</code>。中文释义：由子类重写以将消息转发到其他对象。</p>
+<p>这个方法很简单，只需要改变调用目标，使消息在新对象上得以调用即可。然而这样实现出来的方法与“备援接收者”方法所实现的方法等效，所以很少有人采用这么简单的实现方式。比较有用的实现方式为<strong>：在触发消息之前，先以某种方式改变消息内容，比如是追加另外一个参数或者是改换选择子</strong>等等。</p>
+<p>实现该方法时，若是发现某调用操作不应由本类处理，则需要调用超类的同名方法。这样的话集成体系中的每一个类都有机会处理此调用请求，直至 NSObject。到最后如果调用了 NSObject 类的方法，那么该方法还会继续调用“doesNotRecognizeSelector:”以抛出异常，此异常表明选择子最终未能得到处理。</p>
+<h3 id="消息转发全流程"><a href="#消息转发全流程" class="headerlink" title="消息转发全流程"></a>消息转发全流程</h3><p>下图描述了消息转发机制处理消息的各个步骤。</p>
+<p><img src="/2018/07/16/读书笔记-一/消息转发全流程.png" alt="消息转发全流程"></p>
+<p>接收者在每一步中均有机会处理消息。步骤越往后，处理的代价就越大。最好能在第一步就处理完，这样的话运行期系统就能够将此方法缓存起来。如果这个类的实例稍后还接收到同名的选择子，那么根本无需启动消息转发机流程。若想在第三部将消息转发给备援的接收者，还不如把转发步骤放在第二步。因为第三步只是修改了调用目标，这项改动放在第二部会更加简单，不然的话，还得创建并处理完整的 NSInvocation。</p>
+<p>要点：</p>
+<ul>
+<li>若对象无法响应某个选择子，则进入消息转发流程。</li>
+<li>通过运行期的动态解析功能，沃恩可以在需要用到某个方法时再将其加入类中。</li>
+<li>对象可以将某些无法解读的选择子交给其他对象来处理。</li>
+<li>经过上述两步骤若是还无法处理选择子，则启动完整的消息转发机制。</li>
+</ul>
+<h3 id="第十三条：用“方法调配技术”调试“黑盒方法”"><a href="#第十三条：用“方法调配技术”调试“黑盒方法”" class="headerlink" title="第十三条：用“方法调配技术”调试“黑盒方法”"></a>第十三条：用“方法调配技术”调试“黑盒方法”</h3><p>第十一条中我们讲到：<strong>Objective-C 对象收到消息后，究竟会调用那个方法是在运行期才能解析出来的</strong>。所以给定选择子的方法实现也可以在运行期改变。此方案被称为“方法调配”(method swizzling)。</p>
+<p>类的方法列表会把选择子的名称映射到相关的方法实现上，使得“动态消息派发系统”能够据此找到应该调用的方法。这些方法均已函数指针的形式来表示，这种指针叫做 IMP，其原型如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">typedef struct objc_selector *SEL;</span><br></pre></td></tr></table></figure>
+<p>本条将会谈到如何呼唤两个方法的实现。想交换方法实现，可使用下列函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">method_exchangeImplementations</span><span class="params">(Method _Nonnull m1, Method _Nonnull m2)</span></span></span><br></pre></td></tr></table></figure>
+<p>此方法的两个参数表示待交换的两个方法实现，而方法实现可以通过下列函数获得：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Method _Nullable</span><br><span class="line">class_getInstanceMethod(Class _Nullable cls, SEL _Nonnull name)</span><br></pre></td></tr></table></figure>
+<p>我们开始试验一下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line"></span><br><span class="line">    Method methodA = class_getInstanceMethod([self class], @selector(methodA));</span><br><span class="line">    Method methodB = class_getInstanceMethod([self class], @selector(methodB));</span><br><span class="line"></span><br><span class="line">    method_exchangeImplementations(methodA, methodB);</span><br><span class="line">    </span><br><span class="line">    [self methodA];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)methodA</span><br><span class="line">&#123;</span><br><span class="line">    NSLog(@&quot;----------------------A-------------------&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)methodB</span><br><span class="line">&#123;</span><br><span class="line">    NSLog(@&quot;----------------------B-------------------&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出结果:</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2018</span>-08-<span class="number">29</span> <span class="number">17</span><span class="symbol">:</span><span class="number">13</span><span class="symbol">:</span><span class="number">07</span>.<span class="number">129774</span>+080<span class="number">0</span> sadada[<span class="number">6685</span><span class="symbol">:</span><span class="number">340152</span>] ----------------------B-------------------</span><br></pre></td></tr></table></figure>
+<p>这个是对自定义的类进行方法实现交换的例子。如果要对系统类进行方法交换应该如何去做呢？首先，如果是两个系统类的方法，只需要直接调用<code>method_exchangeImplementations</code>即可，如果是要使用自定义方法来替换系统方法，只需要给系统类添加一个 “分类”(Category)中添加自定义方法，然后交换这两个方法的实现即可。</p>
+<p>要点:</p>
+<ul>
+<li>在运行期可以向类中新增或者替换选择子所对应的方法实现。</li>
+<li>使用另一份实现来替换原有的方法实现，这叫做“方法调配”。</li>
+<li>一般来说，只有调试程序的时候才需要在运行期修改方法实现，不宜滥用。</li>
+</ul>
+<h2 id="第十四条：理解“类对象”的用意"><a href="#第十四条：理解“类对象”的用意" class="headerlink" title="第十四条：理解“类对象”的用意"></a>第十四条：理解“类对象”的用意</h2><p>消息的接收者究竟是何物？是对象本身吗？运行期系统如何知道某个对象的类型呢？<strong>对象类型并非是编译期便绑定好的，而是在运行期的时候动态查询的</strong>。而且有一个特殊的类型叫做 <code>id</code>，它能够指代任何的 Objective-C 对象类型，并且编译器假定<code>id</code>类型能够响应所有的消息。</p>
+<p>“在运行期检视对象类型”这一操作又叫做“类型信息查询”(内省)。这个强大并且有用的特性是内置于 Foundation 框架的 NSObject 协议里的，凡是由公共根类(即 NSObject 和 NSProxy)继承而来的对象都要遵守此协议。</p>
+<p>关于什么是类对象可以查看我的这篇文章——<a href="/2018/08/15/类和-isa-指针/" title="类和 isa 指针">类和 isa 指针</a>。</p>
+<h3 id="在类集成体系中查询类型信息"><a href="#在类集成体系中查询类型信息" class="headerlink" title="在类集成体系中查询类型信息"></a>在类集成体系中查询类型信息</h3><p>由于 ios 中存在着大量的类族，所以不能简单的用”==”操作符判断对象类型，而是应该用如下两个方法来判断：</p>
+<p>判断是否是某个特定类的实例:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (BOOL)isMemberOfClass:(Class)aClass;</span><br></pre></td></tr></table></figure>
+<p>判断是否是某个特定类或者其子类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (BOOL)isKindOfClass:(Class)aClass;</span><br></pre></td></tr></table></figure>
+<p>判断某个类是否是特定的类或者其子类:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">+ (BOOL)isSubclassOfClass:(Class)aClass;</span><br></pre></td></tr></table></figure>
+<p>要点:</p>
+<ul>
+<li>每个实例都有一个指向 Class 对象，以表明其类型，而这些 Class 对象则构成了类的继承体系。</li>
+<li>如果对象类型无法在编译期确定，则就应该使用类型信息查询方法来探知。</li>
+<li>尽量使用类型信息查询方法来确定对象类型，而不要直接比较类对象，因为某些类对象可能实现了消息转发功能。</li>
+</ul>
+<h1 id="第三章：接口与-API-设计"><a href="#第三章：接口与-API-设计" class="headerlink" title="第三章：接口与 API 设计"></a>第三章：接口与 API 设计</h1><h2 id="第十五条：使用前缀避免命名冲突"><a href="#第十五条：使用前缀避免命名冲突" class="headerlink" title="第十五条：使用前缀避免命名冲突"></a>第十五条：使用前缀避免命名冲突</h2><p>由于 Objective-C 中没有命名空间这个概念，所以我们在起名时要想办法避免命名冲突。</p>
+<p>避免此问题的办法就是变相实现命名空间——为所有名称前都加上适当前缀。但是请注意 <strong>Apple 宣称其保留所有使用“两位字母前缀”的权利，所以一般来说你自己要选用三位字母前缀</strong>。</p>
+<p>不仅仅是类名，如果你有为既有的类新增“分类”(Category)，那么一定要给分类和分类中的方法添加前缀。</p>
+<p>要点：</p>
+<ul>
+<li>选择与你公司、引用或者二者都有关的名称作为其类名前缀，并在所有代码中均使用这一前缀。</li>
+<li>若是自己所开发的程序库中用到了第三方库，则应为其中的名称添加上前缀。</li>
+</ul>
+<h2 id="第十六条-提供”全能初始化方法“"><a href="#第十六条-提供”全能初始化方法“" class="headerlink" title="第十六条:提供”全能初始化方法“"></a>第十六条:提供”全能初始化方法“</h2><p>应该在类中提供一个“全能初始化方法”，所有的初始化方法最终都会调用这个方法进行初始化。</p>
+<p>要点：</p>
+<ul>
+<li>在类中提供一个全能初始化方法，并于文档中注明。其他初始化方法最终均应该调用此初始化方法。</li>
+<li>若全能初始化方法与超类不同，则需覆写超类中的对应方法。</li>
+<li>如果超类的初始化方法不适用于子类，那么应该在子类中覆写超类这个方法，并在其中抛出异常。</li>
+</ul>
+<h2 id="第十七条：实现-description-方法"><a href="#第十七条：实现-description-方法" class="headerlink" title="第十七条：实现 description 方法"></a>第十七条：实现 description 方法</h2><p>调试程序的时候，经常会查看对象信息，一般使用如下代码:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSLog(@&quot;%@&quot;,object);</span><br></pre></td></tr></table></figure>
+<p>在这方法中是打印 object 的信息，其实这个信息打印就是调用的对象的<code>description</code>方法。所以如果要查看一个自定义类中的信息我们可以通过重写这个方法的方式来打印。这个方法存在于 NSObject 协议中。</p>
+<p>NSObject 协议中还有个方法需要注意，那就是 debugDescription，此方法和 description 方法的用法非常相似。二者的区别在于：debugDescription方法是在开发者在 debugger 模式中打印对象才调用的。</p>
+<p>要点：</p>
+<ul>
+<li>实现 description 方法返回一个有意义的字符串，用以描述该实例。</li>
+<li>若想在调试时打印出更加详尽的对象描述信息，则应该实现 debugDescription 方法。</li>
+</ul>
+<h2 id="第十八条：尽量使用不可变对象"><a href="#第十八条：尽量使用不可变对象" class="headerlink" title="第十八条：尽量使用不可变对象"></a>第十八条：尽量使用不可变对象</h2><p>尽量在.h 文件中将属性声明为 readonly，在.m 文件中声明为readwrite，以防止外部修改属性。</p>
+<p>要点:</p>
+<ul>
+<li>尽量创建不可变对象。</li>
+<li>若某属性仅可于对象内部修改，则在”class-continuation”分类中将其又 readonly 属性扩展为 readwrite。</li>
+<li>不要把可把可变的 collection 作为属性公开，而应提供相关方法，以此改变对象中的可变 collection。</li>
+</ul>
+<h2 id="第十九条：使用清晰而协调的命名方式"><a href="#第十九条：使用清晰而协调的命名方式" class="headerlink" title="第十九条：使用清晰而协调的命名方式"></a>第十九条：使用清晰而协调的命名方式</h2>
       
     </div>
     
@@ -656,7 +763,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Effective-Objective-C-2-0笔记-一"><span class="nav-number">1.</span> <span class="nav-text">Effective Objective-C 2.0笔记(一)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第一章熟悉-Objective-C"><span class="nav-number"></span> <span class="nav-text">第一章熟悉 Objective-C</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#第一条：了解-Objective-C-语言的起源"><span class="nav-number">1.</span> <span class="nav-text">第一条：了解 Objective-C 语言的起源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第二条：在类的头文件中尽量少引入其他头文件"><span class="nav-number">2.</span> <span class="nav-text">第二条：在类的头文件中尽量少引入其他头文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第三条：多用字面量语法少用与之等价的方法"><span class="nav-number">3.</span> <span class="nav-text">第三条：多用字面量语法少用与之等价的方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第四条：多用类型常量，少用-define-预处理指令"><span class="nav-number">4.</span> <span class="nav-text">第四条：多用类型常量，少用#define 预处理指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第五条：用枚举表示状态、选项、状态码"><span class="nav-number">5.</span> <span class="nav-text">第五条：用枚举表示状态、选项、状态码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#对象、消息、运行期"><span class="nav-number"></span> <span class="nav-text">对象、消息、运行期</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#第六条：理解“属性”这一概念"><span class="nav-number">1.</span> <span class="nav-text">第六条：理解“属性”这一概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#属性性质"><span class="nav-number">1.1.</span> <span class="nav-text">属性性质</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#原子性"><span class="nav-number">1.1.1.</span> <span class="nav-text">原子性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#读-写权限"><span class="nav-number">1.1.2.</span> <span class="nav-text">读/写权限</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内存管理语义"><span class="nav-number">1.1.3.</span> <span class="nav-text">内存管理语义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#方法名"><span class="nav-number">1.1.4.</span> <span class="nav-text">方法名</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第七条：在对象内部尽量直接访问实例变量"><span class="nav-number">2.</span> <span class="nav-text">第七条：在对象内部尽量直接访问实例变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第八条：理解“对象等同性”这一概念"><span class="nav-number">3.</span> <span class="nav-text">第八条：理解“对象等同性”这一概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第九条：以“类族模式”隐藏实现细节"><span class="nav-number">4.</span> <span class="nav-text">第九条：以“类族模式”隐藏实现细节</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第十条：在既有类中使用关联对象存放自定义数据"><span class="nav-number">5.</span> <span class="nav-text">第十条：在既有类中使用关联对象存放自定义数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第十一条：理解-objc-msgSend-的作用"><span class="nav-number">6.</span> <span class="nav-text">第十一条：理解 objc_msgSend 的作用</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Effective-Objective-C-2-0笔记-一"><span class="nav-number">1.</span> <span class="nav-text">Effective Objective-C 2.0笔记(一)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第一章：熟悉-Objective-C"><span class="nav-number"></span> <span class="nav-text">第一章：熟悉 Objective-C</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#第一条：了解-Objective-C-语言的起源"><span class="nav-number">1.</span> <span class="nav-text">第一条：了解 Objective-C 语言的起源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第二条：在类的头文件中尽量少引入其他头文件"><span class="nav-number">2.</span> <span class="nav-text">第二条：在类的头文件中尽量少引入其他头文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第三条：多用字面量语法少用与之等价的方法"><span class="nav-number">3.</span> <span class="nav-text">第三条：多用字面量语法少用与之等价的方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第四条：多用类型常量，少用-define-预处理指令"><span class="nav-number">4.</span> <span class="nav-text">第四条：多用类型常量，少用#define 预处理指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第五条：用枚举表示状态、选项、状态码"><span class="nav-number">5.</span> <span class="nav-text">第五条：用枚举表示状态、选项、状态码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第二章：对象、消息、运行期"><span class="nav-number"></span> <span class="nav-text">第二章：对象、消息、运行期</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#第六条：理解“属性”这一概念"><span class="nav-number">1.</span> <span class="nav-text">第六条：理解“属性”这一概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#属性性质"><span class="nav-number">1.1.</span> <span class="nav-text">属性性质</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#原子性"><span class="nav-number">1.1.1.</span> <span class="nav-text">原子性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#读-写权限"><span class="nav-number">1.1.2.</span> <span class="nav-text">读/写权限</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内存管理语义"><span class="nav-number">1.1.3.</span> <span class="nav-text">内存管理语义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#方法名"><span class="nav-number">1.1.4.</span> <span class="nav-text">方法名</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第七条：在对象内部尽量直接访问实例变量"><span class="nav-number">2.</span> <span class="nav-text">第七条：在对象内部尽量直接访问实例变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第八条：理解“对象等同性”这一概念"><span class="nav-number">3.</span> <span class="nav-text">第八条：理解“对象等同性”这一概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第九条：以“类族模式”隐藏实现细节"><span class="nav-number">4.</span> <span class="nav-text">第九条：以“类族模式”隐藏实现细节</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第十条：在既有类中使用关联对象存放自定义数据"><span class="nav-number">5.</span> <span class="nav-text">第十条：在既有类中使用关联对象存放自定义数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第十一条：理解-objc-msgSend-的作用"><span class="nav-number">6.</span> <span class="nav-text">第十一条：理解 objc_msgSend 的作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第十二条：理解消息转发机制"><span class="nav-number">7.</span> <span class="nav-text">第十二条：理解消息转发机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#动态方法解析"><span class="nav-number">7.1.</span> <span class="nav-text">动态方法解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#备援接收者"><span class="nav-number">7.2.</span> <span class="nav-text">备援接收者</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#完整的消息转发"><span class="nav-number">7.3.</span> <span class="nav-text">完整的消息转发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消息转发全流程"><span class="nav-number">7.4.</span> <span class="nav-text">消息转发全流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第十三条：用“方法调配技术”调试“黑盒方法”"><span class="nav-number">7.5.</span> <span class="nav-text">第十三条：用“方法调配技术”调试“黑盒方法”</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第十四条：理解“类对象”的用意"><span class="nav-number">8.</span> <span class="nav-text">第十四条：理解“类对象”的用意</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#在类集成体系中查询类型信息"><span class="nav-number">8.1.</span> <span class="nav-text">在类集成体系中查询类型信息</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第三章：接口与-API-设计"><span class="nav-number"></span> <span class="nav-text">第三章：接口与 API 设计</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#第十五条：使用前缀避免命名冲突"><span class="nav-number">1.</span> <span class="nav-text">第十五条：使用前缀避免命名冲突</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第十六条-提供”全能初始化方法“"><span class="nav-number">2.</span> <span class="nav-text">第十六条:提供”全能初始化方法“</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第十七条：实现-description-方法"><span class="nav-number">3.</span> <span class="nav-text">第十七条：实现 description 方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第十八条：尽量使用不可变对象"><span class="nav-number">4.</span> <span class="nav-text">第十八条：尽量使用不可变对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第十九条：使用清晰而协调的命名方式"><span class="nav-number">5.</span> <span class="nav-text">第十九条：使用清晰而协调的命名方式</span></a></li></ol></div>
             
 
           </div>

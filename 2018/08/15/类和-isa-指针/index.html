@@ -89,7 +89,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/2018/08/15/类和-isa-指针/快速查找uintptr_t.png">
 <meta property="og:image" content="http://yoursite.com/2018/08/15/类和-isa-指针/对象和类的结构.jpg">
-<meta property="og:updated_time" content="2018-08-17T05:16:47.534Z">
+<meta property="og:updated_time" content="2018-08-23T05:57:14.024Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="类和 isa 指针">
 <meta name="twitter:description" content="对于普通对象来说，isa 指针包含对象的类oc 中所有的 isa 指针指向的都是类。 在 oc 中每一个类的对象都都有一个指向类的指针 isa。并且在 oc 中任何数据结构也在一个正确的位置上都有一个指向类的指针，使其能够被视为对象。 所以一个对象的类型是由 isa 指针决定的，isa 指针指向对象的类。 接下来我们查看类的定义，首先我们使用如下代码导入所需框架:(这样查看的是旧的定义) 12#i">
@@ -323,7 +323,7 @@
 <p>这个结构体就是类的结构，所以我们说<strong>对于普通对象来说，isa 指针包含对象的类</strong>。为什么特指普通对象呢，我们继续看下去。</p>
 <h2 id="类其实也是一个对象"><a href="#类其实也是一个对象" class="headerlink" title="类其实也是一个对象"></a>类其实也是一个对象</h2><p>首先我们着重看上述几个变量,并逐条分析。objc_class 继承自objc_obbject，所以我们 objc_class 中也存在一个isa 变量。而且由这个继承结构我们可以得出：<strong>类其实也是一个对象</strong>。只不过这个对象并不是由我们来创建，而是由系统来创建。既然类也是一个对象，那么其 isa 指针中必定也包含对象的类，即<strong>“类对象的类“</strong>。那么”类对象的类“是什么呢？其实它就是<a href="https://zh.wikipedia.org/wiki/%E5%85%83%E7%B1%BB" target="_blank" rel="noopener">元类(metaclass)</a>，但是，元类有什么作用呢？先别急，我们等会讨论。</p>
 <h3 id="类对象中保存类的父类"><a href="#类对象中保存类的父类" class="headerlink" title="类对象中保存类的父类"></a>类对象中保存类的父类</h3><p>superclass 也是一个objc_class类型，就是一个类，按照其字面意思理解是指向本对象的父类，事实上真是这个意思，在这里就是元类的父类。这具体是指向的什么呢，这等我们讨论元类的时候再讨论。</p>
-<p>然后下一个就是cache，这个变量是cache_t类型的，它是一个散列表，缓存的是曾经调用过的方法列表，并且它可以使用键值对的方式去读取，这样效率肯定比遍历快得多。如果你想了解更多请看<a href="https://juejin.im/post/5b1b45c36fb9a01e5b10f96b" target="_blank" rel="noopener">方法缓存与查找</a>。</p>
+<p>然后下一个就是cache，这个变量是cache_t类型的，它是一个<a href="https://zh.wikipedia.org/wiki/%E5%93%88%E5%B8%8C%E8%A1%A8" target="_blank" rel="noopener">散列表</a>(又名哈希表，是根据键(Key)而直接访问在内存存储位置的数据结构)，缓存的是曾经调用过的方法列表，并且它可以使用键值对的方式去读取，这样效率肯定比遍历快得多。如果你想了解更多请看<a href="https://juejin.im/post/5b1b45c36fb9a01e5b10f96b" target="_blank" rel="noopener">方法缓存与查找</a>。</p>
 <h3 id="类对象保存属性、实例所能执行的普通方法和所遵守的协议"><a href="#类对象保存属性、实例所能执行的普通方法和所遵守的协议" class="headerlink" title="类对象保存属性、实例所能执行的普通方法和所遵守的协议"></a>类对象保存属性、实例所能执行的普通方法和所遵守的协议</h3><p>接下来就是一个bits，它是class_data_bits_t类型的变量，在讲解这个变量之前，我们先看一个例子:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[@&quot;stringValue&quot;</span><br><span class="line">    writeToFile:@&quot;/file.txt&quot; atomically:YES encoding:NSUTF8StringEncoding error:NULL];</span><br></pre></td></tr></table></figure>
 <p>当字符串实例调用实例方法writeToFile:的时候，这个方法也是存在于内存中的，那么它是在哪里被定义的呢？在没有接触过 runtime 之前，你可能会对此感到疑惑，可能觉得它就是保存在对象里的，也可能觉得它是保存在对象的类中的，或者说根本就没有想法(刚开始我就是一脸懵逼)。我们接下来就来探讨这个问题，首先看对象类型objc_object 结构体。在这结构体中，大部分的函数和变量都是和 ARC 与 isa 有关的，你找了很久也没有找到名称类似的函数和变量。接着我们看objc_class 结构体，因为变量才是保存信息所用的单元，所以我们先看变量。在 objc_class 中，我们讲过了前面几个变量，接着就是要讲class_data_bits_t类型的变量bits。我们在”objc-runtime-new.h”中搜索class_data_bits_t，我们可以看到这个类型的定义:</p>
