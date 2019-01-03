@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="iOS 知识点," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="在研究 iOS 系统方法实现的时候，由于有时苹果未将改方法的实现开源，所以此时我们就需要将指定你文件转换为C++文件，这样就可以看到部分底层实现。 当你在谷歌搜索如何创建C++文件文件的时候，你得到的答案可能是这样: 1clang -rewrite-objc ViewController.m 这样 1xcrun -sdk iphoneos clang -arch arm64 -rewrite-ob">
+<meta name="keywords" content="iOS 知识点">
+<meta property="og:type" content="article">
+<meta property="og:title" content=" Objective-C 代码转换为 C++代码">
+<meta property="og:url" content="http://yoursite.com/2018/12/05/Objective-C-代码转换为-C-代码/index.html">
+<meta property="og:site_name" content="John 的技术博客">
+<meta property="og:description" content="在研究 iOS 系统方法实现的时候，由于有时苹果未将改方法的实现开源，所以此时我们就需要将指定你文件转换为C++文件，这样就可以看到部分底层实现。 当你在谷歌搜索如何创建C++文件文件的时候，你得到的答案可能是这样: 1clang -rewrite-objc ViewController.m 这样 1xcrun -sdk iphoneos clang -arch arm64 -rewrite-ob">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/12/05/Objective-C-代码转换为-C-代码/occonvert2C++Error1.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/05/Objective-C-代码转换为-C-代码/occonvert2C++Error2.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/05/Objective-C-代码转换为-C-代码/occonvert2C++Error3.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/05/Objective-C-代码转换为-C-代码/fakerSmile1.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/12/05/Objective-C-代码转换为-C-代码/fakerSmile2.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/12/05/Objective-C-代码转换为-C-代码/fakerSmile3.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/12/05/Objective-C-代码转换为-C-代码/dontDoThis1.jpg">
+<meta property="og:updated_time" content="2018-12-05T03:44:44.410Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content=" Objective-C 代码转换为 C++代码">
+<meta name="twitter:description" content="在研究 iOS 系统方法实现的时候，由于有时苹果未将改方法的实现开源，所以此时我们就需要将指定你文件转换为C++文件，这样就可以看到部分底层实现。 当你在谷歌搜索如何创建C++文件文件的时候，你得到的答案可能是这样: 1clang -rewrite-objc ViewController.m 这样 1xcrun -sdk iphoneos clang -arch arm64 -rewrite-ob">
+<meta name="twitter:image" content="http://yoursite.com/2018/12/05/Objective-C-代码转换为-C-代码/occonvert2C++Error1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/05/Objective-C-代码转换为-C-代码/"/>
+
+
+
+
+
+  <title> Objective-C 代码转换为 C++代码 | John 的技术博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">John 的技术博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/05/Objective-C-代码转换为-C-代码/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Wong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="John 的技术博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"> Objective-C 代码转换为 C++代码</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-05T11:22:30+08:00">
+                2018-12-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在研究 iOS 系统方法实现的时候，由于有时苹果未将改方法的实现开源，所以此时我们就需要将指定你文件转换为C++文件，这样就可以看到部分底层实现。</p>
+<p>当你在谷歌搜索如何创建C++文件文件的时候，你得到的答案可能是这样:</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">clang -rewrite-objc ViewController.m</span><br></pre></td></tr></table></figure>
+<p>这样</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xcrun -sdk iphoneos clang -arch arm64 -rewrite-objc AppDelegate.m -o AppDelegate.cpp</span><br></pre></td></tr></table></figure>
+<p>或者是这样</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">clang -x objective-c -rewrite-objc -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk ViewController.m</span><br></pre></td></tr></table></figure>
+<p>这时候你可能欣喜，竟然有那么多种方案可以实现，但是在键入这些代码之后你可能会发现令你更加欣(fa)喜(kuang)的一面,这结果可能是这样</p>
+<p><img src="/2018/12/05/Objective-C-代码转换为-C-代码/occonvert2C++Error1.png" alt="UIKit/UIKit.h not found"></p>
+<p>这样</p>
+<p><img src="/2018/12/05/Objective-C-代码转换为-C-代码/occonvert2C++Error2.png" alt="not support weak references"></p>
+<p>或者是这样</p>
+<p><img src="/2018/12/05/Objective-C-代码转换为-C-代码/occonvert2C++Error3.png" alt="assigning retained object to weak variable"></p>
+<p>这时候你看到那么多友善(mmp)的提示你的心情可能是这样</p>
+<p><img src="/2018/12/05/Objective-C-代码转换为-C-代码/fakerSmile1.jpg" alt="faker smile one"></p>
+<p>这样</p>
+<p><img src="/2018/12/05/Objective-C-代码转换为-C-代码/fakerSmile2.jpg" alt="faker smile two"></p>
+<p>亦或者是这样</p>
+<p><img src="/2018/12/05/Objective-C-代码转换为-C-代码/fakerSmile3.jpg" alt="faker smile three"></p>
+<p>如果你真的遇到这些问题，请冷静一下，我们先来解决这个技术难题</p>
+<p><img src="/2018/12/05/Objective-C-代码转换为-C-代码/dontDoThis1.jpg" alt="大哥别这样"></p>
+<p>首先我们分析一下第一个命令产生的问题—— <code>fatal error: &#39;UIKit/UIKit.h&#39; file not found</code></p>
+<p>这个问题产生的原因是因为 clang 将.m文件转换为 C++文件的时候，clang 找不到这个头文件，这时候我们只需要指定一下其平台即可 </p>
+<ul>
+<li>指定真机 </li>
+</ul>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xcrun -sdk iphoneos clang -rewrite-objc ViewController.m</span><br></pre></td></tr></table></figure>
+<ul>
+<li>指定模拟器 </li>
+</ul>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xcrun -sdk iphonesimulator clang -rewrite-objc ViewController.m</span><br></pre></td></tr></table></figure>
+<p>但是指定真机之后还可能会产生问题，例如代码中有 weak，这时候 clang 转换又双叒叕不通过了，这时只需要支持 ARC 指定运行时版本即可 </p>
+<ul>
+<li>支持 ARC 指定运行时版本，例如在-rewrite-objc 后面添加如下代码 </li>
+</ul>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-fobjc-arc -fobjc-runtime=ios-<span class="number">8.0</span>.<span class="number">0</span></span><br></pre></td></tr></table></figure>
+<p>这时候两个最常见的问题已经解决了，接下来解决第三个问题。 </p>
+<p>第三个问题困扰了我好久，最后发现只要不直接使用 alloc init 或者 new 之类的初始化方法给被 weak 修饰的指针赋值即可。 </p>
+<ul>
+<li>最终命令 </li>
+</ul>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xcrun -sdk iphonesimulator12.<span class="number">1</span> clang -rewrite-objc -fobjc-arc -stdlib=libc++ -fobjc-arc -fobjc-runtime=ios-<span class="number">8.0</span>.<span class="number">0</span> -Wno-deprecated-declarations Appdelegate.m</span><br></pre></td></tr></table></figure>
+<p>创建 C++文件总流程: </p>
+<ol>
+<li>打开终端，使用命令先进入指定路径(需要转换文件所在的路径) </li>
+</ol>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">ChromeBook:</span>oc中的 weak sq$ cd /Users/sq/Desktop/Project/OCTest/oc中的\ weak/oc中的\ weak</span><br></pre></td></tr></table></figure>
+<ol>
+<li>输入上述最终命令，将最终命令中的Appdelegate.m改为你的目标文件 </li>
+</ol>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xcrun -sdk iphonesimulator12.<span class="number">1</span> clang -rewrite-objc -fobjc-arc -stdlib=libc++ -fobjc-arc -fobjc-runtime=ios-<span class="number">8.0</span>.<span class="number">0</span> -Wno-deprecated-declarations Appdelegate.m</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>参考资料： </p>
+<p>OC代码转C++代码的生成:<a href="https://www.jianshu.com/p/3a896cba744a" target="_blank" rel="noopener">https://www.jianshu.com/p/3a896cba744a</a> </p>
+<p>Objective-C编译成C++代码报错:<a href="https://www.jianshu.com/p/43a09727eb2c" target="_blank" rel="noopener">https://www.jianshu.com/p/43a09727eb2c</a> </p>
+<p>使用clang将OC代码转为C++（亲测有效）:<a href="https://blog.csdn.net/qq_34003239/article/details/84230019" target="_blank" rel="noopener">https://blog.csdn.net/qq_34003239/article/details/84230019</a> </p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS-知识点/" rel="tag"># iOS 知识点</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/03/iOS-中的-weak/" rel="next" title="iOS 中的 weak">
+                <i class="fa fa-chevron-left"></i> iOS 中的 weak
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/14/UIView和-CALayer/" rel="prev" title="UIView和 CALayer">
+                UIView和 CALayer <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">John Wong</p>
+              <p class="site-description motion-element" itemprop="description">别在机会来临之时却无法握住。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Wong</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

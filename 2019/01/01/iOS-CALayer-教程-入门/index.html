@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="iOS 翻译," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="iOS CALayer 教程:入门 原文链接:CALayer Tutorial for iOS: Getting Started 作者:Michael Ciurus 最近在研究 CALayer 和 UIView 之间的联系和区别，看完这篇文章介绍的 CALayer子类和其使用介绍的挺详细的，所以翻译一下这篇文章。 译者注：原文中 layer 可能在文章中被翻译为’图层’，corner radius">
+<meta name="keywords" content="iOS 翻译">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS CALayer 教程:入门">
+<meta property="og:url" content="http://yoursite.com/2019/01/01/iOS-CALayer-教程-入门/index.html">
+<meta property="og:site_name" content="John 的技术博客">
+<meta property="og:description" content="iOS CALayer 教程:入门 原文链接:CALayer Tutorial for iOS: Getting Started 作者:Michael Ciurus 最近在研究 CALayer 和 UIView 之间的联系和区别，看完这篇文章介绍的 CALayer子类和其使用介绍的挺详细的，所以翻译一下这篇文章。 译者注：原文中 layer 可能在文章中被翻译为’图层’，corner radius">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2019/01/01/iOS-CALayer-教程-入门/uiview.png">
+<meta property="og:image" content="http://yoursite.com/2019/01/01/iOS-CALayer-教程-入门/CALayerPlayground-1-281x500.png">
+<meta property="og:image" content="http://yoursite.com/2019/01/01/iOS-CALayer-教程-入门/CALayerPlayground-2-179x320.png">
+<meta property="og:image" content="http://yoursite.com/2019/01/01/iOS-CALayer-教程-入门/CALayerPlayground-3-179x320.png">
+<meta property="og:image" content="http://yoursite.com/2019/01/01/iOS-CALayer-教程-入门/starter-480x285.png">
+<meta property="og:updated_time" content="2019-01-02T05:21:21.234Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS CALayer 教程:入门">
+<meta name="twitter:description" content="iOS CALayer 教程:入门 原文链接:CALayer Tutorial for iOS: Getting Started 作者:Michael Ciurus 最近在研究 CALayer 和 UIView 之间的联系和区别，看完这篇文章介绍的 CALayer子类和其使用介绍的挺详细的，所以翻译一下这篇文章。 译者注：原文中 layer 可能在文章中被翻译为’图层’，corner radius">
+<meta name="twitter:image" content="http://yoursite.com/2019/01/01/iOS-CALayer-教程-入门/uiview.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/01/01/iOS-CALayer-教程-入门/"/>
+
+
+
+
+
+  <title>iOS CALayer 教程:入门 | John 的技术博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">John 的技术博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/01/iOS-CALayer-教程-入门/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Wong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="John 的技术博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS CALayer 教程:入门</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-01T16:18:16+08:00">
+                2019-01-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="iOS-CALayer-教程-入门"><a href="#iOS-CALayer-教程-入门" class="headerlink" title="iOS CALayer 教程:入门"></a>iOS CALayer 教程:入门</h1><blockquote>
+<p>原文链接:<a href="https://www.raywenderlich.com/402-calayer-tutorial-for-ios-getting-started" target="_blank" rel="noopener">CALayer Tutorial for iOS: Getting Started</a></p>
+<p>作者:Michael Ciurus</p>
+<p>最近在研究 CALayer 和 UIView 之间的联系和区别，看完这篇文章介绍的 <code>CALayer</code>子类和其使用介绍的挺详细的，所以翻译一下这篇文章。</p>
+<p>译者注：原文中 layer 可能在文章中被翻译为’图层’，corner radius 被翻译为’角半径’</p>
+</blockquote>
+<p>在这篇教程中，你将会学习到什么是<code>CALayer</code>，并且能看到十种使用<code>CALayer</code>生成酷炫效果的例子，例如图形，渐变，甚至是例子系统。</p>
+<p><strong>升级说明</strong>：本教程已由<a href="https://www.raywenderlich.com/u/michalciurus" target="_blank" rel="noopener">Michael Ciurus</a>升级到 iOS11，Swift4和Xcode9。原教程作者是<a href="https://www.raywenderlich.com/u/scotteg" target="_blank" rel="noopener">Scott Gardner</a>。</p>
+<p>可能正如你知道的，在 iOS App 中你看到的所有的东西都是View。有button view,table view,slider view,甚至是包含其他视图的父视图。</p>
+<p>你可能不知道的是每个在 iOS 中的每个 view都由一个另外的名为图层——<code>CALayer</code>的类提供支持。</p>
+<p>在本篇教程中，你将会了解到什么是<code>CALayer</code>并且知道它是如何工作的。你同样也会看到十种使用<code>CALayer</code>生成酷炫效果的例子，例如图形，渐变，甚至是例子系统。</p>
+<p>本文章的前提是你已经了解了作为 iOS App 的基础和Swift，包括使用 storyboard构建 UI。</p>
+<blockquote>
+<p><strong>注意：</strong>如果你并不擅长这个，别担心。我们关于这个主题我们有多个教程和书籍，例如 <a href="http://www.raywenderlich.com/77176/learn-to-code-iOS-apps-with-swift-tutorial-4" target="_blank" rel="noopener">Learn to Code iOS Apps with Swift</a>and <a href="http://www.raywenderlich.com/store/iOS-apprentice" target="_blank" rel="noopener">The iOS Apprentice</a>。</p>
+</blockquote>
+<h2 id="CALayer-和UIView-有何关系？"><a href="#CALayer-和UIView-有何关系？" class="headerlink" title="CALayer 和UIView 有何关系？"></a>CALayer 和UIView 有何关系？</h2><p><code>UIView</code>处理非常多的事情，例如：布局、响应事件等。有一点很有意思，<code>UIView</code>并不直接参与处理绘制或者动画，而是<code>UIView</code>将其交付给它的兄弟——<code>Core Animation</code>来处理。事实上<code>UIView</code>是<code>CALayer</code>的包装容器。当你在一个<code>UIView</code>上设置了<code>bounds</code>之后，视图只是将<code>bounds</code>设置在了其背后的<code>CALayer</code>上。如果你在<code>UIView</code>上调用了<code>layoutIfNeed</code>方法，该方法会转发给其根<code>CALayer</code>。每个<code>UIView</code>都有一个能够拥有<code>subLayers</code>的根<code>CALayer</code>。</p>
+<p><img src="/2019/01/01/iOS-CALayer-教程-入门/uiview.png" alt="uiview"></p>
+<h2 id="入门"><a href="#入门" class="headerlink" title="入门"></a>入门</h2><p>最简单的了解<code>layer</code>是什么的途径就是在看它们在实际运用中的效果。你将会从一个简单的项目开始使用layers。<a href="https://koenig-media.raywenderlich.com/uploads/2017/08/LayerStarterProject.zip" target="_blank" rel="noopener">下载</a>这个简单的只在中心插入了视图的 App。</p>
+<p>在 <strong>ViewController.swift</strong>中使用如下代码替换其内容：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> UIKit</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ViewController</span>: <span class="title">UIViewController</span> </span>&#123;</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@IBOutlet</span> <span class="keyword">weak</span> <span class="keyword">var</span> viewForLayer: <span class="type">UIView</span>!</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">var</span> layer: <span class="type">CALayer</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> viewForLayer.layer</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">super</span>.viewDidLoad()</span><br><span class="line">    setUpLayer()</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">func</span> <span class="title">setUpLayer</span><span class="params">()</span></span> &#123;</span><br><span class="line">    layer.backgroundColor = <span class="type">UIColor</span>.blue.cgColor</span><br><span class="line">    layer.borderWidth = <span class="number">100.0</span></span><br><span class="line">    layer.borderColor = <span class="type">UIColor</span>.red.cgColor</span><br><span class="line">    layer.shadowOpacity = <span class="number">0.7</span></span><br><span class="line">    layer.shadowRadius = <span class="number">10.0</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@IBAction</span> <span class="function"><span class="keyword">func</span> <span class="title">tapGestureRecognized</span><span class="params">(<span class="number">_</span> sender: Any)</span></span> &#123;</span><br><span class="line">    </span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@IBAction</span> <span class="function"><span class="keyword">func</span> <span class="title">pinchGestureRecognized</span><span class="params">(<span class="number">_</span> sender: Any)</span></span> &#123;</span><br><span class="line">    </span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>正如之前提到的，每一个<code>UIView</code>都有一个<code>layer</code>与其关联，并且你能够是用<code>.layer</code>获得它。以上代码的第一件事情就是创建了一个名为<code>layer</code>的计算属性来访问<code>viewForLayer</code>的<code>layer</code>。</p>
+<p>代码中同样也调用了<code>setUpLayer()</code>方法，用以设置图层的一些属性——阴影、蓝色的背景颜色和巨大的红色边框颜色。等会你将会学习到更多关于<code>setUpLayer()</code>方法，但是现在首先要做的事情是构建并运行iOS模拟器来查看你自己定义的图层。</p>
+<p><img src="/2019/01/01/iOS-CALayer-教程-入门/CALayerPlayground-1-281x500.png" alt=""></p>
+<p>只使用了短短几句代码就实现了酷炫的效果，对吧？并且由于所有的<code>view</code>都是由<code>layer</code>提供支持的，所以你可以在你的 app 中对所有的视图做如上操作。</p>
+<h2 id="基础CALayer属性"><a href="#基础CALayer属性" class="headerlink" title="基础CALayer属性"></a>基础<code>CALayer</code>属性</h2><p><code>CALayer</code>拥有一些列的方法让你可以自定义外观。回想一下你刚才所做的事情:</p>
+<ul>
+<li>将其图层的背景颜色从默认的无颜色设置为蓝色。</li>
+<li>改变图层的<code>borderWidth</code>从默认的0设置为100来赋予其边框。</li>
+<li>改变其边框颜色，从默认的黑色改变为红色。</li>
+<li>并且最后，改变其<code>shadowOpacity</code>属性，从默认的0(完全透明)到0.7，来赋予其阴影。仅这一点就会使得阴影显示出来，然后下一步增加了其阴影半径，从默认的3到10。</li>
+</ul>
+<p>这还只是您可以在<code>CALayer</code>设置的部分属性。接下来我们继续尝试两个属性。在<code>setUpLayer()</code>的底部添加如下两行代码：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">layer.contents = <span class="type">UIImage</span>(named: <span class="string">"star"</span>)?.cgImage</span><br><span class="line">layer.contentsGravity = kCAGravityCenter</span><br></pre></td></tr></table></figure>
+<p>在<code>CALayer</code>中的<code>contents</code>属性允许你使用图片设置其内容，所以在这里你是使用名为’star’的图片设置了其图层内容。该图片已经在初始项目中提供。</p>
+<p>构建并运行然后花点时间欣赏一下那令人惊叹的艺术品:</p>
+<p><img src="/2019/01/01/iOS-CALayer-教程-入门/CALayerPlayground-2-179x320.png" alt="CALayerPlayground-2"></p>
+<p>为什么五角星会在被定位在中心呢？这是因为你将<code>kCAGravityCenter</code>设置到了其属性<code>contentsGravity</code>上。正如你所预料的那样，你同样能够将其位置设置为顶部、顶部偏右、右侧、底部偏右、底部、底部偏左、左侧和顶部偏左。</p>
+<h2 id="改变图层的外观"><a href="#改变图层的外观" class="headerlink" title="改变图层的外观"></a>改变图层的外观</h2><p>初始项目包含了<code>tap</code>和<code>pinch</code>的手势识别器。</p>
+<p>将<code>tapGestureRecognized(_:)</code>方法改变为如下所示:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@IBAction</span> <span class="function"><span class="keyword">func</span> <span class="title">tapGestureRecognized</span><span class="params">(<span class="number">_</span> sender: UITapGestureRecognizer)</span></span> &#123;</span><br><span class="line">  layer.shadowOpacity = layer.shadowOpacity == <span class="number">0.7</span> ? <span class="number">0.0</span> : <span class="number">0.7</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如上代码将告诉<code>viewForLayer</code>的图层当视图响应<code>tap</code>时，将其图层的阴影不透明在0和0.7之间切换。</p>
+<p>你可能会问，那视图呢？当然你也可以覆写<code>CALayer</code>的 <code>hitTest(_:)</code> 来做同样的事情，并且你也会在本文的后面看到这种方式。但是<code>hitTest</code>是图层能做的全部了，因为图层无法响应手势识别器。这就是为什么你在视图中创建<code>tap</code>的手势识别器。</p>
+<p>现在将 <code>pinchGestureRecognized(_:)</code> 中的实现改为如下代码：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@IBAction</span> <span class="function"><span class="keyword">func</span> <span class="title">pinchGestureRecognized</span><span class="params">(<span class="number">_</span> sender: UIPinchGestureRecognizer)</span></span> &#123;</span><br><span class="line">  <span class="keyword">let</span> offset: <span class="type">CGFloat</span> = sender.scale &lt; <span class="number">1</span> ? <span class="number">5.0</span> : -<span class="number">5.0</span></span><br><span class="line">  <span class="keyword">let</span> oldFrame = layer.frame</span><br><span class="line">  <span class="keyword">let</span> oldOrigin = oldFrame.origin</span><br><span class="line">  <span class="keyword">let</span> newOrigin = <span class="type">CGPoint</span>(x: oldOrigin.x + offset, y: oldOrigin.y + offset)</span><br><span class="line">  <span class="keyword">let</span> newSize = <span class="type">CGSize</span>(width: oldFrame.width + (offset * -<span class="number">2.0</span>), height: oldFrame.height + (offset * -<span class="number">2.0</span>))</span><br><span class="line">  <span class="keyword">let</span> newFrame = <span class="type">CGRect</span>(origin: newOrigin, size: newSize)</span><br><span class="line">  <span class="keyword">if</span> newFrame.width &gt;= <span class="number">100.0</span> &amp;&amp; newFrame.width &lt;= <span class="number">300.0</span> &#123;</span><br><span class="line">    layer.borderWidth -= offset</span><br><span class="line">    layer.cornerRadius += (offset / <span class="number">2.0</span>)</span><br><span class="line">    layer.frame = newFrame</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里你基于用户的<code>pinch</code>来创建一个正的或者一个负的偏移量，并接着调整图层<code>frame</code>中的大小、边框宽度和边框的角半径。</p>
+<p>一个图层(layer)的角半径默认是零，这就意味着此时是标准的拥有90度角的正方形。可以通过增加角半径来创建圆角。想要将正方形转变为圆形？只需要将其角半径设置为其宽度的一半。</p>
+<p>构建并运行，然后尝试点击和捏合你的视图:</p>
+<p><img src="/2019/01/01/iOS-CALayer-教程-入门/CALayerPlayground-3-179x320.png" alt="CALayerPlayground-3"></p>
+<p>只需要一点润色你就可以自己拥有一个非常漂亮的头像。</p>
+<h2 id="很棒的CALayer-之旅"><a href="#很棒的CALayer-之旅" class="headerlink" title="很棒的CALayer 之旅"></a>很棒的CALayer 之旅</h2><p><code>CALayer</code>不仅仅只拥有方法和属性可以设置，它还有一系列具有特有方法和属性子类。</p>
+<p>有什么比查看教程更好的符合raywenderlich.com风格的方式来了解这些很棒的 API 呢?</p>
+<p>在本文接下来的部分中，你需要如下准备：</p>
+<ul>
+<li><a href="https://github.com/raywenderlich/LayerPlayer" target="_blank" rel="noopener">The Layer Player Source Code</a></li>
+<li><a href="http://bit.ly/AppStoreLayerPlayer" target="_blank" rel="noopener">The Layer Player App (可选)</a></li>
+</ul>
+<p>这是一个拥有你将在本文中学习到的十种不同<code>CALayer</code>子类范例的便捷 App。这里有许多很棒的例子：</p>
+<p><img src="/2019/01/01/iOS-CALayer-教程-入门/starter-480x285.png" alt="Layer Player screenshots"></p>
+<p>当你浏览下面每个例子之前，我建议你先使用一下上述<code>CALayer</code>的 App，并且看看源码。在本文的剩余部分中，你并不需要真正写任何代码，所以请放心坐下并防松阅读。</p>
+<h2 id="范例1：CALayer"><a href="#范例1：CALayer" class="headerlink" title="范例1：CALayer"></a>范例1：CALayer</h2><p>你已经看过了使用<code>CALayer</code>的例子，并且设置了一些它的属性。</p>
+<p>以下还有一些之前尚未提到过的内容：</p>
+<ul>
+<li><strong>图层能够拥有子图层</strong>。就类似视图能够拥有子视图一样，图层能够拥有子图层。你可以使用这个来创建一些酷炫的效果。</li>
+<li><strong>图层属性具有动画效果</strong>。当你改变了图层的属性，默认情况下会对其进行动画处理。你也可以根据自己的时间来自定义动画行为。</li>
+<li><strong>图层是轻量级的</strong>。图层相较于视图来说更加轻量级，因此它能够带来更高的性能。</li>
+<li><strong>图层拥有大量使用的属性</strong>。你已经在之前看到过其部分的属性了，现在让我们看更多属性。</li>
+</ul>
+<p>你接下来将会看到<code>CALayer</code>的一个完整属性列表，其中有部分你还尚未接触过，它们非常方便！</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> layer = <span class="type">CALayer</span>()</span><br><span class="line">layer.frame = someView.bounds</span><br><span class="line"></span><br><span class="line">layer.contents = <span class="type">UIImage</span>(named: <span class="string">"star"</span>)?.cgImage</span><br><span class="line">layer.contentsGravity = kCAGravityCenter</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS-翻译/" rel="tag"># iOS 翻译</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/16/MTQQ-介绍/" rel="next" title="MTQQ 介绍">
+                <i class="fa fa-chevron-left"></i> MTQQ 介绍
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">John Wong</p>
+              <p class="site-description motion-element" itemprop="description">别在机会来临之时却无法握住。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#iOS-CALayer-教程-入门"><span class="nav-number">1.</span> <span class="nav-text">iOS CALayer 教程:入门</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CALayer-和UIView-有何关系？"><span class="nav-number">1.1.</span> <span class="nav-text">CALayer 和UIView 有何关系？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#入门"><span class="nav-number">1.2.</span> <span class="nav-text">入门</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基础CALayer属性"><span class="nav-number">1.3.</span> <span class="nav-text">基础CALayer属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#改变图层的外观"><span class="nav-number">1.4.</span> <span class="nav-text">改变图层的外观</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#很棒的CALayer-之旅"><span class="nav-number">1.5.</span> <span class="nav-text">很棒的CALayer 之旅</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#范例1：CALayer"><span class="nav-number">1.6.</span> <span class="nav-text">范例1：CALayer</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Wong</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
