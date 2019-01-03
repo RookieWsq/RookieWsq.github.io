@@ -89,8 +89,8 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/2018/12/03/iOS-中的-weak/断点查看汇编.png">
 <meta property="og:image" content="http://yoursite.com/2018/12/03/iOS-中的-weak/objc_initWeak-function-des.png">
-<meta property="og:image" content="http://yoursite.com/2018/12/03/iOS-中的-weak/id%20objc_initWeak(id%20*object,%20id%20value">
-<meta property="og:updated_time" content="2019-01-03T13:56:04.407Z">
+<meta property="og:image" content="http://yoursite.com/2018/12/03/iOS-中的-weak/id%20objc_initWeak.png">
+<meta property="og:updated_time" content="2019-01-03T13:59:56.765Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS 中的 weak">
 <meta name="twitter:description" content="什么是 __weak前段时间因为项目忙(lan)，好久没有写博客了，现在趁着项目结束，赶紧写两篇博客来巩固一下知识。今天我们来了解一下 weak。 首先，weak是一个修饰符，也是内存管理语义的一种(有关内存管理语义请看这里)，用于修饰对象的所有权。请注意weak修饰符是在自动引用计数出现前就已经存在了，在那个时候iOS 的内存管理机制还是垃圾收集机制。 weak定义的是一种非拥有关系，为这个属性">
@@ -337,7 +337,7 @@
 <p>我们着重看第一句说明：</p>
 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Initialize a fresh weak pointer to some object location. </span><br><span class="line">中文释义</span><br><span class="line">初始化一个新的弱指针，这个指针指向某个对象地址。</span><br></pre></td></tr></table></figure>
 <p>接着我们去Clang编译器官网查看关于该方法的<a href="http://clang.llvm.org/docs/AutomaticReferenceCounting.html#arc-runtime-objc-initweak" target="_blank" rel="noopener">部分</a>。</p>
-<p><img src="/2018/12/03/iOS-中的-weak/id objc_initWeak(id *object, id value" alt="image-20181207113924683">.png)</p>
+<p><img src="/2018/12/03/iOS-中的-weak/id objc_initWeak.png" alt="image-20181207113924683"></p>
 <p>这里说明了一个前提：</p>
 <blockquote>
 <p><code>object</code> is a valid pointer which has not been registered as a <code>__weak</code> object. <code>value</code> is null or a pointer to a valid object.</p>

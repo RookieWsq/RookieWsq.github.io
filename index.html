@@ -2080,7 +2080,7 @@
 <p>我们着重看第一句说明：</p>
 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Initialize a fresh weak pointer to some object location. </span><br><span class="line">中文释义</span><br><span class="line">初始化一个新的弱指针，这个指针指向某个对象地址。</span><br></pre></td></tr></table></figure>
 <p>接着我们去Clang编译器官网查看关于该方法的<a href="http://clang.llvm.org/docs/AutomaticReferenceCounting.html#arc-runtime-objc-initweak" target="_blank" rel="noopener">部分</a>。</p>
-<p><img src="/2018/12/03/iOS-中的-weak/id objc_initWeak(id *object, id value" alt="image-20181207113924683">.png)</p>
+<p><img src="/2018/12/03/iOS-中的-weak/id objc_initWeak.png" alt="image-20181207113924683"></p>
 <p>这里说明了一个前提：</p>
 <blockquote>
 <p><code>object</code> is a valid pointer which has not been registered as a <code>__weak</code> object. <code>value</code> is null or a pointer to a valid object.</p>
