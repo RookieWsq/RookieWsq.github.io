@@ -232,6 +232,201 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/20/iOS-中的指针、指针变量和对象/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Wong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="John 的技术博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/20/iOS-中的指针、指针变量和对象/" itemprop="url">iOS-中的指针、指针变量、变量和对象</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-20T11:03:02+08:00">
+                2018-07-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="iOS-中的指针、指针变量、变量和对象"><a href="#iOS-中的指针、指针变量、变量和对象" class="headerlink" title="iOS-中的指针、指针变量、变量和对象"></a>iOS-中的指针、指针变量、变量和对象</h1><h2 id="指针"><a href="#指针" class="headerlink" title="指针"></a>指针</h2><p>指针是 C 语言的一个重要概念。OC 系统类型的变量,自定义类型的变量都是指针。</p>
+<p>在很多国内的博客中将指针和指针变量分为两个概念，他们认为<strong>指针是一个变量的地址，而指针变量是保存另一个变量指针的变量</strong>。</p>
+<p>而我查了很多资料发现大部分资料上写的，<strong>指针就是一个变量，他是保存另一个变量的地址的变量</strong>。就是国内很多博客中说到的’指针变量‘其实就是指针。关于指针的定义有如下几个可以参考：</p>
+<p><a href="https://zh.wikipedia.org/wiki/%E6%8C%87%E6%A8%99_(%E9%9B%BB%E8%85%A6%E7%A7%91%E5%AD%B8" target="_blank" rel="noopener">维基百科</a>)：在计算机科学中，指针（英语：Pointer），是编程语言中的<strong>一类数据类型及其对象或变量</strong>，用来表示或存储一个存储器地址，这个地址的值直接指向（points to）存在该地址的对象的值。</p>
+<p><a href="https://baike.baidu.com/item/%E6%8C%87%E9%92%88" target="_blank" rel="noopener">百度百科</a>：指针（Pointer）是编程语言中的一个对象，利用地址，它的值直接指向（points to）存在电脑存储器中另一个地方的值。由于通过地址能找到所需的变量单元，可以说，地址指向该变量单元。因此，将地址形象化的称为“指针”。</p>
+<p><a href="https://www.tutorialspoint.com/objective_c/objective_c_pointers.htm" target="_blank" rel="noopener">tutorialspoint</a>：指针是一个变量，其值是另一个变量储存单元的直接地址。</p>
+<p>我比较倾向的是维基百科的这种说法，指针是一个变量，其值是另一个变量的地址。</p>
+<p>这是维基百科关于指针的说明图和说明文字。</p>
+<p><img src="/2018/07/20/iOS-中的指针、指针变量和对象/440px-Pointers.svg.png" alt="指针"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">// 名为 a 的指针，指向一个存储器地址，当中的值为 b。要注意的是，在这个示意状况中使用的计算结构，对指针及非指针，都使用相同的地址空间以及表示法，但是在真实状况中，不同的计算结构可能有不同做法。</span><br></pre></td></tr></table></figure>
+<h3 id="访问方式"><a href="#访问方式" class="headerlink" title="访问方式"></a>访问方式</h3><p>对于计算机访问内存的方式有两种：</p>
+<ul>
+<li>直接访问：直接访问是直接通过定义的变量来获取变量的值。</li>
+<li>间接访问：间接访问是通过访问变量的地址来获取变量的值。</li>
+</ul>
+<p>有一个形象的小例子可以说明直接访问和间接访问：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">a. 直接访问某个地址，就相当于你知道某个物品放在某个抽屉里，然后你去那个抽屉，然后访问你的物品。</span><br><span class="line">b. 间接访问就是，你知道某个抽屉放着一个纸条，纸条写着：某某物品存放于某某另外一个抽屉。</span><br><span class="line"></span><br><span class="line">a里面的抽屉，就是变量，</span><br><span class="line">b里面存放纸条的抽屉，就是指针，指针的值，就是那个纸条，纸条指向另外一个抽屉（变量），另外一个抽屉存放的东西，就是一个变量的值。</span><br><span class="line">// 引用自百度知道&lt;https://zhidao.baidu.com/question/239578288212956844.html&gt;</span><br></pre></td></tr></table></figure>
+<p>这样可以很形象的说明直接访问和间接访问的区别。</p>
+<h3 id="基本指针运算符"><a href="#基本指针运算符" class="headerlink" title="基本指针运算符"></a>基本指针运算符</h3><p>关于指针的两个基本运算符:</p>
+<ul>
+<li>取地址运算符&amp;：&amp;是一元运算符，返回操作数的内存地址。</li>
+<li>间接寻址运算符 *：也是一元运算符，是&amp;运算符的补充。返回操作数指定地址的变量的值。</li>
+</ul>
+<p>我们借用<a href="https://blog.csdn.net/senwin2009/article/details/48439361" target="_blank" rel="noopener">这篇文章</a>的例子转为 oc 的例子来说明:</p>
+<p>我们先看这个例子:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">- (void)swap_int:(int)i1 another:(int)i2</span><br><span class="line">&#123;</span><br><span class="line">    int temp = i1;</span><br><span class="line">    i1 = i2;</span><br><span class="line">    i2 = temp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">	int p1 = 1;</span><br><span class="line">    int p2 = 10;</span><br><span class="line">    // 传入p1,p2</span><br><span class="line">    [self swap_int:p1 another:p2];</span><br><span class="line">    </span><br><span class="line">    NSLog(@&quot;p1 = %d&quot;,p1);</span><br><span class="line">    NSLog(@&quot;p2 = %d&quot;,p2);</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个最后输出的结果是啥呢？我们先不急着公布答案，我们先了解一下 oc 中的参数和参数传递。</p>
+<p>我们知道 oc 中调用方法有实参和形参之分，我们看看百度百科对其的解释。</p>
+<p><a href="https://baike.baidu.com/item/%E5%BD%A2%E5%8F%82" target="_blank" rel="noopener">形参</a>：全称为“形式参数”是在定义函数名和函数体的时候使用的参数，目的是用来接收调用该函数时传递的参数。形参的作用是实现主调函数与被调函数之间的联系，通常将函数所处理的数据，影响函数功能的因素或者函数处理的结果作为形参。没有形参的函数在形参表的位置应该写int main(void) 函数也可以有形参和返回值，其形参也称为命令行参数，由操作系统在启动程序时初始化，其返回值传递给操作系统。</p>
+<p><a href="https://baike.baidu.com/item/%E5%AE%9E%E5%8F%82" target="_blank" rel="noopener">实参</a>：实参，actual parameters，全称为”实际参数”是在调用时传递给函数的参数，即传递给被调用函数的值。实参可以是常量、变量、表达式、函数等，无论实参是何种类型的量，在进行函数调用时，它们都必须具有确定的值，以便把这些值传送给形参。 因此应预先用赋值，输入等办法使实参获得确定值。</p>
+<p>一句话概括就是：<strong>实参是调用方法时真正传入的参数，而形参是在函数中’接收‘实参的参数。</strong></p>
+<p>形参接收实参的过程是这样的：<strong>首先根据形参的类型开辟出一个合适的内存空间用来保存形参，然后将实参所保存的内容拷贝一份给形参，所以实参和形参的地址是不相同的。</strong></p>
+<p>就用我们上面的例子来讲，实参是p1,p2而形参是 i1,i2。将实参p1,p2传入方法时，方法首先会开辟出两块内存空间分别用来存放形参i1,i2，接着会将实参p1,p2所保存的内容赋值给相应的形参。所以<strong>p1,i1和p2,i2是对不同的int 变量</strong>，只是<strong>它们所保存的内容恰好相等</strong>而已。所以当你在方法中改变形参p1,p2值的时候并不会去改变实参所保存的内容(它们俩本就是不同的变量)。这个道理对于形参类型是指针也是一样的，只是指针所保存的内容是另一个对象的地址。如果要将转换例子中p1,p2的值该怎么做呢？请继续看下去。</p>
+<p>将swap_int改为如下实现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">- (void)swap_int:(int *)i1 another:(int *)i2</span><br><span class="line">&#123;</span><br><span class="line">    NSLog(@&quot;i1 address %p&quot;,&amp;i1);</span><br><span class="line">    NSLog(@&quot;i2 address %p&quot;,&amp;i2);</span><br><span class="line">    NSLog(@&quot;i1 value address %p&quot;,&amp;(*i1));</span><br><span class="line">    NSLog(@&quot;i2 value address %p&quot;,&amp;(*i2));</span><br><span class="line"></span><br><span class="line">    // 将指针i1所指向地址的变量的值赋值给变量 temp</span><br><span class="line">    int temp = *i1;</span><br><span class="line">    // 将i2所指向地址的变量的值赋值给 i1所指向地址的变量的值。</span><br><span class="line">    *i1 = *i2;</span><br><span class="line">    // 将变量 temp 的值(temp 不是指针，所以其保存的值不是一个地址而是一个正常的值)赋值给i2指针所指向地址的变量的值。</span><br><span class="line">    *i2 = temp;</span><br><span class="line">    // 将 i1,i2均赋值为nil</span><br><span class="line">    i1 = i2 = nil;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line"></span><br><span class="line">    int p1 = 1;</span><br><span class="line">    int p2 = 10;</span><br><span class="line">    </span><br><span class="line">    NSLog(@&quot;p1 address %p&quot;,&amp;p1);</span><br><span class="line">    NSLog(@&quot;p2 address %p&quot;,&amp;p2);</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    // 将 pi 和 p2 的地址作为实参传入(因为这个方法的参数需要传入的是指针，指针对应的对象)</span><br><span class="line">    [self swap_int:&amp;p1 another:&amp;p2];</span><br><span class="line">    </span><br><span class="line">    NSLog(@&quot;p1 = %d&quot;,p1);</span><br><span class="line">    NSLog(@&quot;p2 = %d&quot;,p2);</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line">// 输出结果:</span><br><span class="line">p1 = 10</span><br><span class="line">p2 = 1</span><br></pre></td></tr></table></figure>
+<p>根据刚才参数传递过程的解释，我们发现因为形参是一个新创建的变量，所以传入实参的值并没有办法去改变实参的值。到底要如何去做呢？我们反过来想一想，如果要改变p1,p2的值，其实就是要<strong>改变 p1,p2所在的内存地址中保存的值</strong>。那就是说只要将p1,p2的内存地址给形参，然后<strong>根据内存地址去获取保存在该内存地址中的值</strong>，并且改变它就可以了。所以我们需要使用指针操作符&amp;传入一个内存地址。但是因为传入的是内存地址，所以就不能使用int 类型来保存了。那要使用什么样的类型来保存这个地址呢?根据参数传递，我们知道形参是要开辟出一个新的内存空间来，并将这块内存空间的值设置为传入的实参的值。就是说形参的内容要是一个地址。那不就是一个指针！而且根据传入的实参p1,p2的类型是 int 所以我们确定了形参是int 的指针，就是 int * (注意这里的 * 并不是指针操作符的 *)。接下来我们需要做的就是根据形参获得实参所保存的内容。这里就要用到另一个指针操作符” * “，这个指针操作符是获取指针所保存的内存地址所对应的对象的值。听起来有点拗口，其实上对于该例子就是获取p1,p2变量所保存的内容。最后手动将i1,i2指针指向nil。</p>
+<p>我们知道了参数传递事实上就是创建了一个新的内存并拷贝实参的值。如何证明它是创建了一个新的对象呢，如果是创建了一个新的对象，那它是深拷贝还是浅拷贝呢？关于深拷贝与浅拷贝的问题可以看我这篇文章——<a href="/2018/07/20/iOS-中的拷贝-copy-和-mutableCopy/" title="iOS 中的拷贝(copy 和 mutableCopy)">iOS 中的拷贝(copy 和 mutableCopy)</a>。很简单，我们只需要关注那几条打印语句就行了。运行的结果你会发现i1和p1、i2和p2的内存地址永远是不同的，这表明确实是创建了新的对象。我先解释一下”&amp;(*i1)”，代码执行都是从右到左执行的，首先我们先用 * 操作符去获取指针所指向的地址所对应的对象的值，然后根据这个值使用 &amp; 来获取这个值所属的内存地址。这样我们打印出的“i1 value address”和“i2 value address”也是永远和p1,p2的地址是相同的，所以这里我们又可以得到这次的拷贝是一次浅拷贝的结论。</p>
+<h2 id="对象"><a href="#对象" class="headerlink" title="对象"></a>对象</h2><p>说到对象呢，就不能不提变量。我们先看一个例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSString *str = @&quot;String!&quot;;</span><br></pre></td></tr></table></figure>
+<p>上面的代码创建了一个 <strong>NSString 对象，它的名字是 str</strong>。</p>
+<p>也可以这么说，上面的代码创建了一个<strong>变量，它的类型是 NSString，它的名字是 str</strong>。</p>
+<p>在很多时候我们经常会把变量和对象的的概念给混淆(虽然说他们也没有很明显的区别)。但是区别还是有的，对于一个<strong>变量</strong>来讲，变量注重的是指<strong>编译器开辟出的一块内存</strong>，通常和变量名捆绑出现。我们可以这样去理解：<strong>一个人相当于一变量，而变量名则是其人名</strong>。当一个变量被创建的时候(编译器开辟出一块内存)就相当于人出生，一个人出生可能并没有名字，对于变量而言就是变量被创建可能没有变量名。 对于对象来讲，<strong>对象就是内存中一段有类型的区域</strong>。对象更注重的是对内存类型的描述。严格来说<strong>对象就是用来描述变量的</strong>。</p>
+<p>用代码去理解就是这样:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1</span><br><span class="line">int i = 1;</span><br></pre></td></tr></table></figure>
+<p>这里第一行的1其实就是一个变量，但是它并没有与之关联的变量名。但是它并不能被描述为一个对象，因为他的类型是不确定的。第二行的1也是一个变量，他的变量名是 i。在这里我们就能说它是一个 int 类型的对象其名为 i，其值是1。</p>
+<p>关于变量和对象我推荐看<a href="https://blog.csdn.net/yby4769250/article/details/7377526" target="_blank" rel="noopener">这篇文章</a></p>
+<p>关于这篇博客我找了很多的资料，但是没有找到比较权威的描述指针、指针变量、变量和对象的说明。所以这篇文章是我看了很多他人的博客加以总结并辅以自己的一些理解而写出来的，内容可能和事实上有偏差，所以我希望有了解的更深入的朋友告错我所在哪里，非常感谢！</p>
+<blockquote>
+<p>参考资料:</p>
+<ul>
+<li><p>Objective-C 指针:<a href="https://blog.csdn.net/senwin2009/article/details/48439361" target="_blank" rel="noopener">https://blog.csdn.net/senwin2009/article/details/48439361</a> </p>
+</li>
+<li><p>Objective-C 中的指针变量：<a href="https://www.jianshu.com/p/e93188a987c6" target="_blank" rel="noopener">https://www.jianshu.com/p/e93188a987c6</a> </p>
+</li>
+<li><p>iOS 之 OC中指针与对象的区别: <a href="https://www.jianshu.com/p/ca66606342f8" target="_blank" rel="noopener">https://www.jianshu.com/p/ca66606342f8</a> </p>
+</li>
+<li><p>iOS开发 – C语言基础8（指针）：<a href="https://www.jianshu.com/p/43f84673e8b1" target="_blank" rel="noopener">https://www.jianshu.com/p/43f84673e8b1</a> </p>
+</li>
+<li><p>tutorialspoint(OC 中的指针):</p>
+<p><a href="https://www.tutorialspoint.com/objective_c/objective_c_pointers.htm" target="_blank" rel="noopener">https://www.tutorialspoint.com/objective_c/objective_c_pointers.htm</a></p>
+</li>
+<li><p>维基百科——指针:</p>
+<p><a href="https://zh.wikipedia.org/wiki/%E6%8C%87%E6%A8%99_(%E9%9B%BB%E8%85%A6%E7%A7%91%E5%AD%B8)" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/%E6%8C%87%E6%A8%99_(%E9%9B%BB%E8%85%A6%E7%A7%91%E5%AD%B8)</a></p>
+</li>
+<li><p>关于指针的浅析:<a href="https://blog.csdn.net/qq_29924041/article/details/53822322" target="_blank" rel="noopener">https://blog.csdn.net/qq_29924041/article/details/53822322</a></p>
+</li>
+<li><p>C++ 指针运算符（&amp; 和 *）:<a href="http://www.runoob.com/cplusplus/cpp-pointer-operators.html" target="_blank" rel="noopener">http://www.runoob.com/cplusplus/cpp-pointer-operators.html</a></p>
+</li>
+<li><p>C++变量和对象的区别联系:<a href="https://blog.csdn.net/yby4769250/article/details/7377526" target="_blank" rel="noopener">https://blog.csdn.net/yby4769250/article/details/7377526</a></p>
+</li>
+<li><p>说说OC参数传递的那些坑：<a href="https://www.jianshu.com/p/d43dac503928" target="_blank" rel="noopener">https://www.jianshu.com/p/d43dac503928</a></p>
+</li>
+<li><p>二级指针与ARC不为人知的特性：<a href="https://www.jianshu.com/p/6a1cfef75092?utm_campaign=hugo&amp;utm_medium=reader_share&amp;utm_content=note&amp;utm_source=qq" target="_blank" rel="noopener">https://www.jianshu.com/p/6a1cfef75092?utm_campaign=hugo&amp;utm_medium=reader_share&amp;utm_content=note&amp;utm_source=qq</a></p>
+</li>
+</ul>
+</blockquote>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/20/iOS-中的拷贝-copy-和-mutableCopy/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2405,7 +2600,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
