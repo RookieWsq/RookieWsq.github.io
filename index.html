@@ -232,6 +232,229 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/02/iOS推送-APNs/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Wong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="John 的技术博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/09/02/iOS推送-APNs/" itemprop="url">iOS推送(APNs)</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-02T20:44:21+08:00">
+                2019-09-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="iOS推送-APNs"><a href="#iOS推送-APNs" class="headerlink" title="iOS推送(APNs)"></a>iOS推送(APNs)</h1><h2 id="什么是APNs"><a href="#什么是APNs" class="headerlink" title="什么是APNs"></a>什么是APNs</h2><p>iOS 在系统层面与苹果 APNs（Apple Push Notification service）服务器建立连接，应用通过观察者模式向 iOS 系统注册关注的消息，系统收到 APNs Server 消息后转发到相应的应用程序，整个过程很清晰，并且所有 APP 都共用同一个系统级的连接，减少了系统开销，虽然 APNs 能无障碍的访问，但实际使用过程中，发现延时和丢消息的情况偶有发生。</p>
+<h2 id="通知类型"><a href="#通知类型" class="headerlink" title="通知类型"></a>通知类型</h2><ul>
+<li><strong>本地通知：</strong>应用在本地配置通知详细信息并将其传递给系统，然后系统会根据所配置的通知内容选择适当的时机推送。</li>
+<li><strong>远程通知：</strong>使用公司服务器或者第三方服务器通过 APNs 来将数据推送给用户设备。</li>
+</ul>
+<p><strong>本地通知：</strong></p>
+<p><img src="/2019/09/02/iOS推送-APNs/本地推送.jpg" alt="本地推送.jpg"></p>
+<p><strong>远程通知:</strong></p>
+<p><img src="/2019/09/02/iOS推送-APNs/远程推送.jpg" alt="远程推送.jpg"></p>
+<p>本地通知和远程通知对用户来说看起来是一样的。两种类型的通知都具有相同的由系统提供的默认外观。在某些情况下可以自定义外观，可以使用如下选项之一来发送通知：</p>
+<ul>
+<li>通知横幅。</li>
+<li>应用程序右上角的角标。</li>
+<li>一个有声音的横幅或者有声音的角标。</li>
+</ul>
+<h2 id="远程推送"><a href="#远程推送" class="headerlink" title="远程推送"></a>远程推送</h2><p><strong>远程推送流程：</strong></p>
+<p><img src="/2019/09/02/iOS推送-APNs/简单推送流程.png" alt="简单推送流程.jpg"></p>
+<p><strong>流程描述：</strong></p>
+<ol>
+<li><strong>服务器将消息先发送到苹果的 APNs。</strong></li>
+<li><strong>APNs 将消息推送到用户设备。</strong></li>
+<li><strong>由 iOS 系统将收到的消息传递给相应的 App。</strong></li>
+</ol>
+<p>首先我们着重观察这两个角色 Provider 和 APNs。</p>
+<p>Provider：可以理解为我们的业务服务器，他的需要做以下几件事情：</p>
+<ul>
+<li>在 APNs 中接收全球唯一的、与应用对应的设备令牌(Device Token)和与其相关的数据。</li>
+<li>根据通知系统的设计与业务来确定何时远程推送需要推送到每个设备。</li>
+<li>构建远程通知并向 APNs 发送推送请求，每个请求都包含<strong>通知载荷</strong>和<strong>被传输的信息</strong>。APNs 接着代表您向目标设备发送相应通知。</li>
+</ul>
+<p>对于业务服务器向 APNs 发送的每一个远程通知请求，都必须遵守如下要求：</p>
+<ol>
+<li>构造一个包含通知载荷的 JSON 字典。</li>
+<li>添加有效载荷、一个全球唯一的设备令牌和其他需要被交付的HTTP / 2请求信息。</li>
+<li>通过持久、安全的通道向APNs发送包含加密凭证或证书的令牌。</li>
+</ol>
+<h3 id="有效载荷-payload"><a href="#有效载荷-payload" class="headerlink" title="有效载荷(payload)"></a>有效载荷(payload)</h3><p>Provider 给 APN 发送的每个通知都需要包含一个有效载荷。有效载荷包含要发送到应用程序的任何自定义数据，并包含一些系统默认的信息，这些默认信息是高度系统用何种方式通知用户。需要将有效载荷构造为 JSON 字典，并将其作为 HTTP/2消息的正文发送。</p>
+<p>以下示例说明了 JSON 字典的结构以及可以包含在通知中的键。有效载荷中最重要的部分就是<code>aps</code>字典，其中包括了 Apple定义的键，这些键用在 APP 中控制推送消息所需要展示的样式。</p>
+<p>请注意在以下所有的示例中，均有一个自定义的键<code>acme</code>，这个键只是作为演示作用出现。</p>
+<p><strong>示例 1.</strong>只包含推送内容的简单推送样式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;aps&quot; : &#123; &quot;alert&quot; : &quot;Message received from Bob&quot; &#125;,</span><br><span class="line">    &quot;acme2&quot; : [ &quot;bang&quot;,  &quot;whiz&quot; ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/2019/09/02/iOS推送-APNs/简单推送示例1.png" alt="简单推送示例1"></p>
+<p><strong>示例 2.</strong>以下有效载荷中包含了标题、副标题、消息内容并将 App 应用角标设置为 5。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;aps&quot; : &#123;</span><br><span class="line">        &quot;alert&quot; : &#123;</span><br><span class="line">            &quot;title&quot; : &quot;Game Request&quot;,</span><br><span class="line">            &quot;subtitle&quot; : &quot;This is subtitle&quot;</span><br><span class="line">            &quot;body&quot; : &quot;Bob wants to play poker&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;badge&quot; : 5</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;acme1&quot; : &quot;bar&quot;,</span><br><span class="line">    &quot;acme2&quot; : [ &quot;bang&quot;,  &quot;whiz&quot; ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/2019/09/02/iOS推送-APNs/简单推送示例2.png" alt="简单推送示例2"></p>
+<p><strong>示例 3.</strong>以下有效载荷中包含了通知标题、应用角标和播放的声音。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;aps&quot; : &#123;</span><br><span class="line">        &quot;alert&quot; : &quot;You got your emails.&quot;,</span><br><span class="line">        &quot;badge&quot; : 9,</span><br><span class="line">        &quot;sound&quot; : &quot;bingbong.aiff&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;acme1&quot; : &quot;bar&quot;,</span><br><span class="line">    &quot;acme2&quot; : 42</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/2019/09/02/iOS推送-APNs/简单推送示例3.png" alt="image-20190902210414660"></p>
+<p><strong>示例 4.</strong>添加指定的本地化键值内容来告诉 App 应该展示为什么语言。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;aps&quot; : &#123;</span><br><span class="line">        &quot;alert&quot; : &#123;</span><br><span class="line">            &quot;loc-key&quot; : &quot;GAME_PLAY_REQUEST_FORMAT&quot;,</span><br><span class="line">            &quot;loc-args&quot; : [ &quot;Jenna&quot;, &quot;Frank&quot;]</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;sound&quot; : &quot;Call.wav&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;acme&quot; : &quot;foo&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>所有的Apple预定义的键值对请查阅<a href="https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/PayloadKeyReference.html#//apple_ref/doc/uid/TP40008194-CH17-SW1" target="_blank" rel="noopener">有效载荷键参考</a>。</p>
+<h3 id="设备令牌-device-token"><a href="#设备令牌-device-token" class="headerlink" title="设备令牌(device token)"></a>设备令牌(device token)</h3><p>设备令牌是由 Apple 创建的一串特定数据，这一串特定的数据可以将其分配给指定设备上的指定应用()。只有 Apple 能够对其解码并读取设备令牌内容。每个应用程序在向 APN 注册时都会收到其唯一的设备令牌，然后必须将其发送给我们对应的业务服务器。当业务服务器需要发起推送请求的时候必须包含该设备令牌，该请求以指定设备为目标。</p>
+<p>APN 在以下情况下可能会分发新的设备令牌：</p>
+<ul>
+<li>用户在新设备上安装应用。</li>
+<li>用户从备份中回复设备。</li>
+<li>用户重新安装操作系统。</li>
+<li>其他系统定义的事件</li>
+</ul>
+<h3 id="如何获取设备令牌"><a href="#如何获取设备令牌" class="headerlink" title="如何获取设备令牌"></a>如何获取设备令牌</h3><h4 id="设备和-APN-的连接"><a href="#设备和-APN-的连接" class="headerlink" title="设备和 APN 的连接"></a>设备和 APN 的连接</h4><p><img src="/2019/09/02/iOS推送-APNs/service_device_ct.png" alt="service_device_ct.jpg"></p>
+<p>APN 与设备交互的原理如下：</p>
+<ol>
+<li>当设备启动时会与 APNs 开始建立 TLS 连接。</li>
+<li>APN 向设备返回 APNs 证书。</li>
+<li>操作系统成功认证该证书之后将设备证书发送给 APNs。</li>
+<li>最后 APNs 验证设备证书，与设备建立信任。</li>
+</ol>
+<p>通过设备与 APNs 建立 TLS 连接之后，设备上的应用程序可以向 APNs 注册以接受其特定的<strong>设备令牌</strong>以进行远程通知。</p>
+<p>由于设备令牌是用以标志特定设备指定应用程序的唯一标示，所以业务服务器必须存储该设备令牌。</p>
+<p><strong>管理设备令牌过程如下图所示：</strong></p>
+<p><img src="/2019/09/02/iOS推送-APNs/token_generation.png" alt="token_generation.jpg"></p>
+<p>在设备与 APNs 建立连接之后，获取用于特定应用程序的设备令牌的流程如下：</p>
+<ol>
+<li>应用程序向 APNs 注册以进行远程通知。如果应用程序已经注册并且用于特定应用程序的设备令牌未更改，则系统将会快速将现有令牌返回到应用程序，此过程将跳至步骤3。</li>
+<li>当需要新的设备令牌的时候，APNs 使用设备证书中包含的信息生成一个令牌。它使用令牌密钥加密令牌并将其返回到设备中。</li>
+<li>收到令牌后，应用程序必须以二进制或者十六进制格式转发给你的业务服务器。若无此令牌，业务服务器无法向设备发送通知。</li>
+</ol>
+<p>在业务服务器接收到了设备令牌，此时业务服务器可以开始向 APNs发送通知请求，谨记每个请求必须包含着设备令牌。其流程如下所示：</p>
+<p><img src="/2019/09/02/iOS推送-APNs/token_trust.png" alt="token_trust.jpg"></p>
+<h4 id="Provider-与-APNs-的连接"><a href="#Provider-与-APNs-的连接" class="headerlink" title="Provider 与 APNs 的连接"></a>Provider 与 APNs 的连接</h4><p>Provider和 APNs 建立连接有两种方式：</p>
+<ul>
+<li>基于令牌建立连接。</li>
+<li>基于证书建立连接。</li>
+</ul>
+<h5 id="基于令牌建立连接"><a href="#基于令牌建立连接" class="headerlink" title="基于令牌建立连接"></a>基于令牌建立连接</h5><p><img src="/2019/09/02/iOS推送-APNs/service_provider_ct.png" alt="service_provider_ct.jpg"></p>
+<p>在开发者账号中进行配置，生成唯一的服务器 Token，使用该 Token 与 APNs 建立连接。</p>
+<p><strong>基于 Token 的连接可以向包含这个证书的账号下的所有 app 发送推送。</strong></p>
+<h5 id="基于证书建立连接"><a href="#基于证书建立连接" class="headerlink" title="基于证书建立连接"></a>基于证书建立连接</h5><p><img src="/2019/09/02/iOS推送-APNs/service_provider_ct_certificate.png" alt="service_provider_ct_certificate_2x.png"></p>
+<p>基于证书的服务器连接只支持某一个特定的应用。证书需要在服务器上根据bundle 提前生成。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><img src="/2019/09/02/iOS推送-APNs/APNs-Push.jpg" alt="äºè§£iOSæ¶æ¯æ¨éä¸æå°±å¤ï¼å²ä¸æå¨iOS Pushææ¯è¯¦è§£_19.jpg"></p>
+<ul>
+<li>1) 首先是应用程序注册消息推送；</li>
+<li>2) iOS跟APNS Server要deviceToken。应用程序接受deviceToken；</li>
+<li>3) 应用程序将deviceToken发送给PUSH服务端程序；</li>
+<li>4) 服务端程序向APNS服务发送消息；</li>
+<li>5) APNS服务将消息发送给iPhone应用程序。</li>
+</ul>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><blockquote>
+<p>《Local and Remote Notification Programming Guide》：<a href="https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/HandlingRemoteNotifications.html#//apple_ref/doc/uid/TP40008194-CH6-SW1" target="_blank" rel="noopener">https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/HandlingRemoteNotifications.html#//apple_ref/doc/uid/TP40008194-CH6-SW1</a></p>
+<p>《什么是消息推送》：<a href="https://blog.csdn.net/qq_34531925/article/details/80250317" target="_blank" rel="noopener">https://blog.csdn.net/qq_34531925/article/details/80250317</a></p>
+<p>《iOS 必知必会 - APNs篇》：<a href="https://www.jianshu.com/p/13185cba2abf" target="_blank" rel="noopener">https://www.jianshu.com/p/13185cba2abf</a></p>
+<p>《了解iOS消息推送一文就够：史上最全iOS Push技术详解》：<a href="http://www.52im.net/forum.php?mod=viewthread&amp;tid=1762&amp;highlight=%CD%C6%CB%CD" target="_blank" rel="noopener">http://www.52im.net/forum.php?mod=viewthread&amp;tid=1762&amp;highlight=%CD%C6%CB%CD</a></p>
+<p>《苹果远程推送通知 APNs 详解》：<a href="https://segmentfault.com/a/1190000012019282" target="_blank" rel="noopener">https://segmentfault.com/a/1190000012019282</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/27/年度总结——追寻危机感/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -486,6 +709,8 @@
 <blockquote>
 <p>参考资料：</p>
 <p>深入了解Token认证的来龙去脉:<a href="https://baijiahao.baidu.com/s?id=1593244938986076867&amp;wfr=spider&amp;for=pc" target="_blank" rel="noopener">https://baijiahao.baidu.com/s?id=1593244938986076867&amp;wfr=spider&amp;for=pc</a></p>
+<p>Web签名加密:<a href="https://www.cnblogs.com/letcafe/p/loginSecurity.html" target="_blank" rel="noopener">https://www.cnblogs.com/letcafe/p/loginSecurity.html</a></p>
+<p>JWT:<a href="https://jwt.io/" target="_blank" rel="noopener">https://jwt.io/</a></p>
 </blockquote>
 
           
@@ -807,7 +1032,21 @@
 <p>如下是上述代码的结果：</p>
 <p><img src="/2019/01/01/iOS-CALayer-教程-入门/CAReplicatorLayer.gif" alt="CAReplicatorLayer"></p>
 <p>Layer Player包含了很多控件可以让你来操纵<code>CAReplicatorLayer</code>的大部分属性。</p>
-<h2 id="范例7：CATiledLayer"><a href="#范例7：CATiledLayer" class="headerlink" title="范例7：CATiledLayer"></a>范例7：CATiledLayer</h2>
+<h2 id="范例7：CATiledLayer"><a href="#范例7：CATiledLayer" class="headerlink" title="范例7：CATiledLayer"></a>范例7：CATiledLayer</h2><p><code>CATiledLayer</code>对一小块图层中内容异步绘制。当你同时只能看一个很大图片或者其他内容中的一小部分(tile)时，这是非常有用的。因为你不必非要等到其内容全部加载到内存中才可以看到。</p>
+<p>如下有几种方式来响应绘图。其一是重写<code>UIView</code>并使用<code>CATiledLayer</code>反复绘制小块内容(tile)直到填充满view的background，类似如下:</p>
+<p>一个控制器展示一个<code>TiledBackgroundView</code>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import UIKit</span><br><span class="line">class ViewController: UIViewController &#123;</span><br><span class="line">  @IBOutlet weak var tiledBackgroundView: TiledBackgroundView! </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>被重写的<code>TiledBackgroundView</code>视图的定义如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">import UIKit</span><br><span class="line"></span><br><span class="line">class TiledBackgroundView: UIView &#123;</span><br><span class="line">  </span><br><span class="line">  let sideLength: CGFloat = 50.0</span><br><span class="line">  </span><br><span class="line">  // 1</span><br><span class="line">  override class var layerClass: AnyClass &#123;</span><br><span class="line">    return CATiledLayer.self</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  // 2</span><br><span class="line">  required init?(coder aDecoder: NSCoder) &#123;</span><br><span class="line">    super.init(coder: aDecoder)</span><br><span class="line">    srand48(Int(Date().timeIntervalSince1970))</span><br><span class="line">    let layer = self.layer as! CATiledLayer</span><br><span class="line">    let scale = UIScreen.main.scale</span><br><span class="line">    layer.contentsScale = scale</span><br><span class="line">    layer.tileSize = CGSize(width: sideLength * scale, height: sideLength * scale)</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  // 3</span><br><span class="line">  override func draw(_ rect: CGRect) &#123;</span><br><span class="line">    let context = UIGraphicsGetCurrentContext()</span><br><span class="line">    let red = CGFloat(drand48())</span><br><span class="line">    let green = CGFloat(drand48())</span><br><span class="line">    let blue = CGFloat(drand48())</span><br><span class="line">    context?.setFillColor(red: red, green: green, blue: blue, alpha: 1.0)</span><br><span class="line">    context?.fill(rect)</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如下是上述代码的作用:</p>
+<ul>
+<li><code>layerClass</code>被重写了，所以这视图的图层是被作为<code>CATiledLayer</code>类实例创建的。</li>
+<li><code>rand48()</code>方法会在<code>draw(_:)</code>中创建出多个随机颜色。接着缩放layer(本例中是<code>CATiledLayer</code>)的内容到屏幕的缩放大小和小块内容(tile)尺寸。</li>
+<li>重写<code>draw(_:)</code>方法来创建多个带随机颜色的小块内容图层(tiled layers)填充视图。</li>
+</ul>
+<p>最终，上述代码绘制出6*6格带有随机色的正方形小块内容(tiled)，类似如下:</p>
+<p><img src="/2019/01/01/iOS-CALayer-教程-入门/CATiledLayer-250x250.png" alt="CATiledLayer"></p>
+
           
         
       
@@ -2910,182 +3149,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/14/内存管理语义/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="John Wong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="John 的技术博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/14/内存管理语义/" itemprop="url">内存管理语义</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-14T15:34:35+08:00">
-                2018-08-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>每个属性都有其内存管理语义，要么默认设置，要么主动设置。内存管理语义定义了其属性的所有权。属性所有权仅影响 setter。</p>
-<ul>
-<li><p>assign： </p>
-<p>assign一般用来修饰基本数据类型 int 、 float (基础类型没有引用关系)</p>
-<p>意义：如果这个用assign属性修饰的property代表一个指向对象的指针，那么当这个指针指向某个对象时，这个对象的引用计数不应该被改变。也就是说，用assign属性修饰的property，不应该持有一个对象(引用计数不增加)。因为这个property不持有对象，所以它所指向的对象很可能已经在别处被释放了。这时它就有可能成为一枚悬垂指针，访问它指向的内存地址时，可能会发生意想不到的状况。 </p>
-</li>
-<li><p>strong：</p>
-<p>在ARC内存管理模式下，strong是一个代表对象类型的property的默认属性，并且它不能修饰用来代表简单数据类型的property。编译器在合成实例变量时，将使用__strong修饰符。</p>
-<p>此特性表明该属性定义了一种”拥有关系“。为这种属性设置新值的时候，会先保留新值然后释放旧值，接着将新值赋值上去。(注意这里的顺序，一定是先保留新值然后释放旧值，不能相反，否则假设新值和旧值是同一个值的话会造成值被释放被设为 nil)。</p>
-</li>
-<li><p>weak: </p>
-<ul>
-<li>weak也不能修饰用来代表简单数据类型的property。</li>
-<li>编译器将为weak修饰的property生成带__weak所有权修饰符的实例变量。</li>
-<li>此特性定义了一种“非拥有关系”。为这个属性设置新值的时候，设置方法既不会保留新值，也不会释放旧值。此特性同 assign 类似，然而在此属性所知的对象被设置摧毁之后，属性值会被设置为 nil。</li>
-</ul>
-</li>
-<li><p>retain： </p>
-<ul>
-<li>retain (基本等价于 Strong) :</li>
-<li>retain不能修饰用来代表简单数据类型的property，否则编译器会报错</li>
-<li>如果一个property被retain修饰，这代表着这个property应该持有它所指向的对象。<a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/MemoryMgmt/Articles/mmPractical.html#//apple_ref/doc/uid/TP40004447-SW1" target="_blank" rel="noopener">官方文档</a>中展示了一个被retain修饰的property：</li>
-</ul>
-</li>
-<li><p>atomic(默认)：单线程使用 ， 线程安全  ， 速度慢</p>
-</li>
-<li><p>nonatomic：可多线程使用 ， 线程不安全   ， 速度快</p>
-</li>
-<li><p>copy：</p>
-<ul>
-<li><p>copy也不能修饰用来代表简单数据类型的property，否则编译器会报错</p>
-</li>
-<li><p>如果一个property被copy修饰，那么赋值到这个property的对象，应该是原有对象的一份拷贝且不会增加引用计数。</p>
-</li>
-<li>对使用 copy 修饰的属性，若是调用了自定义的 setter 则一定要注意要使用 copy 方法。</li>
-<li>只有实现了NSCopying协议，并且实现了其中的copyWithZone:方法的对象才能被拷贝。</li>
-<li>但是并不是所有的拷贝都产生了新的对象，有些类在实现copyWithZone:方法时，有着它们自己的考虑。比如NSString： NSString 在Copy之后两个对象的内存地址相同</li>
-<li><p>深拷贝和浅拷贝——具体请看<a href="/2018/07/20/iOS-中的拷贝-copy-和-mutableCopy/" title="iOS 中的拷贝(copy 和 mutableCopy)">iOS 中的拷贝(copy 和 mutableCopy)</a></p>
-<ul>
-<li>深拷贝 : 拷贝出来的对象与源对象地址不一致! 这意味着我修改拷贝对象的值对源对象的值没有任何影响.</li>
-<li>浅拷贝 : 拷贝出来的对象与源对象地址一致! 这意味着我修改拷贝对象的值会直接影响到源对象.</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<blockquote>
-<p>参考资料:</p>
-<ul>
-<li>IOS 内存管理机制  <a href="http://blog.devtang.com/2016/07/30/ios-memory-management/" target="_blank" rel="noopener">http://blog.devtang.com/2016/07/30/ios-memory-management/</a> </li>
-<li>IOS 内存管理机制 <a href="http://www.jianshu.com/p/8b1ed04b3ba9" target="_blank" rel="noopener">http://www.jianshu.com/p/8b1ed04b3ba9</a> </li>
-<li>iOS 从创建对象到销毁 <a href="https://juejin.im/entry/58a178060ce463005644ee4a" target="_blank" rel="noopener">https://juejin.im/entry/58a178060ce463005644ee4a</a></li>
-<li>assign，retain，strong，weak，unsafe_unretained，还有copy : <a href="http://www.jianshu.com/p/4a1d1921284b" target="_blank" rel="noopener">http://www.jianshu.com/p/4a1d1921284b</a> </li>
-<li>oc 属性修饰符讲解: <a href="http://rdcworld-iphone.blogspot.in/2012/12/variable-property-attributes-or.html" target="_blank" rel="noopener">http://rdcworld-iphone.blogspot.in/2012/12/variable-property-attributes-or.html</a></li>
-<li>打印引用计数 <a href="http://www.jianshu.com/p/e059a54fb5f3" target="_blank" rel="noopener">http://www.jianshu.com/p/e059a54fb5f3</a></li>
-</ul>
-</blockquote>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3136,7 +3199,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-count">19</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

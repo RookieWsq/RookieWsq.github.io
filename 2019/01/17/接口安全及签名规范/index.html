@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="John 的技术博客">
 <meta property="og:description" content="接口安全及签名规范0.敏感数据本地加密后传输 数据安全:所有敏感数据如：登录密码、支付密码、手机号等在传输过程之中需要加密。 加密方式:HMAC+MD5+key 。 流程 用户注册：在用户注册的时候判断用户是否允许注册，若允许注册则由服务器产生加密所使用的 key并保存到数据库中，在客户端保存该 key(可以加密也可以明文)。调用注册接口进行注册时，传递加密后的密码，由服务器存入数据库。 用户登录">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-02-22T07:55:51.275Z">
+<meta property="og:updated_time" content="2019-07-20T05:20:21.828Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="John 的技术博客">
 <meta name="twitter:description" content="接口安全及签名规范0.敏感数据本地加密后传输 数据安全:所有敏感数据如：登录密码、支付密码、手机号等在传输过程之中需要加密。 加密方式:HMAC+MD5+key 。 流程 用户注册：在用户注册的时候判断用户是否允许注册，若允许注册则由服务器产生加密所使用的 key并保存到数据库中，在客户端保存该 key(可以加密也可以明文)。调用注册接口进行注册时，传递加密后的密码，由服务器存入数据库。 用户登录">
@@ -349,6 +349,8 @@
 <blockquote>
 <p>参考资料：</p>
 <p>深入了解Token认证的来龙去脉:<a href="https://baijiahao.baidu.com/s?id=1593244938986076867&amp;wfr=spider&amp;for=pc" target="_blank" rel="noopener">https://baijiahao.baidu.com/s?id=1593244938986076867&amp;wfr=spider&amp;for=pc</a></p>
+<p>Web签名加密:<a href="https://www.cnblogs.com/letcafe/p/loginSecurity.html" target="_blank" rel="noopener">https://www.cnblogs.com/letcafe/p/loginSecurity.html</a></p>
+<p>JWT:<a href="https://jwt.io/" target="_blank" rel="noopener">https://jwt.io/</a></p>
 </blockquote>
 
       
@@ -463,7 +465,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-count">19</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
