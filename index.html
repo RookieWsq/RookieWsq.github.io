@@ -232,6 +232,1514 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/12/02/Mach-O文件结构初探索/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Wong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="John 的技术博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/12/02/Mach-O文件结构初探索/" itemprop="url">Mach-O文件结构初探索</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-12-02T18:42:53+08:00">
+                2021-12-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Mach-O文件结构初探索"><a href="#Mach-O文件结构初探索" class="headerlink" title="Mach-O文件结构初探索"></a>Mach-O文件结构初探索</h1><h2 id="什么是-Mach-O-文件"><a href="#什么是-Mach-O-文件" class="headerlink" title="什么是 Mach-O 文件"></a>什么是 Mach-O 文件</h2><p><strong>Mach-O</strong>（Mach Object File Format）是 macOS 上的可执行文件格式，类似于 Linux 和大部分 UNIX 的原生格式 <strong>ELF</strong>（Extensible Firmware Interface）以及 Windows 上的 PE。</p>
+<h2 id="Mach-O-构成"><a href="#Mach-O-构成" class="headerlink" title="Mach-O 构成"></a>Mach-O 构成</h2><p>Mach-O文件分成四部分：</p>
+<p><img src="/2021/12/02/Mach-O文件结构初探索/Mach-O 结构.png" alt="image-20211115214823308" style="zoom:67%;"></p>
+<ul>
+<li>header：包含文件的目标架构，CPU类型，以及其他标志和信息以便读取文件的其他部分。</li>
+<li>Load Command：Load Command跟在 header 之后，指定了文件在加载时将如何在虚拟内存中布局和文件连接特性，还包括符号表（用于动态链接）位置，以及任何要加载的共享库的名字。</li>
+<li>segment 和 section：跟在 load command 之后，load command 中的具体描述保存在这部分。</li>
+<li>link edit segment：最后一部分是链接编辑段，该段包含链接编辑信息表，如符号表、字符串表等，由动态加载器用于链接可执行文件或Mach-O捆绑包到其依赖库。</li>
+</ul>
+<p><img src="/2021/12/02/Mach-O文件结构初探索/MachOView 查看 Mach-O.png" alt="image-20211129234917525" style="zoom:75%;"></p>
+<h2 id="一、header"><a href="#一、header" class="headerlink" title="一、header"></a>一、header</h2><h3 id="header-概述"><a href="#header-概述" class="headerlink" title="header 概述"></a>header 概述</h3><p>Mach-O 的第一部分 header 中包含的信息描述了Mach-O 结构的概况，包括：目标架构，CPU情况，文件类型，loadCommand 数量，loadCommand 所占用大小(字节为单位)等等。我们接下来从源码出发探寻 <a href="https://github.com/apple/darwin-xnu/blob/main/EXTERNAL_HEADERS/mach-o/loader.h" target="_blank" rel="noopener">darwin-xnu/blob/main/EXTERNAL_HEADERS/mach-o/loader.h</a> (文件中分别定义了32 位架构和 64 位架构的头结构，下文我们以 64 位为例)：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">mach_header_64</span> &#123;</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	magic;		<span class="comment">/* 魔数标记 */</span></span><br><span class="line">	<span class="keyword">cpu_type_t</span>	cputype;	<span class="comment">/* CPU 标记 */</span></span><br><span class="line">	<span class="keyword">cpu_subtype_t</span>	cpusubtype;	<span class="comment">/* CPU确切型号 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	filetype;	<span class="comment">/* 文件类型 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	ncmds;		<span class="comment">/* load command 数量 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	sizeofcmds;	<span class="comment">/* load commands 大小 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	flags;		<span class="comment">/* 额外标记 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	reserved;	<span class="comment">/* 保留 */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>变量说明：</p>
+<ul>
+<li><p>magic：本质上是一个 4 字节整型数据，用于标识是 32 位架构还是 64 位架构，并且还能标识Mach-O 文件的大小端序。</p>
+<ul>
+<li>值在 <a href="https://github.com/apple/darwin-xnu/blob/main/EXTERNAL_HEADERS/mach-o/loader.h" target="_blank" rel="noopener">loader.h</a> / <a href="https://github.com/apple/darwin-xnu/blob/main/EXTERNAL_HEADERS/mach-o/fat.h" target="_blank" rel="noopener">fat.h</a>中定义。</li>
+<li>64 位小端：<code>#define MH_MAGIC_64 0xfeedfacf</code>。</li>
+<li>64 位大端：<code>#define MH_CIGAM_64 0xcffaedfe</code>。</li>
+<li>32 位小端：<code>#define    MH_MAGIC    0xfeedface</code>。</li>
+<li>32 位大端：<code>#define MH_CIGAM    0xcefaedfe</code>。</li>
+<li>胖二进制小端：<code>#define FAT_MAGIC    0xcafebabe</code>。</li>
+<li>胖二进制大端：<code>#define FAT_CIGAM    0xbebafeca</code>。</li>
+</ul>
+</li>
+<li><p>cputype：本质上一个是4 字节整型数据，用于表示运行 Mach-O 文件平台 CPU 的架构。</p>
+<ul>
+<li>值在  <a href="https://github.com/apple/darwin-xnu/blob/8f02f2a044b9bb1ad951987ef5bab20ec9486310/osfmk/mach/machine.h" target="_blank" rel="noopener">machine.h</a> 文件中定义。</li>
+<li>早期 arm CPU：<code>#define CPU_TYPE_ARM            ((cpu_type_t) 12)</code>。</li>
+<li>arm64 CPU：<code>#define CPU_TYPE_ARM64          (CPU_TYPE_ARM | CPU_ARCH_ABI64)</code>，值为 <code>0100000C</code> 。</li>
+<li>64 位英特尔 CPU：<code>#define CPU_TYPE_X86_64         (CPU_TYPE_X86 | CPU_ARCH_ABI64)</code>，值为<code>01000007</code>。</li>
+</ul>
+</li>
+<li><p>cpusubtype：本质上一个是4 字节整型数据，用于在 cputtype 确定的情况下内核运行的确切 CPU 型号。</p>
+<ul>
+<li>值在  <a href="https://github.com/apple/darwin-xnu/blob/8f02f2a044b9bb1ad951987ef5bab20ec9486310/osfmk/mach/machine.h" target="_blank" rel="noopener">machine.h</a> 文件中定义。</li>
+<li>ARM64平台下：<ul>
+<li>ARM64所有型号：<code>#define CPU_SUBTYPE_ARM64_ALL           ((cpu_subtype_t) 0)</code>。</li>
+<li>ARM64_v8：<code>#define CPU_SUBTYPE_ARM64_V8            ((cpu_subtype_t) 1)</code>。</li>
+<li>ARM64e：<code>#define CPU_SUBTYPE_ARM64E              ((cpu_subtype_t) 2)</code>。</li>
+</ul>
+</li>
+<li>X86平台下：<ul>
+<li>X86 所有型号：<code>#define CPU_SUBTYPE_X86_ALL             ((cpu_subtype_t)3)</code>。</li>
+<li>X86 下 64位所有：<code>#define CPU_SUBTYPE_X86_64_ALL          ((cpu_subtype_t)3)</code>。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>filetype：表示 Mach-O 文件的类型。</p>
+<ul>
+<li><p>值在 <a href="https://github.com/apple/darwin-xnu/blob/main/EXTERNAL_HEADERS/mach-o/loader.h" target="_blank" rel="noopener">loader.h</a> 中定义。</p>
+<p><img src="/2021/12/02/Mach-O文件结构初探索/header-filetype.png" alt="image-20211128013604436"></p>
+</li>
+<li><p>MH_OBJECT:目标文件——通过对源代码编译得到的(中间)结果。目标文件（.o）、静态库文件(.a），静态库其实就是N个.o合并在一起。</p>
+</li>
+<li><p>MH_EXECUTE：标准可执行文件。</p>
+</li>
+<li><p>MH_DYLIB：动态库文件，*.dylib，.framework/xx。</p>
+</li>
+<li><p>MH_DYLINKER：动态链接编辑器，/usr/lib/dyld。注意 dyld 负责加载 MH_EXECUTE、MH_DYLIB和部分MH_BUNDLE文件(<a href="https://github.com/opensource-apple/dyld/blob/master/src/dyld.cpp" target="_blank" rel="noopener">dyld 源码</a>)。</p>
+</li>
+<li><p>MH_BUNDLE：插件，非独立的二进制文件，要加载至其他二进制文件才能发挥作用。和 DYLIB类型文件的区别在于：这些二进制文件是可执行文件显示地加载的，通常是调用 NSBundle(Objective-C)或 CFBundle(C)。</p>
+</li>
+<li><p>MH_DSYM：存储着二进制文件符号信息的文件，*.dSYM/Contents/Resources/DWARF/xx（常用于分析APP的崩溃信息）。</p>
+</li>
+</ul>
+</li>
+<li><p>ncmds：load command 数量(number of load commands)。</p>
+</li>
+<li><p>sizeofcmds：load command所占用的内存大小(字节为单位)。</p>
+</li>
+<li><p>flags：额外标记，表示Mach-O文件格式的某些可选特性的状态。</p>
+<ul>
+<li>值在 <a href="https://github.com/apple/darwin-xnu/blob/main/EXTERNAL_HEADERS/mach-o/loader.h" target="_blank" rel="noopener">loader.h</a> 中定义。</li>
+<li>MH_NOUNDEFS：该对象文件不包含未定义的符号。</li>
+<li>MH_INCRLINK：对象文件是针对基础文件的增量链接的输出，不能被再次链接。</li>
+<li>MH_DYLDLINK：该文件是动态链接器的输入，不能再次静态链接。</li>
+<li>MH_TWOLEVEL：该模块使用两级命名空间绑定。</li>
+<li>MH_FORCE_FLAT：可执行程序强迫所有模块使用平面名称空间绑定。</li>
+<li>MH_WEAK_DEFINES：最终的链接模块包含外部弱符号。</li>
+<li>MH_PREBOUND：该文件有其动态未定义引用的预绑定。</li>
+<li>MH_PIE：当这个位被设置时，操作系统将在一个随机地址加载主可执行文件(<a href="https://zh.wikipedia.org/wiki/%E4%BD%8D%E5%9D%80%E7%A9%BA%E9%96%93%E9%85%8D%E7%BD%AE%E9%9A%A8%E6%A9%9F%E8%BC%89%E5%85%A5" target="_blank" rel="noopener">ASLR 技术</a>)。 只在MH_EXECUTE文件类型中使用。</li>
+<li>MH_HAS_TLV_DESCRIPTORS：包含一个类型为S_THREAD_LOCAL_VARIABLES的section。</li>
+</ul>
+</li>
+<li><p>reserved：保留给未来用。</p>
+</li>
+</ul>
+<p>接下来我们通过实例来查看header 的具体构成：</p>
+<h3 id="header-查看"><a href="#header-查看" class="headerlink" title="header 查看"></a>header 查看</h3><ol>
+<li><p>使用 GUI 工具 MachOView：</p>
+<p><img src="/2021/12/02/Mach-O文件结构初探索/MachOView-header.png" alt="image-20211128185142510"></p>
+<p>由图可知该 MachO 文件类型是 NH_EXECUTE ，有 66 个 load command 等一系列信息。</p>
+</li>
+<li><p>file 命令查看文件类型及架构：<code>file &lt;filepath&gt;</code>，例如：<code>file /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/lipo</code>。</p>
+</li>
+<li><p>通过 lipo 命令查看所支持的架构：</p>
+<p>lipo命令路径：<code>/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/lipo</code>。</p>
+<p>开源地址：<a href="https://opensource.apple.com/tarballs/cctools/" target="_blank" rel="noopener">cctools/misc/lipo.c</a>。</p>
+<p>lipo命令格式：</p>
+<ul>
+<li><p>查看帮助：<code>man lipo</code>。</p>
+</li>
+<li><p>查看支持多少种 CPU架构：</p>
+<ul>
+<li>格式：<code>lipo -info 文件路径</code> 。</li>
+<li>例子：<code>lipo -info /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/lipo</code>。</li>
+</ul>
+</li>
+<li>合并多个架构：<ul>
+<li>格式：<code>lipo [-arch 指定架构] -create 文件1 文件2 -output 输出文件</code>。</li>
+<li>-arch 指定架构参数可选，如果指定的话会将文件 1 文件 2 中的指定架构从输入文件中复制到输出文件。</li>
+</ul>
+</li>
+<li>提取指定架构：<ul>
+<li>格式：<code>lipo 文件路径 -thin 指定架构 -output 输出文件</code>。</li>
+</ul>
+</li>
+<li>移除特定架构：<ul>
+<li>格式：<code>lipo 文件路径 -remove 指定架构 -output 输出文件</code>。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="二、Load-Command"><a href="#二、Load-Command" class="headerlink" title="二、Load Command"></a>二、Load Command</h2><h3 id="Load-Command概述"><a href="#Load-Command概述" class="headerlink" title="Load Command概述"></a>Load Command概述</h3><p>跟在 header 之后的就是 Load Command，Load Command负责描述指令在内存中的布局情况和文件连接特性，还包括符号表（用于动态链接）位置，以及任何要加载的共享库。</p>
+<p><img src="/2021/12/02/Mach-O文件结构初探索/MachOView-load command-overview.png" alt="image-20211128221136653" style="zoom: 67%;"></p>
+<p>LoadCommand 中的加载指令有很多种，<code>LC_SEGMENT_64</code>、<code>LC_DYLD_INFO_ONLY</code>、<code>LC_UUID</code>等等。接下来我们通过具体实例查看和分析 LoadCommand 实际组成。</p>
+<h3 id="Load-Command-查看"><a href="#Load-Command-查看" class="headerlink" title="Load Command 查看"></a>Load Command 查看</h3><p>在 <a href="https://github.com/apple/darwin-xnu/blob/main/EXTERNAL_HEADERS/mach-o/loader.h" target="_blank" rel="noopener">loader.h</a> 中声明了Load Command 指令的基础结构：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">load_command</span> &#123;</span></span><br><span class="line">	<span class="keyword">uint32_t</span> cmd;		<span class="comment">/* load command类型 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span> cmdsize;	<span class="comment">/* load command的字节长度 64位架构的值是 8 的倍数   32 位架构的值是 4 的倍数 */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>cmd：指令类型。定义在 <a href="https://github.com/apple/darwin-xnu/blob/main/EXTERNAL_HEADERS/mach-o/loader.h" target="_blank" rel="noopener">loader.h</a> 中：</p>
+<table>
+<thead>
+<tr>
+<th>指令(定义在<a href="https://github.com/apple/darwin-xnu/blob/main/EXTERNAL_HEADERS/mach-o/loader.h" target="_blank" rel="noopener">loader.h</a>)</th>
+<th>指令值(定义在<a href="https://github.com/apple/darwin-xnu/blob/main/EXTERNAL_HEADERS/mach-o/loader.h" target="_blank" rel="noopener">loader.h</a>)</th>
+<th>指令对应的函数(定义在 <a href="https://github.com/apple/darwin-xnu/blob/2ff845c2e033bd0ff64b5b6aa6063a1f8f65aa32/bsd/kern/mach_loader.c" target="_blank" rel="noopener">mach_loader.c</a> )</th>
+<th>对应的数据结构(定义在 <a href="https://github.com/apple/darwin-xnu/blob/main/EXTERNAL_HEADERS/mach-o/loader.h" target="_blank" rel="noopener">loader.h</a>)</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LC_SEGMENT_64</td>
+<td>0x19</td>
+<td>load_segment</td>
+<td>segment_command_64</td>
+<td>定义一个 64 位段，将其映射到加载该文件的进程的地址空间。它还包括该段所包含的所有部分。</td>
+</tr>
+<tr>
+<td>LC_DYLD_INFO_ONLY</td>
+<td>0x80000022</td>
+<td>由 dyld 处理</td>
+<td>dyld_info_command</td>
+<td>告知 dyld 加载 image 所需的偏移信息(Dynamic Loader Info包含具体信息)。</td>
+</tr>
+<tr>
+<td>LC_SYMTAB</td>
+<td>0x2</td>
+<td>由 dyld 处理</td>
+<td>symtab_command</td>
+<td>为文件定义符号表和字符串表，在链接文件时被链接器使用，同时也用于调试器映射符号到源文件。符号表定义的本地符号仅用于调试，而已定义的和未定义的 external 符号被链接器所使用。</td>
+</tr>
+<tr>
+<td>LC_DYSYMTAB</td>
+<td>0xb</td>
+<td>由 dyld 处理</td>
+<td>dysymtab_command</td>
+<td>指定动态链接器使用的额外符号表信息。</td>
+</tr>
+<tr>
+<td>LC_LOAD_DYLINKER</td>
+<td>0xe</td>
+<td>load_dylinker</td>
+<td>dylinker_command</td>
+<td>指定内核在加载该文件所链接的动态共享库的路径。</td>
+</tr>
+<tr>
+<td>LC_UUID</td>
+<td>0x1b</td>
+<td>load_uuid</td>
+<td>uuid_command</td>
+<td>产生一个唯一的 128 位随机数来标识当前可执行文件或其 dSYM 文件。</td>
+</tr>
+<tr>
+<td>LC_VERSION_MIN_IPHONEOS</td>
+<td>0x25</td>
+<td>load_version</td>
+<td>version_min_command</td>
+<td>指定当前可执行文件最低可运行系统版本。</td>
+</tr>
+<tr>
+<td>LC_SOURCE_VERSION</td>
+<td>0x2A</td>
+<td></td>
+<td>source_version_command</td>
+<td>用来构建二进制文件的源版本</td>
+</tr>
+<tr>
+<td>LC_MAIN</td>
+<td>0x80000028</td>
+<td>load_main</td>
+<td>entry_point_command</td>
+<td>定义程序入口，设置程序主线程的入口点地址和栈大小。</td>
+</tr>
+<tr>
+<td>LC_ENCRYPTION_INFO_64</td>
+<td>0x2C</td>
+<td>由 dyld 处理</td>
+<td>encryption_info_command_64</td>
+<td>指示加壳时加密段偏移和大小。</td>
+</tr>
+<tr>
+<td>LC_LOAD_DYLIB</td>
+<td>0xc</td>
+<td>由 dyld 处理</td>
+<td>dylib_command</td>
+<td>指示需要加载的额外的动态库的信息，包括：库版本、库路径等。可以使用命令”otool -L xxx”查看。</td>
+</tr>
+<tr>
+<td>LC_LOAD_WEAK_DYLIB</td>
+<td>0x80000018</td>
+<td>由 dyld 处理</td>
+<td>dylib_command</td>
+<td>建立在LC_LOAD_DYLIB功能的基础上，如果未找到指定的库，就忽略这个库。</td>
+</tr>
+<tr>
+<td>LC_RPATH</td>
+<td>0x8000001C</td>
+<td>由 dyld 处理</td>
+<td>rpath_command</td>
+<td>Runpath Search Paths，包含一个路径，在运行时应该被添加到当前的运行路径中，用于寻找@rpath前缀的dylibs。</td>
+</tr>
+<tr>
+<td>LC_FUNCTION_STARTS</td>
+<td>0x26</td>
+<td>由 dyld 处理</td>
+<td>linkedit_data_command</td>
+<td>指示函数起始地址表。</td>
+</tr>
+<tr>
+<td>LC_DATA_IN_CODE</td>
+<td>0x29</td>
+<td>由 dyld 处理</td>
+<td>linkedit_data_command</td>
+<td>指示定义在代码段内的非指令的表。</td>
+</tr>
+<tr>
+<td>LC_CODE_SIGNATURE</td>
+<td>0x1d</td>
+<td>load_code_signature</td>
+<td>linkedit_data_command</td>
+<td>定义代码签名信息。</td>
+</tr>
+</tbody>
+</table>
+<p>接下来我们着重分析几个加载命令：</p>
+<h4 id="1-LC-SEGMENT-64"><a href="#1-LC-SEGMENT-64" class="headerlink" title="1.LC_SEGMENT_64"></a>1.LC_SEGMENT_64</h4><p>LC_SEGMENT_64命令是最重要的加载命令之一。这条命令负责将 segment 映射到内存中。</p>
+<p>segument 定义了Mach-O文件中的字节范围，以及这些字节在动态链接器加载应用程序时被映射到虚拟内存的地址和内存保护属性。</p>
+<p>segument 提供的信息结构如下所示：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">segment_command_64</span> &#123;</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	cmd;		<span class="comment">/* 表示LC_SEGMENT_64 值为0x19 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	cmdsize;	<span class="comment">/* load command 所占用的字节大小 */</span></span><br><span class="line">	<span class="keyword">char</span>		segname[<span class="number">16</span>];	<span class="comment">/* segment 名称 */</span></span><br><span class="line">	<span class="keyword">uint64_t</span>	vmaddr;		<span class="comment">/* segment 映射到虚拟内存的偏移 */</span></span><br><span class="line">	<span class="keyword">uint64_t</span>	vmsize;		<span class="comment">/* segment 映射到虚拟内存的大小 */</span></span><br><span class="line">	<span class="keyword">uint64_t</span>	fileoff;	<span class="comment">/* segment 在当前架构文件中的偏移  */</span></span><br><span class="line">	<span class="keyword">uint64_t</span>	filesize;	<span class="comment">/* segment 在当前架构文件中所对应的文件的大小 */</span></span><br><span class="line">	<span class="keyword">vm_prot_t</span>	maxprot;	<span class="comment">/* segment 的最高内存保护级别，用八进制表示(4=r，2=w，1=x) */</span></span><br><span class="line">	<span class="keyword">vm_prot_t</span>	initprot;	<span class="comment">/* segment 最初始的内存保护级别 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	nsects;		<span class="comment">/* segment 中 section 的数量 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	flags;		<span class="comment">/* 标记位 */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>LC_SEGMENT_64的执行逻辑：内核将从偏移量 fileoff 出的 filesize 字节加载到虚拟内存中，这块虚拟内存起始地址为 vmaddr 长度是 vmsize。并且每个 segment 的页面的权限都由 initprot 进行初始化。segment 权限可以改变，但是最高不能超过 maxprot 所规定的的权限级别。级别权限在 <a href="osfmk/mach/vm_prot.h">osfmk/mach/vm_prot.h</a> 中定义。</p>
+<p>LC_SEGMENT_64能加载如下几个段：</p>
+<ul>
+<li><strong>PAGEZERO：静态链接器创建了 `</strong>PAGEZERO<code>段作为可执行文件的第一个段。这个段位于虚拟内存0 处，占据虚拟内存大小是64位架构下：0x100000000 。并且由于</code>__PAGEZERO`段中没有数据，所以它在文件中不占空间。</li>
+<li>__TEXT：包含可执行代码和其他只读数据，并且静态链接器将该 segment 的虚拟内存权限设置为不可写入。</li>
+<li>__DATA：包含可读写数据，静态链接器设置上个页面的虚拟内存权限为允许读和写。</li>
+<li>__OBJC：包含Objective-C语言运行时支持库所使用的数据。</li>
+<li>__IMPORT： 段包含了符号存根和指向未在可执行文件中定义的符号的非懒惰指针。这个段只为针对IA-32结构的可执行文件而产生。</li>
+<li>__LINKEDIT：包含动态链接器使用的原始数据，如符号、字符串和重定位表项。</li>
+</ul>
+<p>对于一些 segment (<code>__TEXT</code>、<code>__OBJC</code>、<code>__DATA</code>)来说，有时候其中包含的信息也被分解成不同的 section。section 的定义如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">section_64</span> &#123;</span> </span><br><span class="line">	<span class="keyword">char</span>		sectname[<span class="number">16</span>];	<span class="comment">/* section 名字 */</span></span><br><span class="line">	<span class="keyword">char</span>		segname[<span class="number">16</span>];	<span class="comment">/* segment 名字 */</span></span><br><span class="line">	<span class="keyword">uint64_t</span>	addr;		<span class="comment">/* section 映射到虚拟内存的偏移 */</span></span><br><span class="line">	<span class="keyword">uint64_t</span>	size;		<span class="comment">/* section 的字节数 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	offset;		<span class="comment">/* section 在当前架构文件中的偏移 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	align;		<span class="comment">/* section 的字节对齐大小 n，计算结果为2的n次方 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	reloff;		<span class="comment">/* 重定位入口的文件偏移 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	nreloc;		<span class="comment">/* 重定位入口的个数 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	flags;		<span class="comment">/* section 的类型和属性*/</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	reserved1;	<span class="comment">/* 保留位 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	reserved2;	<span class="comment">/* 保留位 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	reserved3;	<span class="comment">/* 保留位 */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>__TEXT的 section：</p>
+<table>
+<thead>
+<tr>
+<th>segment,section</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>__TEXT,__text</code></td>
+<td>程序可执行的代码</td>
+</tr>
+<tr>
+<td><code>__TEXT,__stubs</code></td>
+<td>用于动态链接的桩</td>
+</tr>
+<tr>
+<td><code>__TEXT,__stubs</code></td>
+<td>用于动态链接的桩</td>
+</tr>
+<tr>
+<td><code>__TEXT,__const</code></td>
+<td>const关键字修饰的常量</td>
+</tr>
+<tr>
+<td><code>__TEXT,__objc_methname</code></td>
+<td>Objective-C 方法名称</td>
+</tr>
+<tr>
+<td><code>__TEXT,__ustring</code></td>
+<td>unicode字符串</td>
+</tr>
+<tr>
+<td><code>__TEXT,__cstring</code></td>
+<td>C 中的常量字符串</td>
+</tr>
+<tr>
+<td><code>__TEXT,__objc_classname</code></td>
+<td>Objective-C 类名</td>
+</tr>
+<tr>
+<td><code>__TEXT,__objc_methtype</code></td>
+<td>Objective-C 方法类型</td>
+</tr>
+<tr>
+<td><code>__TEXT,__gcc_except_tab</code></td>
+<td>gcc异常表</td>
+</tr>
+<tr>
+<td><code>__TEXT,__unwind_info</code></td>
+<td>用于确定异常发生时栈所对应的信息</td>
+</tr>
+<tr>
+<td><code>__TEXT,__eh_frame</code></td>
+<td>调试符号信息</td>
+</tr>
+</tbody>
+</table>
+<p>__DATA 的 section：</p>
+<table>
+<thead>
+<tr>
+<th>segment,section</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>__DATA,__const</code></td>
+<td>初始化可重新定位的常量变量。</td>
+</tr>
+<tr>
+<td><code>__DATA,__cfstring</code></td>
+<td>程序中使用的 CoreFoundation 字符串(CFStringRefs)</td>
+</tr>
+<tr>
+<td><code>__DATA,__classlist</code></td>
+<td>Objective-C 类列表</td>
+</tr>
+<tr>
+<td><code>__DATA,__nlcslist</code></td>
+<td>保存了Objective-C 的categories的 +load函数列表。</td>
+</tr>
+<tr>
+<td><code>__DATA,__catlist</code></td>
+<td>Objective-C 分类信息</td>
+</tr>
+<tr>
+<td><code>__DATA,__protolist</code></td>
+<td>包含Objective-C所有协议列表</td>
+</tr>
+<tr>
+<td><code>__DATA,__imageinfo</code></td>
+<td>保存了Objective-C 镜像信息。</td>
+</tr>
+<tr>
+<td><code>__DATA,__selrefs</code></td>
+<td>保存了Objective-C 方法调用者的信息。</td>
+</tr>
+<tr>
+<td><code>__DATA,__objc_classrefs</code></td>
+<td>保存了 Objective-C 被使用的类的引用信息。</td>
+</tr>
+<tr>
+<td><code>__DATA,__objc_superrefs</code></td>
+<td>保存了 Objective-C 调用了 super 方法的类的引用。</td>
+</tr>
+<tr>
+<td><code>__DATA,__objc_ivar</code></td>
+<td>保存了 Objective-C 中的 ivar 指针。</td>
+</tr>
+<tr>
+<td><code>__DATA,__objc_data</code></td>
+<td>存储的就是<code>objc_class</code>的所有成员</td>
+</tr>
+<tr>
+<td><code>__DATA,__data</code></td>
+<td>储存可变变量。</td>
+</tr>
+</tbody>
+</table>
+<h4 id="2-LC-MAIN"><a href="#2-LC-MAIN" class="headerlink" title="2.LC_MAIN"></a>2.LC_MAIN</h4><p>这条命令的作用是设置程序主线程的入口点地址和栈大小。</p>
+<h4 id="3-LC-CODE-SIGNATURE"><a href="#3-LC-CODE-SIGNATURE" class="headerlink" title="3.LC_CODE_SIGNATURE"></a>3.LC_CODE_SIGNATURE</h4><p>可执行文件进行签名之后会添加此条 load command。</p>
+<h2 id="三、segment-和-section"><a href="#三、segment-和-section" class="headerlink" title="三、segment 和 section"></a>三、segment 和 section</h2><p>这部分所包含的信息是 load command 数据的具体描述。</p>
+<h2 id="四、link-edit-segment"><a href="#四、link-edit-segment" class="headerlink" title="四、link edit segment"></a>四、link edit segment</h2><p>该段包含链接编辑信息表，如符号表、字符串表等，由动态加载器用于链接可执行文件或Mach-O捆绑包到其依赖库。</p>
+<blockquote>
+<p>资料：</p>
+<p><a href="https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/MachOTopics/0-Introduction/introduction.html#//apple_ref/doc/uid/TP40001519" target="_blank" rel="noopener">Mach-O Programming Topics</a></p>
+<p><a href="https://github.com/aidansteele/osx-abi-macho-file-format-reference" target="_blank" rel="noopener">osx-abi-macho-file-format-reference</a></p>
+<p><a href="https://www.leewong.cn/2020/08/30/Mach-O/" target="_blank" rel="noopener">Mach-O 探究</a></p>
+<p><a href="https://devyang.space/2020/01/10/%E4%BB%8Ellvm%E7%9C%8BmachO/" target="_blank" rel="noopener">从LLVM看MachO</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/04/11/Instrument文档翻译/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Wong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="John 的技术博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/04/11/Instrument文档翻译/" itemprop="url">Instrument文档翻译</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-11T17:11:59+08:00">
+                2021-04-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Instrument文档翻译"><a href="#Instrument文档翻译" class="headerlink" title="Instrument文档翻译"></a>Instrument文档翻译</h1><h2 id="关于Instrument"><a href="#关于Instrument" class="headerlink" title="关于Instrument"></a>关于Instrument</h2><h3 id="Instruments概述"><a href="#Instruments概述" class="headerlink" title="Instruments概述"></a>Instruments概述</h3><p>Instrument是 Xcode 工具集中的一个强大且灵活的性能分析和测试工具。它能够分析iOS，watchOS和 macOS的 app，以便您能够更好的理解和优化其行为并提高其性能。在您 app 开发的最初就将 Instrument 加入您的工作流当中能够在app 开发早期就帮助您发现问题以便减少后来的时间。</p>
+<p>在Instrument中您使用的特殊工具被称作instruments，他们能够跟踪您app进程和硬件设备等不同方面。instruments将会手机数据以作分析，并将分析结果以图标的形式呈现出来。</p>
+<p>Instruments与其他性能和调试工具不同的是，instruments允许你收集多种不同类型的数据并将其并排展示。这养能够轻易的分辨可能被遗漏的趋势。举个例子，由于多个开放的网络连接，您 app 出现巨大的内存增长时，通过同时使用Allocations和Connections这俩instruments工具，你能够识别出因未关闭而导致内存暴增的连接。</p>
+<p>通过高效使用Instrument，你能够</p>
+<ul>
+<li>检查一个或多个 app 或进程</li>
+<li>检查类似 WIFI和蓝牙这类设备特性</li>
+<li>在模拟器或者真机上做性能分析</li>
+<li>跟踪代码中出现的问题</li>
+<li>对您的 app 进行性能分析</li>
+<li>在您 app 中找到类似内存泄漏，弃用内存和僵尸对象</li>
+<li>识别出使您 app 提高电源效率的方法</li>
+<li>进行的常规系统级别的问题分析</li>
+<li>将 Instrument 配置信息作为模板保存</li>
+</ul>
+<p>尽管他已嵌入并可以与Xcode 一同使用，Instruments还是一个独立的软件，这意味着在需要的时候Instruments可以独立使用。</p>
+<p><a href="https://help.apple.com/instruments/developer/mac/current/" target="_blank" rel="noopener">Instruments开发帮助</a></p>
+<h3 id="关于跟踪-trace-的文档"><a href="#关于跟踪-trace-的文档" class="headerlink" title="关于跟踪(trace)的文档"></a>关于跟踪(trace)的文档</h3><p>跟踪文档常被用来作为组织和配置用于分析的instruments，数据收集的发起，和查看分析结果。你可以通过启动Instruments之后选择分析模板或者直接从Xcode，Dock，命令行启动分析的方式来创建一个新的跟踪文档。您同样可以保存和重新打开您已经配置过的instruments并收集过数据的跟踪文档。一个跟踪文档可以通过多个窗格和区域的方式呈现出极其详尽的信息。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/51452EE2-B973-4C3C-A19F-A398AD0E5A59.png" alt="51452EE2-B973-4C3C-A19F-A398AD0E5A59"></p>
+<p>跟踪文档包括如下多个主区域</p>
+<ul>
+<li>工具栏：允许但不限于您开始，暂停和结束数据分析，添加instruments，隐藏或者显示窗格。查看<a href="https://help.apple.com/instruments/mac/10.0/#/dev546b5b54" target="_blank" rel="noopener">关于跟踪文档工具栏</a></li>
+<li>时间线窗格：以图形化模式展示指定跟踪(trace)所记录的数据的概要。查看<a href="https://help.apple.com/instruments/mac/10.0/#/devc12c5417" target="_blank" rel="noopener">关于跟踪文档时间线窗格</a></li>
+<li>详情窗格：展示在您跟踪文档中使用instruments所收集的数据的详细信息。查看<a href="https://help.apple.com/instruments/mac/10.0/#/dev9b08bd72" target="_blank" rel="noopener">关于跟踪文档详情窗格</a></li>
+<li>检查器窗格：包含关于当前数据记录的信息概要和instruments具体的扩展详情。查看<a href="https://help.apple.com/instruments/mac/10.0/#/devd72c957d" target="_blank" rel="noopener">关于跟踪文档检查器窗格</a></li>
+</ul>
+<h3 id="关于跟踪文档工具栏"><a href="#关于跟踪文档工具栏" class="headerlink" title="关于跟踪文档工具栏"></a>关于跟踪文档工具栏</h3><p>跟踪文档工具栏允许但不限于您开始，暂停和结束数据分析，添加instruments，隐藏或者显示窗格。</p>
+<p>工具栏包含如下主要对象：</p>
+<ul>
+<li>分析控件：允许您记录，暂停和停止数据收集。</li>
+<li>目标设备列表：允许您选择您希望分析的设备。</li>
+<li>目标进程列表：允许您选择一个或多个进程用于分析。</li>
+<li>活动查看器：展示跟踪文档的运行数量和当前跟踪(trace)的流逝时间。</li>
+<li>添加Instrument按钮(+)：展示或隐藏包含所有可用instruments库模列表。在列表中你可以单独选择将它们添加到跟踪文档中。</li>
+<li>查看按钮：显示或隐藏详情和检查器窗格。</li>
+</ul>
+<h3 id="关于跟踪文档时间线窗格"><a href="#关于跟踪文档时间线窗格" class="headerlink" title="关于跟踪文档时间线窗格"></a>关于跟踪文档时间线窗格</h3><p>时间线窗格以图形化模式展示指定跟踪(trace)所记录的数据的概要。在这个窗格中任意一个instrument，CPU核心或线程都有其各自跟踪(trace)，这个跟踪能够提供所收集到数据的图形化表格。</p>
+<p>虽然这个窗格的信息是只读的，但是你能够通过滑动数据来选择需要仔细查看的指定区域，并插入标记以突显您感兴趣的点。你可以通过改变缩放级别，或者使用<a href="https://help.apple.com/instruments/mac/10.0/#/deva13e2923b" target="_blank" rel="noopener">显示配置弹出框</a>来改变一个独立instruments的显示配置来更改图形信息显示方式。instrument有一个可选择的过滤器栏来控制过滤数据的显示方式。例如，一个简单的instrument能够通过线程来过滤数据。</p>
+<p>当你调查问题的时候可以通过将时间线固定到隔窗底部的方式来保持重要信息的显示。举个例子，你能够固定将Leaks instrument固定在窗格底部，接着通过滑动其他instruments来查找和发现可能发生内存泄漏的地方。被固定的instruments不会在多个运行之间保存。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/3EB44883-494C-4B0C-8C4C-06EFE03313A4.png" alt="3EB44883-494C-4B0C-8C4C-06EFE03313A4"></p>
+<p>策略视图</p>
+<p>点击筛选视图中的策略按钮在时间线中单独或同时显示instruments或CPU核心或线程数据。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/82A15CE7-10F3-4DDA-B79B-E5F9E8951416.png" alt="82A15CE7-10F3-4DDA-B79B-E5F9E8951416"></p>
+<p>ALL：在时间线中展示instruments，线程和CPU核心数据。</p>
+<p>CPUs：显示CPU核心列表，并在时间线窗格中单独展示随着时间改变它们的使用情况。只有当一个跟踪文档中包含记录了CPU数据的instruments时，才可用。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/64707226-3F58-4156-8C51-7C205735C864.png" alt="64707226-3F58-4156-8C51-7C205735C864"></p>
+<p>Instruments：在时间线窗格中展示instruments列表和其数据。</p>
+<p>当你在列表中选择了instrument，你可以在监控窗格中删除或者配置它。当你创建一个跟踪文档时instruments列表是默认可见的。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/4AFEA707-9FC7-45C4-9243-225D355F2E9F.png" alt="4AFEA707-9FC7-45C4-9243-225D355F2E9F"></p>
+<p>Threads：在时间窗格中显示线程列表和其所使用的数据。只有在跟踪文档所包含的instruments记录了线程数据时才可见。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/74EABEE3-8F29-43D6-8D85-95E9CF8A382C.png" alt="74EABEE3-8F29-43D6-8D85-95E9CF8A382C"></p>
+<h3 id="关于显示配置弹窗"><a href="#关于显示配置弹窗" class="headerlink" title="关于显示配置弹窗"></a>关于显示配置弹窗</h3><p>使用显示配置弹窗来配置在时间线中需要展示的数据和其展示格式。</p>
+<p>在显示配置弹窗中可用的显示设置根据instrument而异。这些设置能帮助你：</p>
+<ul>
+<li>控制数据在时间线中的出现。例如：Activity instrument允许你切换总线程，虚拟机大小，和其他系统统计信息的显示。</li>
+<li>调整被记录信息在时间线中的呈现方式。例如，instrument可能能让你在峰图和框图中切换。</li>
+</ul>
+<p>要打开显示配置窗口，请在跟踪文档的时间线窗格中点击instrument图标。当指针移到图标上方时，支持显示配置弹出框的instrument会显示一个指示器。</p>
+<h3 id="关于跟踪文档详情窗格"><a href="#关于跟踪文档详情窗格" class="headerlink" title="关于跟踪文档详情窗格"></a>关于跟踪文档详情窗格</h3><p>详情窗格中展示在跟踪文档中使用instruments所收集到的数据的详情信息。正在分析时可以在时间线窗格中选择独立的instruments来查看所收集到的数据。</p>
+<p>详情窗格由导航栏，数据收集区域和筛选配置栏三个区域构成。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_detail_pane.png" alt="img"></p>
+<h4 id="导航栏"><a href="#导航栏" class="headerlink" title="导航栏"></a>导航栏</h4><p>导航栏在详情窗格的顶部，它能够帮助你快速浏览收集到的数据。</p>
+<p>你能够在导航栏中切换数据类型并查看不同的级别的数据。</p>
+<ul>
+<li>Instrument：当前时间线窗格中所选择的instrument的图标。点击它能够查看instrument的控制台。</li>
+<li>Detail type list：能够在不同类型数据之间切换。对不同的Instrument其显示选项有差异。对于多数instruments，它们都包含了例如数据概要，调用树和控制台。</li>
+<li>Detail tree：对您在详情窗格中数据查看时对其层级持续的跟踪。点击tree分支来选择与层级相符的数据。</li>
+</ul>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_detail_pane_navigation_bar.png" alt="img"></p>
+<h4 id="数据收集区"><a href="#数据收集区" class="headerlink" title="数据收集区"></a>数据收集区</h4><p>数据收集区展示所选instrument收集的所有数据，并通常以表格形式展现。不同instrument之间在这里展现的内容也会有显著不同。例如，Activity Monitor显示进程，CPU和线程，以及更多信息。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_detail_pane_collected_data_table.png" alt="img"></p>
+<p>通常，在这个区域中的独立符号和数据点包含了导航按钮(<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACWElEQVRYw+2XZ4siQRCG9///EXNAVMQsooIJFQOCYkJBPyiiKMZanoZZ2r05xvO8deFWKJjQ9dYz1VXd7Zu8+Pf2A/DtAa7Xq2y3WxmPx9JqtaRcLksul5NsNiuZTEYZ1zzjHWMYiw++DwHgeLlcZL/fy3K5lOFwKJVKRVKplIRCIfH5fOLxeMTtdivjmme8Ywxj8cEXDbR+B2MKgMPhcJDFYiH1el2SyeRNYKfTaWo6CD74ooEWmncDQI1ju92WWCymhB0Oh9jt9ruMsfjgiwZaaN4FQKpIHfQI+P3+PwquQ+CLBlpomk3DLwCbzUbNHyk0vtxms5kGcblcEggElFELOig+RiaoCzQpTEuA0Wikqpl5tPpyAufzeSkUChIMBlUdfPbhHi0Kk+6wBKCNIKaYrNIciUSk0+lIr9dTENyTdjKjg6CFJtqWAMbXkzorgHg8LpPJRNbrtUynU2k2m2rqDAhjHFpolkolawAWFIhJpy7A1yGuW7ValdVqJefzWVX5fD6XRqOhFqdwOCxer/ejRdFE2xKAVc3odT3V3W5XBdCN4MfjUVW3AUG1DwYDKRaLEo1GPyDQRNsSAHoqWgdIJBIym83kdDrdGEH11jJAgGC+0+m0mg600ET7IQB6mTaiRXXb7XYq4FMBzKaAAqrVatLv92+MrJD2p06BWRFCDwSCulHVBHxqEf7LNkT7+y9ELJcsmy9bitkwjM3I2GD+djNC6+7NyNiOqfqXbMfPOpCQkYcOJM88kpHFh45kZodSWujLDqWfYVh2Oah82bH855/RfwXwDvGnbAtXk4lSAAAAAElFTkSuQmCC" alt="img">)，当你指向它的时候它才会出现。您可以点击按钮进入数据的更深层。当你点击进入时，在导航栏的详情树会随之更新并指向您所在的层级。</p>
+<h4 id="筛选配置栏"><a href="#筛选配置栏" class="headerlink" title="筛选配置栏"></a>筛选配置栏</h4><p>在详情窗格底部的筛选配置栏能够帮你筛选所收集到的数据并配置数据显示的方式。</p>
+<ul>
+<li>Filter field：允许您以指定条件筛选所收集到的数据。点击筛选按钮区域会出现一些筛选选项。你同样可以通过在展示配置弹窗中调整显示设置的方式收集更多的数据。</li>
+<li>Display configuration controls：通过筛选，排序和数据挖掘来优化显示结果。instrument之间的控制会有差异，包括不同的结果选择菜单和用于数据显示的弹窗。</li>
+</ul>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_detail_pane_filter_config_bar.png" alt="A screenshot of the filter and display configuration bar showing the filter field on the left followed by a configuration drop-down, and buttons that show popovers with other display configuration options."></p>
+<h3 id="关于跟踪文档的监视器窗格"><a href="#关于跟踪文档的监视器窗格" class="headerlink" title="关于跟踪文档的监视器窗格"></a>关于跟踪文档的监视器窗格</h3><p>监视器窗口包含在当前详情窗格当前运行的信息。这些信息包含当前记录的信息，并对于一些instruments还会包含当前所选数据的额外详情。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_inspector_pane_navigation_bar.png" alt="img"></p>
+<h4 id="运行信息区域"><a href="#运行信息区域" class="headerlink" title="运行信息区域"></a>运行信息区域</h4><p>运行区域展示详情窗格中当前的运行信息。包含目标，记录时间，记录所用到的设置。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_inspector_pane_run_information.png" alt="A screenshot of the run information area of the detail pain inspector showing the recording information and recording settings for the current recording."></p>
+<h4 id="额外详情区域"><a href="#额外详情区域" class="headerlink" title="额外详情区域"></a>额外详情区域</h4><p>额外详情区域常被用来展示特定instrument的关于在详情窗格中选中数据的额外信息，例如完整的栈跟踪。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_inspector_pane_extended_detail.png" alt="img"></p>
+<h3 id="关于库面板"><a href="#关于库面板" class="headerlink" title="关于库面板"></a>关于库面板</h3><p>库面板提供了可用instrument的完整列表，并能让你添加到跟踪文档中。在面板中你可以浏览instrument描述也可以筛选出指定的instrument。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_library_palette.png" alt="img"></p>
+<p>要显示库面板，请点击Window &gt; Library或按快捷键(Command-L)，还可以通过点击跟踪文档工具栏中Instrument的加号按钮(+)。</p>
+<h3 id="关于标记面板"><a href="#关于标记面板" class="headerlink" title="关于标记面板"></a>关于标记面板</h3><p>标记面板中展示当前活动的跟踪文档中您需要在时间线窗格中添加的标记列表。</p>
+<p>在标记文档中你可以通过选择标记来快速在时间线中导航到指定位置。你同样可以在一个较大的标记列表中筛选出指定标记，展示或隐藏标记和查看您标记的时间戳信息。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_flags_window.png" alt="img"></p>
+<h3 id="关于分析模板"><a href="#关于分析模板" class="headerlink" title="关于分析模板"></a>关于分析模板</h3><p>在Instruments中你可以选择分析模板来分析您的app。分析模板是跟踪文档为了执行通用跟踪使用instruments已经预配置和设置过的。</p>
+<p>在Instruments启动时或在Xcode中初始化一个跟踪或者创造新的跟踪文档的时候分析模板就已经可已使用。当您拥有更高级或者自定义的需求的时候也可以创造您自己的分析模板。</p>
+<h3 id="关于分析模板选择框"><a href="#关于分析模板选择框" class="headerlink" title="关于分析模板选择框"></a><img src="/2021/04/11/Instrument文档翻译/instruments_profilingtemplateselection_dialog.png" alt="img">关于分析模板选择框</h3><p>在Instruments启动时你会看到一个模板列表，并可以从中选择，这列表是instruments预先设置好的集合。这个列表里包含标准的模板集合，同样也包含了你自定义的模板。</p>
+<p>分析选择框由如下几个主要的要素组成：</p>
+<ul>
+<li>Target device list(目标设备列表)：点击这个可以选择您需要分析的载体设备。</li>
+<li>Target process list(目标进程列表)：点击这个可以选择一个或者多个需要分析的进程。</li>
+<li>Filter buttons(筛选按钮)：点击这些按钮在模板列表中筛选出标准模板，自定义模板和最近使用的模板。</li>
+<li>Search field(搜索框)：通过输入文本来快速筛选出您需要的模板。它能够搜索模板的标题和描述。</li>
+<li>Template list(模板列表)：可能被您输入的内容筛选过的模板列表。</li>
+<li>Template description(模板描述)：当前所选中的模板的简短的描述，这段描述可能能够帮助您选择出符合您需求的模板。</li>
+<li>Choose button(选择按钮)：点击它可以会基于你当前选择的来创建分析文档。 </li>
+</ul>
+<p>​       当你按住Option按键的时候它会变成分析(Profile)按钮。点击分析按钮会基于你当前选择的模板创建一个新的文档并直接开始分析。</p>
+<ul>
+<li>Open button(打开按钮)：点击它可以打开之前保存的分析文档，而不是以一个全新的模板开始。</li>
+<li>Cancel button(取消按钮)：点击它关闭模板选择框。</li>
+</ul>
+<p>注意：你可以随时通过选择File &gt; New或者按下Command-N来呼出分析模板选择框。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_profilingtemplate_dialog.png" alt="img"></p>
+<h3 id="关于引用窗口"><a href="#关于引用窗口" class="headerlink" title="关于引用窗口"></a>关于引用窗口</h3><p>引用窗口被用来控制各种Instruments相关的行为设置。</p>
+<p>在引用窗口中。你可以调整启动，保存和其他的相关设置。你同样可以调整记录设置，CPU设置和符号引用。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_prefs_general.png" alt="img"></p>
+<h2 id="启动Instruments"><a href="#启动Instruments" class="headerlink" title="启动Instruments"></a>启动Instruments</h2><h3 id="从Xcode中启动Instruments"><a href="#从Xcode中启动Instruments" class="headerlink" title="从Xcode中启动Instruments"></a>从Xcode中启动Instruments</h3><p>在Xcode中启动Instruments最直接的方法。</p>
+<ul>
+<li>在Xcode中选择Xcode &gt; Open Developer Tool &gt; Instruments</li>
+</ul>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_instruments_menu.png" alt="img"></p>
+<h3 id="从Docker中启动Instruments"><a href="#从Docker中启动Instruments" class="headerlink" title="从Docker中启动Instruments"></a>从Docker中启动Instruments</h3><p>当Xcode运行的时候可以在Docker中的Xcode图标中启动Instruments。</p>
+<ol>
+<li>在Xcode中选择Xcode &gt; Open Developer Tool &gt; Instruments。</li>
+</ol>
+<p><img src="/2021/04/11/Instrument文档翻译/dock_xcode_contextualmenu_instruments.png" alt="img"></p>
+<p>这样Instruments就启动了。</p>
+<h3 id="将Instruments添加到Docker中"><a href="#将Instruments添加到Docker中" class="headerlink" title="将Instruments添加到Docker中"></a>将Instruments添加到Docker中</h3><p>你可以将Instruments添加到Docker中来随时快速访问。实现添加最简单的方法就是启动Instruments然后将其固定在Docker中。</p>
+<ol>
+<li>在Xcode中选择Xcode &gt; Open Developer Tool &gt; Instruments。</li>
+</ol>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_instruments_menu2.png" alt="img">、Instruments启动并在Docker中出现了Instruments的图标。</p>
+<ol>
+<li>在Docker中右键点击Instruments图标，接着选择Options &gt; 在程序坞中保留。</li>
+</ol>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_dock_contextual_menu_options_keepindock.png" alt="img"></p>
+<h3 id="添加Instruments到Launchpad"><a href="#添加Instruments到Launchpad" class="headerlink" title="添加Instruments到Launchpad"></a>添加Instruments到Launchpad</h3><p>Launchpad会自动显示您在应用程序文件夹内的 App。由于Instruments并不是应用程序文件夹内的程序(至少不是直属与应用程序文件夹内，它是在Xcode 中的，而 Xcode 直属与应用程序文件夹)，因此Instruments不会在Launchpad中出现。当然你可以通过对Instruments创建一个别名并将其放入Applications文件夹。</p>
+<ol>
+<li><p>在Xcode中，选择 Xcode > Open Developer Tool &gt; Instruments。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_instruments_menu.png" alt="img"></p>
+<p>Instruments图标在您 Docker 中出现。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_app_icon_small.png" alt="img"></p>
+</li>
+<li><p>在 Docker 中右键点击Instruments图标，之后选择选项 -&gt; 在文件夹中显示。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_dock_contextual_menu_options.png" alt="img"></p>
+</li>
+<li><p>按住 option 键并将Instruments图标拖动到您的应用程序文件夹目录中。一个Instruments的别名就已经创建成功并添加到您的应用程序文件夹中了。</p>
+</li>
+<li><p>删除Instruments别名文件名中的别名前缀。</p>
+<p>Instruments现在将会出现在你的Launchpad中。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/launchpad_instruments.png" alt="img"></p>
+</li>
+</ol>
+<h3 id="从命令行中启动Instruments"><a href="#从命令行中启动Instruments" class="headerlink" title="从命令行中启动Instruments"></a>从命令行中启动Instruments</h3><p>你可以在OS X中通过终端使用开放命令打开包括Instruments在内的任意软件。</p>
+<ol>
+<li><p>打开终端(在/Applications/Utilities/)。</p>
+</li>
+<li><p>运行如下命令：</p>
+<p>open /Applications/Xcode.app/Contents/Applications/Instruments.app</p>
+</li>
+</ol>
+<p>Instruments被运行了。</p>
+<p>注意：你可以使用两个命令行工具的任意一个来分析您的 app，而无需显示Instruments用户图形界面。</p>
+<ul>
+<li>instruments——此实用程序使用指定的模板对应用程序进行配置。可以将结果保存到文件中，然后在主要的仪器应用程序中手动打开以进行查看和分析。在<a href="https://help.apple.com/instruments/mac/current/#/devb14ffaa5" target="_blank" rel="noopener">使用instruments命令行工具分析</a>中查看更多。</li>
+</ul>
+<h2 id="创建，保存和打开跟踪文档"><a href="#创建，保存和打开跟踪文档" class="headerlink" title="创建，保存和打开跟踪文档"></a>创建，保存和打开跟踪文档</h2><h3 id="创建一个跟踪文档"><a href="#创建一个跟踪文档" class="headerlink" title="创建一个跟踪文档"></a>创建一个跟踪文档</h3><p>在使用Instruments开始分析之前，你需要创建跟踪文档。</p>
+<ol>
+<li>打开Instruments</li>
+<li>当出现的分析模板选择框中选择目标设备和进程。</li>
+</ol>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_profiling_dialog_target.png" alt="img"></p>
+<ol>
+<li>选择期望的分析模板</li>
+<li>点击Choose</li>
+</ol>
+<p>从您选择的模板中使用预配置好的instruments创建了一个新的跟踪文档。</p>
+<p>提示：要在您创建跟踪文档之后立即自动开始分析，请在模板选择框中按住 option 键。当你如上述所述操作时，Choose按钮会变为Profile按钮。点击Profile按钮立即开始分析跟踪文档。</p>
+<p>如果你找不到您所需要模板或者想从头开始创建自己的模板，在模板选择提示框中选择空白模板。</p>
+<h3 id="保存一个跟踪文档"><a href="#保存一个跟踪文档" class="headerlink" title="保存一个跟踪文档"></a>保存一个跟踪文档</h3><p>当你创建了一个跟踪文档，你能够保存上次引用。Instruments将以 .trace 扩展名保存保存跟踪文档文件。</p>
+<ol>
+<li><p>创建一个跟踪文档。<a href="#创建一个跟踪文档">在创建跟踪文档中查看</a></p>
+</li>
+<li><p>选择 File &gt; Save. Or, choose File &gt; Save 当你希望将之前保存的跟踪文档保存成新的文件。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_save_menu.png" alt="img"></p>
+</li>
+<li><p>输入文件名</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_save_dialog.png" alt="img"></p>
+</li>
+<li><p>选择文件保存目录</p>
+</li>
+<li><p>点击保存</p>
+</li>
+</ol>
+<h3 id="将跟踪文档保存为分析模板"><a href="#将跟踪文档保存为分析模板" class="headerlink" title="将跟踪文档保存为分析模板"></a>将跟踪文档保存为分析模板</h3><p>如果你创建了一个跟踪文档，并且可能会在之后分析其他app时用到这个模板，你可以将它保存为自定义模板以便你不用每次运行Instruments时都重新创建。</p>
+<ol>
+<li><p>创建或打开跟踪文档。</p>
+</li>
+<li><p>选择 File &gt; Save As Template。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_save_menu.png" alt="img"></p>
+</li>
+<li><p>输入模板名称。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_save_dialog.png" alt="img"></p>
+</li>
+<li><p>选择模板保存目录。</p>
+<p>将您模板保存在/Users/<username>/Library/Application Support/Instruments/Templates目录下以保证它能够在Instruments模板窗口中的的自定义部分中可用。</username></p>
+</li>
+<li><p>为模板选择一个图标。</p>
+</li>
+<li><p>输入模板的描述。</p>
+</li>
+<li><p>点击保存。</p>
+<p>当你保存了模板，这个模板会自动出现在模板选择框中的Custom模板组中出现。下次当你创建一个跟踪文档时，可以将其作为您分析的起点。</p>
+</li>
+</ol>
+<h3 id="打开跟踪文档"><a href="#打开跟踪文档" class="headerlink" title="打开跟踪文档"></a>打开跟踪文档</h3><p>打开已保存的跟踪文档来查看之前运行的结果或者对其进行额外的分析。</p>
+<p>按如下操作之一来打开跟踪文档：</p>
+<ul>
+<li><p>在文件夹中双击 .trace 文档文件。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/trace_document.png" alt="img"></p>
+</li>
+<li><p>将 .trace 文档文件拖入Instruments软件图标中。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_drag_and_open_trace_doc.png" alt="img"></p>
+</li>
+<li><p>打开Instruments并按如下步骤来操作：</p>
+<ol>
+<li><p>选择 File &gt; Open (或按快捷键Command + O)。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_file_open_menu.png" alt="img"></p>
+</li>
+<li><p>找到所保存的 .trance 文档文件。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_open_trace_doc_dialog.png" alt="img"></p>
+</li>
+<li><p>点击open。</p>
+</li>
+</ol>
+</li>
+</ul>
+<p>这样跟踪文档就在Instruments中显示。</p>
+<h3 id="关闭跟踪文档"><a href="#关闭跟踪文档" class="headerlink" title="关闭跟踪文档"></a>关闭跟踪文档</h3><p>当你使用跟踪文档完毕时，关闭它。</p>
+<ol>
+<li>选择 File &gt; Close(或按下Command + W)</li>
+<li>当你的跟踪文档中包含尚未保存的数据，请选择是否保存更新文档。</li>
+</ol>
+<h2 id="目标设备和进程"><a href="#目标设备和进程" class="headerlink" title="目标设备和进程"></a>目标设备和进程</h2><h3 id="目标设备和进程-1"><a href="#目标设备和进程-1" class="headerlink" title="目标设备和进程"></a>目标设备和进程</h3><p>目标设备列表能在每个跟踪文档中的工具栏中看到，这个列表允许你跟踪文档运行中的任何时候更改指定设备和进程。</p>
+<ul>
+<li><p>点击目标设备列表或目标进程列表并选择指定目标和进程。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_targetspecificprocess_menuitem.png" alt="img"></p>
+<p>部分instruments能以所有进程为目标。如果逆向选择全部进程，请在目标进程列表中选择全部进程。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_targetallprocesses_menuitem.png" alt="img"></p>
+<p>如果目标进程并不在列表中，在目标进程列表中选择Choose Target。之后会显示一个弹窗，在这个弹窗内你可以浏览所有进程。你也可以在这个弹窗中为一个进程配置环境变量。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_choosetarget_menuitem.png" alt="img"></p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_choosetargetdialog.png" alt="img"></p>
+</li>
+</ul>
+<p>提示：如果一个你已被设置为目标的app，但是并没有主动运行app，instruments会自动将其运行。</p>
+<h3 id="以iOS设备作为目标"><a href="#以iOS设备作为目标" class="headerlink" title="以iOS设备作为目标"></a>以iOS设备作为目标</h3><p>为了将iOS设备作为目标，请把设备连接到开发Mac上。一旦连接，设备会出现在设备列表中。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_targetiosdevice.png" alt="img"></p>
+<p>注意：在你能使用Instruments分析iOS设备之前，你的设备必须已经拥有了能够搜集数据的开发环境。关于提供开发环境，请在<a href="https://developer.apple.com/library/ios/documentation/IDEs/Conceptual/AppDistributionGuide/index.html" target="_blank" rel="noopener">App分发指南上</a>查看<a href="https://developer.apple.com/library/watchos/documentation/IDEs/Conceptual/AppDistributionGuide/MaintainingProfiles/MaintainingProfiles.html#//apple_ref/doc/uid/TP40012582-CH30-SW61" target="_blank" rel="noopener">创建Provision 开发文件</a>。</p>
+<h3 id="启动iOS设备无线分析"><a href="#启动iOS设备无线分析" class="headerlink" title="启动iOS设备无线分析"></a>启动iOS设备无线分析</h3><p>Instruments能够使用无线的方式来从iOS设备上收集数据。</p>
+<ol>
+<li><p>请确保您iOS设备已经连接到开发Mac上。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/graphic_computerconnectedtodevice.png" alt="img"></p>
+</li>
+<li><p>按住Option按键，并点击目标设备列表。</p>
+</li>
+<li><p>选择您需要开启无线分析的移动设备。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_targets_enablewireless.png" alt="img"></p>
+</li>
+<li><p>再次点击设备目标列表并打开它，为您设备选择无线版本并选择进程。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_targtetlist_selectwirelessprocess.png" alt="img"></p>
+</li>
+</ol>
+<p>现在您应该可以在您设备商以无线的形式分析进程。</p>
+<p>无线调试模式费事如下情况十分有用：</p>
+<ul>
+<li>Accelerometers(加速度计)：在所有方向是移动设备，而非只在一条线上。</li>
+<li>Accessories(配件)：将您的USB配件插入插槽并进行测试。</li>
+</ul>
+<p>当你在设备上使用无线分析时，对设备关机会导致停止收集数据。你必须重新将设备连接到电脑上才能继续数据收集。</p>
+<p><strong>重点：</strong>在Instruments收集数据之前，您的设备必须要有开发环境。并且您必须在无线网络访问端口上启用Bonjour和multicast。请在<a href="https://developer.apple.com/library/archive/documentation/NetworkingInternetWeb/Conceptual/NetworkingOverview/Discovering,Browsing,AndAdvertisingNetworkServices/Discovering,Browsing,AndAdvertisingNetworkServices.html#//apple_ref/doc/uid/TP40010220-CH9-SW7" target="_blank" rel="noopener">Bonjour服务预览</a>中查看。且记录数据所用 Mac 和设备必须都处于同一个子网中。</p>
+<h3 id="准备Apple-Watch分析"><a href="#准备Apple-Watch分析" class="headerlink" title="准备Apple Watch分析"></a>准备Apple Watch分析</h3><p>在你使用instruments以Apple Watch作为目标之前，必须先对其进行分析。</p>
+<ol>
+<li><p>确保Apple Watch已与开发iPhone配对过。</p>
+</li>
+<li><p>退出Instruments。</p>
+</li>
+<li><p>打开Xcode。</p>
+</li>
+<li><p>将已于Apple Watch配对的iPhone连接到开发Mac上。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/graphic_computerconnectedtodevice.png" alt="img"></p>
+</li>
+<li><p>选择Window &gt; Devices(或按下Shift+Command+2)打开Xcode中设备窗口。</p>
+</li>
+<li><p>等待设备出现在列表窗口中。</p>
+</li>
+<li><p>等待Apple Watch作为iPhone配对设备出现。</p>
+</li>
+<li><p>等待Xcode将Apple Watch标记为准备完成。这个过程可能会花费好几分钟。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_devices_pairedwatch.png" alt="img"></p>
+</li>
+<li><p>断开iPhone连接。</p>
+</li>
+<li><p>再次连接iPhone。</p>
+</li>
+</ol>
+<p>当你的Apple Watch完成分析准备，重启Instruments，然后Apple Watch会出现在目的设备列表中。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_targetwatch.png" alt="img"></p>
+<p>注意：在您分析Apple Watch的时候，你的开发iPhone充当代理，在Instruments和Apple Watch之间传递信息。</p>
+<h2 id="访问和使用Instruments"><a href="#访问和使用Instruments" class="headerlink" title="访问和使用Instruments"></a>访问和使用Instruments</h2><h3 id="显示模板库"><a href="#显示模板库" class="headerlink" title="显示模板库"></a>显示模板库</h3><p>库模板中显示所有你能够添加到跟踪文档上的instruments。库中包含所有内置和您可能自定义好instruments。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_library_palette.png" alt="img"></p>
+<ul>
+<li><p>请按如下操作之一：</p>
+<ul>
+<li><p>在跟踪文档中点击Instrument工具栏上的加号按钮(+)。</p>
+</li>
+<li><p>选择Window &gt; Library(或按下Command+L)。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_library_menu.png" alt="img"></p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="在模板库中筛选出指定instrument"><a href="#在模板库中筛选出指定instrument" class="headerlink" title="在模板库中筛选出指定instrument"></a>在模板库中筛选出指定instrument</h3><p>模板库列表十分的长，尤其是当您添加过您自己的自定义模板时。请使用位于模板库列表底部的筛选输入框内容来根据名字，描述或者关键字快速查找指定instrument。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_library_palette_filterterm.png" alt="img"></p>
+<h3 id="将一个instrument添加到跟踪文档"><a href="#将一个instrument添加到跟踪文档" class="headerlink" title="将一个instrument添加到跟踪文档"></a>将一个instrument添加到跟踪文档</h3><p>无论你创建的跟踪文档是根据模板创建的还是空白的，都能够通过添加新的instruments来扩展其功能。</p>
+<ol>
+<li><p>打开目标跟踪文档。</p>
+</li>
+<li><p>显示模板库。</p>
+</li>
+<li><p>找到所需要的instruments。</p>
+</li>
+<li><p>将instruments从模板库中拖拽出来添加到跟踪文档中策略窗格里的instrument列表中。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_trace_document_addinstrument.png" alt="img"></p>
+</li>
+</ol>
+<h3 id="在跟踪文档中移除一个instrument"><a href="#在跟踪文档中移除一个instrument" class="headerlink" title="在跟踪文档中移除一个instrument"></a>在跟踪文档中移除一个instrument</h3><p>在您不再需要instruments的时候，你可以轻易的将其从跟踪文档中移除。</p>
+<ol>
+<li><p>打开您需要的跟踪文档。</p>
+</li>
+<li><p>在策略窗格的instruments列表中选中您需要删除的instrument。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_trace_document_selectedinstrument.png" alt="img"></p>
+</li>
+<li><p>按下delete(删除)键或者选择 Instrument &gt; Delete [Instrument名] Instrument</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_deleteinstrument_menu.png" alt="img"></p>
+</li>
+<li><p>当出现提示时，点击 ok 确认您真要将instrument移除。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_deleteinstrumentconfirmation_dialog.png" alt="img"></p>
+</li>
+</ol>
+<h3 id="配置instrument的显示设置"><a href="#配置instrument的显示设置" class="headerlink" title="配置instrument的显示设置"></a>配置instrument的显示设置</h3><p>在录制跟踪(trace)时，Instruments会在时间线窗格中展示选中instrument结果的概览并在详情窗格中显示结果详情。这些结果会在不同的instrument之间有所差异。它们可能会包含像概览，调用树和样本列表。通常这里会展示很多的数据，导航会非常耗时。为了帮助您能够快速获取正确的信息，Instruments通常同样的，这也根据Instrument类型不同而有差距)能够让你对其调整，并在时间线窗格和详情窗格中过滤出信息。</p>
+<ul>
+<li>在时间线中配置显示设置</li>
+</ul>
+<ol>
+<li><p>将鼠标移动到时间线中instrument图标上。如果该仪器支持不同的显示配置，则图标旁边会出现一个指示器</p>
+</li>
+<li><p>点击图标弹出<a href="https://help.apple.com/instruments/mac/current/#/deva13e2923b" target="_blank" rel="noopener">显示设置框</a>。</p>
+</li>
+<li><p>选择所需显示配置。时间线会在选择之后更新。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_trace_document_timeline_config_popover.png" alt="A screenshot showing a trace document with the display configuration popover for the activity monitor instrument."></p>
+</li>
+<li><p>点击弹窗之外的区域来关闭它。</p>
+</li>
+</ol>
+<h3 id="配置详情显示设置"><a href="#配置详情显示设置" class="headerlink" title="配置详情显示设置"></a>配置详情显示设置</h3><ul>
+<li><p>使用在详情窗格底部的控件<a href="https://help.apple.com/instruments/mac/current/#/devadf729aef" target="_blank" rel="noopener">筛选和配置栏</a>来配置显示设置。不同instrument之间控件和配置选项会有所差异。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_detail_pane_filter_config_bar.png" alt="A screenshot of the filter and display configuration bar showing the filter field on the left followed by a configuration drop-down, and buttons that show popovers with other display configuration options."></p>
+</li>
+</ul>
+<h2 id="记录，暂停和开始跟踪"><a href="#记录，暂停和开始跟踪" class="headerlink" title="记录，暂停和开始跟踪"></a>记录，暂停和开始跟踪</h2><h3 id="记录跟踪"><a href="#记录跟踪" class="headerlink" title="记录跟踪"></a>记录跟踪</h3><p>当你准备好分析您的 App 时，请开始收集。在收集期间，在跟踪文档中的instruments会根据其配置来监听您的App。当开始收集时，时间线窗格和详情窗格将会更新用以提供展示所捕获的实时数据的视图。</p>
+<p>请按如下操作之一进行操作：</p>
+<ul>
+<li><p>点击在跟踪文档工具栏的收集按钮(<img src="/2021/04/11/Instrument文档翻译/inline_record_button.png" alt="img" style="zoom:50%;">)。</p>
+<ul>
+<li><p>选择 File &gt; Record Trace(或者按下 Command+R )。</p>
+</li>
+<li><p>再次按下 Command+R 将会停止收集。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_recordtrace_menu.png" alt="img"></p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="配置收集选项"><a href="#配置收集选项" class="headerlink" title="配置收集选项"></a>配置收集选项</h3><p>在收集选项弹窗选择全局收集选项，例如，将推迟结果处理推迟到开始收集之后和自定义instrument选项，来改善数据收集。</p>
+<p>举个例子，你可能会希望调整Time Profiler instrument的样本速率或者使用Allocations instrument分析时放弃事件以释放内存。想如上所述的自定义选项会根据instrument的不同而有差异。很多instruments能控制其本身所生成信息的信息类型。</p>
+<ul>
+<li><p>配置全局收集选项</p>
+<ol>
+<li><p>选择 File &gt; Recording Options 来打开录制选项弹窗。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/FAB7CADB-6C17-439F-8811-CF7511D35243.png" alt="FAB7CADB-6C17-439F-8811-CF7511D35243"></p>
+</li>
+<li><p>点击 Global options 。</p>
+</li>
+<li><p>自定义所需选项。</p>
+<p>选项包括：</p>
+<p>Time limit:instruments收集数据的时间数值的最大值，以秒为单位。</p>
+<p>Window limit:保存数据的最长时间，以秒为单位。如果录制超过了你作为window limit定义的时间(举个例子，长于四秒)，只有所用时长的最后四秒的数据才会被保存。</p>
+<p>Deferred mode:选择以在数据收集完毕之后延迟数据分析。它能带来更快更精准的数据集合，因为更多系统资源被直接记录的过程。在数据收集期间在时间线和详情窗格不会有数据显示。</p>
+</li>
+<li><p>点击关闭或者录制按钮来保存选项。</p>
+<p>点击录制按钮来使用新的选项开始跟踪。</p>
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="暂停跟踪"><a href="#暂停跟踪" class="headerlink" title="暂停跟踪"></a>暂停跟踪</h3><p>如果需要的话你可以暂停跟踪，并在之后继续。</p>
+<p>注意:当收集暂停时，被暂停的App不会响应输入。</p>
+<ul>
+<li><p>按如下之一进行操作：</p>
+<ul>
+<li>在跟踪文档的工具栏按下暂停按钮(<img src="/2021/04/11/Instrument文档翻译/pause.png" alt="img" style="zoom:60%;">)。</li>
+<li>选择 File &gt; Pause Trace(或按下Shift+Command+R))。</li>
+</ul>
+<p><img src="/2021/04/11/Instrument文档翻译/11ACD438-6F73-4A25-A067-0E5099AB9423.png" alt="11ACD438-6F73-4A25-A067-0E5099AB9423"></p>
+</li>
+</ul>
+<h3 id="停止跟踪"><a href="#停止跟踪" class="headerlink" title="停止跟踪"></a>停止跟踪</h3><p>在你已经搜集到了你想要的数据之后，停止收集来让你能够开始对所收集的数据进行分析。</p>
+<ul>
+<li><p>按如下之一操作进行:    </p>
+<ul>
+<li><p>在跟踪文档的工具栏上按下停止按钮<img src="/2021/04/11/Instrument文档翻译/inline_stop_button.png" alt="img" style="zoom:67%;">。</p>
+</li>
+<li><p>选择 File &gt; Stop Trace (或者按下Command-R)。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_stoptrace_menu.png" alt="img"></p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="在-Xcode-构建和产品菜单中分析您的-App"><a href="#在-Xcode-构建和产品菜单中分析您的-App" class="headerlink" title="在 Xcode 构建和产品菜单中分析您的 App"></a>在 Xcode 构建和产品菜单中分析您的 App</h3><p>Xcode 构建菜单允许您对您的 app 进行运行、测试和分析等操作。它同样也可以使用instruments分析您的 App。</p>
+<ol>
+<li><p>在 Xcode 中打开项目。</p>
+</li>
+<li><p>进行如下之一操作：</p>
+<ul>
+<li><p>在Xcode 主页面中点击并长按构建按钮，并在出现的菜单中选择Profile。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_toolbar_build_menu_profile_option.png" alt="img"></p>
+</li>
+<li><p>选择 Product &gt; Profile (或按下Command-I)。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_product_menu_profile_menu.png" alt="img"></p>
+</li>
+</ul>
+</li>
+</ol>
+<p>Instruments启动并出现模板选择提示框。注意此时您的 app 会在自动在设备和进程列表中被选中。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_profiling_template_window_initiatedbyxcode.png" alt="img"></p>
+<h3 id="在-Xcode-构建和产品菜单中启动分析时使用默认模板"><a href="#在-Xcode-构建和产品菜单中启动分析时使用默认模板" class="headerlink" title="在 Xcode 构建和产品菜单中启动分析时使用默认模板"></a>在 Xcode 构建和产品菜单中启动分析时使用默认模板</h3><p>如果你经常需要使用同一个模板来分析您的 App，你可以对 Xcode 项目进行设置，并让其在启动分析时使用指定模板。</p>
+<ol>
+<li>启动 Xcode 并开启您的项目。</li>
+<li>进行如下操作之一来打开计划编辑弹窗：</li>
+</ol>
+<ul>
+<li><p>选中在 Xcode 主页面工具栏设备目标列表中的Edit Scheme。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_targetdevice_list_editscheme_option.png" alt="img"></p>
+</li>
+<li><p>选择 Product &gt; Scheme &gt; Edit Scheme 或按下 Command + (小于号)&lt;。</p>
+</li>
+</ul>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_product_menu_editscheme_menu.png" alt="img"></p>
+<ol>
+<li>在编辑弹窗的侧边栏中选择 profile。</li>
+</ol>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_scheme_editor_dialog_sidebar_profile_option.png" alt="img"></p>
+<ol>
+<li>在Instrument下出现的菜单中选择你需要的模板。</li>
+</ol>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_scheme_editor_dialog_profile_option_instrument_popup.png" alt="img"></p>
+<ol>
+<li><p>点击 close。</p>
+</li>
+<li><p>启动分析。请查看 在<a href="https://help.apple.com/instruments/mac/current/#/dev54a36a4b" target="_blank" rel="noopener">Xcode 构建和产品菜单中分析您的 App</a>。</p>
+<p>Xcode 构建您的项目，Instruments启动并以scheme editor中配置过的模板开始分析您的App。</p>
+</li>
+</ol>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_activitymonitorprofilingfromxcode.png" alt="img"></p>
+<h3 id="debug时从-Xcode-仪器中分析"><a href="#debug时从-Xcode-仪器中分析" class="headerlink" title="debug时从 Xcode 仪器中分析"></a>debug时从 Xcode 仪器中分析</h3><p>当您测试和 debug App 的时候，Xcode debug 导航区中包含了一些列仪表来监视您的 App。这些仪表监视多种元素，包括 CPU 使用量，内存和电量消耗，这些能够提示你影响性能，能量消耗等潜在问题。如果您在测试应用时发现希望进一步调查的趋势，则可以将监控转换为仪器以进行更详细的分析。</p>
+<ol>
+<li><p>打开一个 App 项目并运行。</p>
+</li>
+<li><p>当你App 已经运行，使用如下操作之一来显示debug 导航区：</p>
+<ul>
+<li><p>在导航栏的选择栏中选择 Debug 导航按钮。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_navigatorselector_bar_debugnaviagator_button.png" alt="img"></p>
+</li>
+<li><p>选择View &gt; Navigators &gt; Show Debug Navigator (或按下 Command + 6)。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_view_menu_debugnavigator_menu.png" alt="img"></p>
+</li>
+</ul>
+</li>
+<li><p>在 debug 导航区中点击需要的仪器。</p>
+</li>
+</ol>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_debug_navigator_selectedgauge.png" alt="img"></p>
+<ol>
+<li><p>在主编辑区中点击仪器的 Profile in Instruments 按钮。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_gauge_profileininstruments_button.png" alt="img"></p>
+<p>注意：并不是每个仪器都拥有 Profile in Instruments 按钮。举个例子，Energy Impact 仪器拥有一系列按钮来初始化不同的 Instruments 。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_timeprofiler_gauge_profileininstruments_button.png" alt="img"></p>
+</li>
+<li><p>当如下提示出现，选择是将应用当前运行的实例转移到仪器上，还是停止应用，然后用仪器启动新的实例。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_profileininstrruments_alert.png" alt="img"></p>
+<p>在这两种情况下，请注意 Xcode 停止分析您的应用、启动文书并启动分析。如果您选择transfer，仪器将以当前状态开始分析应用。</p>
+</li>
+</ol>
+<h3 id="在-Dock-中启动分析"><a href="#在-Dock-中启动分析" class="headerlink" title="在 Dock 中启动分析"></a>在 Dock 中启动分析</h3><p>你能够通过触发在Dock上的Instruments App 图标中的Time Profiler来后台自动录制确切的事件。</p>
+<p>在 Dock 收集 Time Profiler 数据。</p>
+<ol>
+<li><p>Instruments打开后，右键 Dock 上的Instruments图标。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_app_icon_small.png" alt="img"></p>
+</li>
+<li><p>在出现的菜单中选择您需要开始分析的进程。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_dock_menu.png" alt="img"></p>
+<p>选项包括：</p>
+<ul>
+<li><em>System Time Profile</em>：开始分析所有系统进程。</li>
+<li><em>Time Profile Specific Process</em>：在子菜单中选择指定的进程开始Time Profiler instrument。</li>
+<li><em>Automatically Time Profile Spinning Applications</em>：自动分析在未来被阻隔的App。</li>
+<li><em>Allow Tracing of Any Process (10 hours)</em>：在接下来的十小时内跟踪任意进程，在此十小时内需要绕过密码进入。</li>
+</ul>
+</li>
+</ol>
+<p>注意：以这种方式记录的数据以 .dtps 格式保存到  ~/Library/Application Support/Instruments/Unimported/.。</p>
+<h3 id="使用instruments命令行工具启动分析"><a href="#使用instruments命令行工具启动分析" class="headerlink" title="使用instruments命令行工具启动分析"></a>使用instruments命令行工具启动分析</h3><p>使用仪器命令行工具使用指定的模板来描述应用，而无需启动仪器。在分析过程中收集的数据保存在 .trace 文件中到指定目录中。分析完成后，您可以使用仪器打开记录的数据文件，查看数据的可视化表示。</p>
+<ol>
+<li><p>打开在 /Applications/Utilities. 中的终端。</p>
+</li>
+<li><p>输入一个 instruments 命令来收集数据。</p>
+<p>举个例子，以下命令配置了带有分配模板的应用，并将结果保存到.trace文件中的桌面。</p>
+<p><code>instruments -t &quot;Allocations&quot; -D ~/Desktop/*YourTraceFileName*.trace *PathToYourApp*</code></p>
+</li>
+<li><p>打开 Instruments ，并选择File &gt; Open。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_fileopen_menu.png" alt="img"></p>
+</li>
+<li><p>找到你保存的 .trace 文件，并打开。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_opentracefile_dialog.png" alt="img"></p>
+</li>
+</ol>
+<p>打开保存的文件后，仪器会自动将相关文书添加到跟踪文档中，并将它们填充到收集的数据中。您可以查看和分析数据，以便查找应用的任何问题。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_loadedtrace_file.png" alt="img"></p>
+<p><strong>instruments</strong>选项</p>
+<p>instruments提供了以下一组配置选项，用于定义要收集的数据。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Configuration option</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>-t template</code></td>
+<td style="text-align:left">分析 App 时，所要用到的模板名字或者是模板路径。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>-s</code></td>
+<td style="text-align:left">返回所有已安装的模板的列表。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>-D document</code></td>
+<td style="text-align:left">.trace 文档的保存路径。如果路径已存在，则新数据会覆盖旧数据。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>-l #</code></td>
+<td style="text-align:left">指定收集的时间，以毫秒为单位。如果不提供则会无限录制下去，知道 App 被手动终止。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>-i #</code></td>
+<td style="text-align:left">被用于录制的 instrument 的索引。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>-p pid</code></td>
+<td style="text-align:left">需要被收集的 App 的进程 ID。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>application</code></td>
+<td style="text-align:left">需要被收集的 App 的路径。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>-w hardware device</code></td>
+<td style="text-align:left">需要被设为目标的设备的 ID。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>-e variable value</code></td>
+<td style="text-align:left">在分析时需要被应用的一个环境变量。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>argument</code></td>
+<td style="text-align:left">要传递到正在配置的应用程序的命令行参数。如果需要，可以指定多个参数。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>-v</code></td>
+<td style="text-align:left">在分析时启用详细的日志记录。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="延时启动分析"><a href="#延时启动分析" class="headerlink" title="延时启动分析"></a>延时启动分析</h3><p>对于特长的跟踪，延迟模式造成的延迟可能非常显著。仅为需要极其精确的数据收集的痕迹设置延期模式，从而避免此延迟。</p>
+<ol>
+<li><p>选择 File &gt; Recording Options。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_recordoptions_menu.png" alt="img"></p>
+</li>
+<li><p>在出现的弹窗中选择Deferred Mode 复选框接着按下 OK。</p>
+<p>如果在Instruments设置中中启用”始终使用递延模式”，则此选项将禁用。</p>
+</li>
+</ol>
+<p>通过将数据分析推迟到退出正在测试的应用之前，提高性能相关数据的准确性。通常，仪器会在应用运行时分析和显示数据，从而允许您在收集数据时查看数据。通过占用 CPU 时间和内存进行实时分析会减慢目标过程，从而获得可能无法反映该过程通常表现的测量结果。在延期模式下运行文书会延迟数据分析，直到数据收集完成，无论是在应用完成运行后还是在单击”停止”之后。在延期模式下，您被阻止与正在收集数据的仪器交互。</p>
+<p>在延期模式下，仪器完成数据收集后，仪器处理数据并将其显示在屏幕上。延迟数据分析为数据收集过程的后期阶段增加了时间，但它有助于确保与性能相关的数据准确无误。</p>
+<h3 id="在延迟模式下启动Instruments"><a href="#在延迟模式下启动Instruments" class="headerlink" title="在延迟模式下启动Instruments"></a>在延迟模式下启动Instruments</h3><p>通过将数据分析推迟到退出正在测试的应用之前，提高性能相关数据的准确性。通常，仪器会在应用运行时分析和显示数据，从而允许您在收集数据时查看数据。通过占用 CPU 时间和内存进行实时分析会减慢目标过程，从而获得可能无法反映该过程通常表现的测量结果。在延期模式下运行文书会延迟数据分析，直到数据收集完成，无论是在应用完成运行后还是在单击”停止”之后。在延期模式下，您被阻止与正在收集数据的仪器交互。</p>
+<ol>
+<li><p>选择Instruments &gt; Preferences。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_preferences_menu.png" alt="img"></p>
+</li>
+<li><p>在录制窗格中，选择 Always use deferred mode 复选框。</p>
+<p><img src="https://help.apple.com/instruments/mac/current/en.lproj/Art/instruments_prefs_recording_deferred_option.png" alt="img"></p>
+</li>
+</ol>
+<p>在延期模式下，仪器完成数据收集后，仪器处理数据并将其显示在屏幕上。延迟数据分析为数据收集过程的后期阶段增加了时间，但它有助于确保与性能相关的数据准确无误。</p>
+<h2 id="导航所收集的数据"><a href="#导航所收集的数据" class="headerlink" title="导航所收集的数据"></a>导航所收集的数据</h2><h3 id="在时间线窗格中放大或者缩小"><a href="#在时间线窗格中放大或者缩小" class="headerlink" title="在时间线窗格中放大或者缩小"></a>在时间线窗格中放大或者缩小</h3><p>如果你使用跟踪文档收集了很多的数据，你可以对在详情窗格中的详情数据的显示区域进行扩大或者缩小，这样你能够专注于指定数据的子集。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_trace_document_timeline_pane_zooming.png" alt="img"></p>
+<h4 id="扩大或者缩小您的数据"><a href="#扩大或者缩小您的数据" class="headerlink" title="扩大或者缩小您的数据"></a>扩大或者缩小您的数据</h4><ul>
+<li>进行如下之一的操作<ul>
+<li>捏住触控板选择放大或者缩小。</li>
+<li>滑动鼠标滚轮同时按下Option 按键并将鼠标指向跟踪视图上，来放大。</li>
+<li>按下Option按键并拖动您希望分离出的数据，来放大。</li>
+<li>按下Control按键并拖动数据来缩小。</li>
+</ul>
+</li>
+</ul>
+<h4 id="选中所有在时间线窗格中的数据"><a href="#选中所有在时间线窗格中的数据" class="headerlink" title="选中所有在时间线窗格中的数据"></a>选中所有在时间线窗格中的数据</h4><ul>
+<li><p>选择 view > Snap Track To Fit (或者按下 Control-Command-Z)。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_view_menu_snaptracktofit_menuitem.png" alt="img">、</p>
+</li>
+</ul>
+<h4 id="增加在时间线窗格中显示的数据"><a href="#增加在时间线窗格中显示的数据" class="headerlink" title="增加在时间线窗格中显示的数据"></a>增加在时间线窗格中显示的数据</h4><ul>
+<li><p>选择 View &gt; Increase Deck Size (或者按下 Command+加号)。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_view_menu_increasedecksize_menuitem.png" alt="img"></p>
+<p>instrument当前所选中的跟踪增加了高度，这能让你查看的更加详细。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_trace_document_timeline_pane_largertrack.png" alt="img"></p>
+</li>
+</ul>
+<h4 id="减少在时间线窗格中显示的数据"><a href="#减少在时间线窗格中显示的数据" class="headerlink" title="减少在时间线窗格中显示的数据"></a>减少在时间线窗格中显示的数据</h4><ul>
+<li>选择View &gt; Decrease Deck Size (或者按下 Command+减号)。</li>
+</ul>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_view_menu_decreasedecksize_menuitem.png" alt="img"></p>
+<p>instrument当前所选中的跟踪减少了高度。</p>
+<h3 id="在详情窗格中筛选一段数据"><a href="#在详情窗格中筛选一段数据" class="headerlink" title="在详情窗格中筛选一段数据"></a>在详情窗格中筛选一段数据</h3><p>Instruments会收集大量数据用于分析。您可以通过设置详情窗格只显示指定时间段的事件来快速筛选数据。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_trace_document_timeline_pane_selectedrange.png" alt="img"></p>
+<h4 id="选择时间区域用于查看"><a href="#选择时间区域用于查看" class="headerlink" title="选择时间区域用于查看"></a>选择时间区域用于查看</h4><ul>
+<li>在不使用任何按键的情况下拖动部分数据。只有您拖动的数据才会显示。</li>
+</ul>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_trace_document_timeline_pane_selectingrange.png" alt="img"></p>
+<p>在Instruments中时间线窗格高亮部分的内容，都是您指定的范围。</p>
+<h4 id="清除所选区域"><a href="#清除所选区域" class="headerlink" title="清除所选区域"></a>清除所选区域</h4><ul>
+<li>进行如下操作期中之一：<ul>
+<li>点击时间线窗格中所选区域以外。</li>
+<li>选择 View &gt; Clear Inspection Range 。</li>
+</ul>
+</li>
+</ul>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_clearinspectionrange_menu.png" alt="img"></p>
+<h3 id="在时间线窗格中设置标记"><a href="#在时间线窗格中设置标记" class="headerlink" title="在时间线窗格中设置标记"></a>在时间线窗格中设置标记</h3><p>标记让你能够快速的在时间线窗格中访问点。你能够为每个标记都添加名字和描述。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_trace_document_timeline_pane_flags.png" alt="img"></p>
+<ul>
+<li><p>在时间线窗格中的当前位置设置一个标记</p>
+<ul>
+<li><p>选择 Edit &gt; Add Flag  (或者按下 Command + ↓)。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_addflag_menu.png" alt="img"></p>
+</li>
+</ul>
+</li>
+<li><p>在时间线标记中导航</p>
+<ol>
+<li><p>选择 Window &gt; Manage Flags (或按下 Shift-Command-T )来显示标记面板。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_manageflags_menu.png" alt="img"></p>
+</li>
+<li><p>点击标记面板中的一个标记来导航到时间线窗格。</p>
+</li>
+</ol>
+</li>
+<li><p>删除标记</p>
+<ul>
+<li>将标记点拖拽出时间线导航栏。</li>
+</ul>
+</li>
+<li><p>隐藏标记点</p>
+<ol>
+<li><p>选择 Window &gt; Manage Flags (或按下 Shift-Command-T)来显示标记面板。</p>
+</li>
+<li><p>在标记面板中反选标记边上的复选框来隐藏时间线窗格中的标记点。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_flags_palette_disabledflag.png" alt="img"></p>
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="固定和取消固定时间线"><a href="#固定和取消固定时间线" class="headerlink" title="固定和取消固定时间线"></a>固定和取消固定时间线</h3><ul>
+<li><p>固定时间线</p>
+<ol>
+<li><p>如果目标时间线未选中，将鼠标移动到该时间线的左侧。</p>
+</li>
+<li><p>点击加号按钮 (<img src="/2021/04/11/Instrument文档翻译/pin_add_button.png" alt="img" style="zoom:67%;">)。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/timeline_pin_add.png" alt="Screenshot showing the timeline pane with the mouse over the Frames Per Second instrument that shows the pin button."></p>
+</li>
+</ol>
+</li>
+<li><p>取消固定时间线</p>
+<p><img src="/2021/04/11/Instrument文档翻译/timeline_pin_delete.png" alt="Screenshot showing the timeline pane with the mouse over the pinned Frames Per Second instrument that shows the unpin button"></p>
+</li>
+</ul>
+<h3 id="在详情窗格中查看不同类型的数据"><a href="#在详情窗格中查看不同类型的数据" class="headerlink" title="在详情窗格中查看不同类型的数据"></a>在详情窗格中查看不同类型的数据</h3><p>在一些instruments中你可以在详情窗格中展示多种格式的数据。举个例子，在Activity Monitor中，你可以查看到数据概览，父子信息和一些样本的列表。</p>
+<ul>
+<li><p>对详情窗格中导航栏列表里的详情列表类型选择合适的模式。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_detail_pane_detailtypelist.png" alt="img"></p>
+<p>instrument支持哪种数据要依赖于instrument所收集到的数据的类型。</p>
+<p>对于一些详情类型，像 Allocations 称为 call tree 模式，你可以使用确切详情窗格中的下箭头来进一步深入到与其相对应的层级中。点击三角形会展开或者收起行信息。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_detail_pane_calltreeexpanded.png" alt="img"></p>
+<p>提示：按住option并点击三角形来递归展开到当前行的子节点发生数据更改的位置。按住Shift-Option点击左键来展开当前行的所有字节点。</p>
+<p>当查看调用树时(call tree)，多数instruments都包含 hide system calls 和 invert the call tree选项。这些选项在inspector窗格的显示设置中的调用树区域(call tree area)可以找到。Hiding system calls能够让你快速筛选出您 App 中的调用方法。Inverting the call tree 能够让你最先查看到最后的调用。</p>
+</li>
+</ul>
+<h3 id="使用额外详情区域"><a href="#使用额外详情区域" class="headerlink" title="使用额外详情区域"></a>使用额外详情区域</h3><p>对于一些instruments，其检查区域中的额外详情区域能够展示在当前详情窗格中所选中条目的额外信息。这些额外的详情信息可以包括一些结果的描述或者是被记录的事件或调用跟踪和信息被记录的时间或者是其他信息。</p>
+<ul>
+<li><p>请按如下操作之一进行操作：</p>
+<ul>
+<li><p>选择 View &gt; Inspectors &gt; Show Extended Detail or Hide Extended Detail (或按下 Command - 1)。</p>
+</li>
+<li><p>点击指示器窗格顶部的额外详情按钮 (<img src="/2021/04/11/Instrument文档翻译/instruments_extendeddetail_button_inline.png" alt="img" style="zoom:67%;">)。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_inspector_pane_navigation_bar.png" alt="img"></p>
+</li>
+</ul>
+</li>
+</ul>
+<p>你可以通过点击额外详情区域中栈跟踪区域顶部的折叠按钮<img src="/2021/04/11/Instrument文档翻译/inline_hidesystemcalls_button.png" alt="img" style="zoom:67%;"> 来隐藏系统调用方法。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_extendeddetail_pane_hiddensystemcalls.png" alt="Hiding system calls in the extended detail area of the inspector pane"></p>
+<h3 id="访问多次运行的跟踪数据"><a href="#访问多次运行的跟踪数据" class="headerlink" title="访问多次运行的跟踪数据"></a>访问多次运行的跟踪数据</h3><p>一个跟踪文档能够为你的 app 收集多次运行的数据。这样做时，这并不会抛弃之前所收集的数据。在工具栏的活动区域(Activity area)展示出总共运行的次数，当前运行，和当前运行的时间。更改当前运行会为trace document中每一个instrument更新为当前运行的数据。数据只会在跟踪文档选中的运行期间的instruments展示。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_strategy_pane_multipleruns.png" alt="img"></p>
+<ul>
+<li>移动到下一次运行<ul>
+<li>选择 Instrument &gt; Next Run ，点击在活动区域顶部工具栏中的 Previous Run 按钮或者按下 Command + {。</li>
+</ul>
+</li>
+<li>移动到之前的运行<ul>
+<li>选择 Instrument &gt; Previous Run ，点击在活动区域顶部工具栏中的 Next Run 按钮或者按下 Command + }。</li>
+</ul>
+</li>
+</ul>
+<h3 id="在Instruments中访问源代码"><a href="#在Instruments中访问源代码" class="headerlink" title="在Instruments中访问源代码"></a>在Instruments中访问源代码</h3><p>如果您拥有的 Xcode 项目源代码能够列出跟踪栈中的符号，Instruments能够打开 Xcode ，以便你能够对其进行任何所需的更改。</p>
+<ol>
+<li>在详情窗格中找到您代码的图标(<img src="/2021/04/11/Instrument文档翻译/inline_usercode_icon.png" alt="img" style="zoom:67%;">表示用户)。</li>
+<li>右键条目，并在所出现的弹窗中选择 Reveal in Xcode 。</li>
+</ol>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_detail_pane_usersourcecode_popover.png" alt="Screenshot showing the popover for opening the user symbol in Xcode"></p>
+<p>为了更轻松地查找代码符号，您可以通过展示窗口底部的<a href="https://help.apple.com/instruments/mac/current/#/devadf729aef" target="_blank" rel="noopener">筛选和配置栏</a>中 instrument 的显示设置来从系统库中筛选出符号。</p>
+<h2 id="配置instruments"><a href="#配置instruments" class="headerlink" title="配置instruments"></a>配置instruments</h2><h3 id="将数据映射到源码中"><a href="#将数据映射到源码中" class="headerlink" title="将数据映射到源码中"></a>将数据映射到源码中</h3><p>Instruments需要关于您项目的精确信息以提供最棒的结果。如果系统能够查看所有与您项目相关的符号你可以获取最完整的数据。在跟踪文档通过Instruments分析工具所产生而显示的是地址而非符号时，你可以手动提供缺失信息。地址所对应的符号被包含在dSYM文件中。通常Instruments会通过你在Instruments偏好设置中指定的路径索引来自动寻找dSYM文件。然而，您可以在Instruments无法自动找到 dSYM时指定其正确的路径。一旦您这样做了，Instruments能将地址映射到其相关联的符号和行信息。</p>
+<h4 id="为跟踪文档查找dSYM路径"><a href="#为跟踪文档查找dSYM路径" class="headerlink" title="为跟踪文档查找dSYM路径"></a>为跟踪文档查找dSYM路径</h4><ol>
+<li><p>选择 File &gt; Symbols 。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_file_menu_symbols_menuitem.png" alt="img"></p>
+<p>这个选项只有在运行了一个跟踪或者载入之前运行的跟踪结果时才会出现。</p>
+</li>
+<li><p>选择缺失符号的可执行的库或者框架。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_symbols_dialog_binaries.png" alt="img"></p>
+</li>
+<li><p>点击查找按钮。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_symbols_dialog_locatedysmpath_button.png" alt="img"></p>
+</li>
+<li><p>在出现的弹窗中选择您的符号或者包含它的文件夹。</p>
+</li>
+<li><p>点击 open。</p>
+</li>
+</ol>
+<p>为了在跟踪文档中正确显示符号，Instruments需要访问指定符号文件，这个符号文件是在您测试的可执行文件构建之后生成的。因此当您在一台电脑上构建并在另一台电脑上测试性能时，您可能需要手动查找dSYM文件。</p>
+<p>在符号弹窗中的筛选栏能让你通过可执行文件、不完整的二进制文件和框架中筛选。同样您也能够通过在搜索框中输入文本来搜索特定的二进制或框架。</p>
+<p>注意：默认情况下，Xcode会在构建路径中将symbols保存为dSYM文件。Xcode 通过将扩展添加到可执行名称创建默认的 dSYM 捆绑路径。为了在 Xcode 中创建dSYM文件，进入您项目中的Build Settings(构建设置)，然后选中在Build Options栏中的 Debug Information Format &gt; Dwarf with dSYM File 。</p>
+<p>注意：通常，当显示的不是符号而是地址而，地址以黑色显示在左边，在细节窗格中以灰色显示库。您可以通过定位适当的 dSYM 文件来识别这些地址。</p>
+<p>如果地址为灰色且未列出拥有库，则无法显示符号名称。没有库名称的灰色地址意味着在记录跟踪时，您无权查看有关该过程的信息。这通常发生在构建设置中的代码签名标识设置为发布生成的发布/分发标识时。您的发布生成应使用与调试生成相同的设置（通常为”iOS 开发人员”）。</p>
+<h3 id="设置通用选项"><a href="#设置通用选项" class="headerlink" title="设置通用选项"></a>设置通用选项</h3><p>使用在选项窗口中的通用窗格来配置Instruments的类似启动选项，键盘快捷键和警告选项等基础行为。</p>
+<p>选择 Instruments &gt; Preferences 并点击 General。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_prefs_general.png" alt="img"></p>
+<p>你能够设置如下选项：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">选项</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Compress run data</td>
+<td style="text-align:left">将每次运行都以 zip 格式保存</td>
+</tr>
+<tr>
+<td style="text-align:left">Enforce initial deck height</td>
+<td style="text-align:left">当instrument文档被重新加载并使用模板默认高度时可以防止回复自定义高度。取消选择时，保存并回复当前高度。</td>
+</tr>
+<tr>
+<td style="text-align:left">Sort process lists by identifier</td>
+<td style="text-align:left">对所有Instruments App 列表内容以进程 ID 排序。当未选中时，默认以字母排列。</td>
+</tr>
+<tr>
+<td style="text-align:left">Always snap track to fit at end of run</td>
+<td style="text-align:left">在运行结束时自动将跟踪缩放到跟踪文档中，以适应窗口中的所有数据。</td>
+</tr>
+<tr>
+<td style="text-align:left">Reset “Don’t Ask Me” Warnings</td>
+<td style="text-align:left">重新发布对话警告您以前选择不显示。文书有几个警告对话框，您可以通过在对话框中选择”不要再次显示此消息”复选框来禁用这些对话框。要重新发布所有这些警告对话，请单击重置”不要问我”警告按钮。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="设置收集选项"><a href="#设置收集选项" class="headerlink" title="设置收集选项"></a>设置收集选项</h3><p>使用在选项窗口中的 Recording 窗格来配置跟踪在跟踪文档中显示的样式。</p>
+<ul>
+<li><p>选择 Instruments &gt; Preferences 并点击 Recording。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_prefs_recording.png" alt="img"></p>
+</li>
+</ul>
+<p>你能够配置如下选项：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">选项</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Recording location</td>
+<td style="text-align:left">为新创建的Instruments 文档指定一个位置。默认是一个临时的路径。在这个弹出菜单中自定义一个不同的路径。</td>
+</tr>
+<tr>
+<td style="text-align:left">Background sampling duration</td>
+<td style="text-align:left">Sets the length of a sample trace operating in the background. Type a numeric value in the field. Defaults to 5 seconds.</td>
+</tr>
+<tr>
+<td style="text-align:left">Global keyboard shortcuts</td>
+<td style="text-align:left">Opens the Keyboard &gt; Shortcuts &gt; Services pane in the System Preferences app, as shown in the Keyboard &gt; Shortcuts &gt; Services pane in System Preferences. From here, you can assign keyboard shortcuts to development services, such as a service that automatically opens an Xcode project in Instruments and profiles it with the System Trace profiling template.</td>
+</tr>
+<tr>
+<td style="text-align:left">Always use deferred mode</td>
+<td style="text-align:left">Performs data analysis for all traces after data collection is complete.</td>
+</tr>
+<tr>
+<td style="text-align:left">Automatically time profile spinning applications</td>
+<td style="text-align:left">Automatically monitors for a spinning process while a trace is recorded. This can be a process other than the one being recorded. If detected, Instruments starts the Time Profiler instrument on the spinning process.</td>
+</tr>
+<tr>
+<td style="text-align:left">DTrace max buffer size</td>
+<td style="text-align:left">Sets the size of the DTrace kernel buffer (in megabytes). The default is 25 MB.</td>
+</tr>
+<tr>
+<td style="text-align:left">DTrace max backtrace depth</td>
+<td style="text-align:left">Sets the maximum stack depth that is captured when using a DTrace instrument. The default is 128 frames.</td>
+</tr>
+<tr>
+<td style="text-align:left">Permit zero match probes</td>
+<td style="text-align:left">Prevents an error when a specified DTrace probe is not found.</td>
+</tr>
+<tr>
+<td style="text-align:left">Preserve intermediate files</td>
+<td style="text-align:left">Prevents Instruments from removing intermediate DTrace data output files from the disk.</td>
+</tr>
+<tr>
+<td style="text-align:left">Flag runtime messages</td>
+<td style="text-align:left">Adds flags to the timeline for DTrace runtime status and error messages encountered during a recording.</td>
+</tr>
+</tbody>
+</table>
+<p>参考资料</p>
+<blockquote>
+<p>Instruments Help:<a href="https://help.apple.com/instruments/mac/current/#/dev7b09c84f5" target="_blank" rel="noopener">https://help.apple.com/instruments/mac/current/#/dev7b09c84f5</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/02/iOS推送-APNs/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2845,315 +4353,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/05/GPUImage-使用心得/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="John Wong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="John 的技术博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/05/GPUImage-使用心得/" itemprop="url">GPUImage 使用心得</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-05T23:14:12+08:00">
-                2018-09-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/15/类和-isa-指针/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="John Wong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="John 的技术博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/15/类和-isa-指针/" itemprop="url">类和 isa 指针</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-15T15:56:14+08:00">
-                2018-08-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="对于普通对象来说，isa-指针包含对象的类"><a href="#对于普通对象来说，isa-指针包含对象的类" class="headerlink" title="对于普通对象来说，isa 指针包含对象的类"></a>对于普通对象来说，isa 指针包含对象的类</h2><p>oc 中所有的 isa 指针指向的都是类。</p>
-<p>在 oc 中每一个类的对象都都有一个指向类的指针 isa。并且在 oc 中任何数据结构也在一个正确的位置上都有一个指向类的指针，使其能够被视为对象。</p>
-<p>所以一个对象的类型是由 isa 指针决定的，isa 指针指向对象的类。</p>
-<p><del>接下来我们查看类的定义，首先我们使用如下代码导入所需框架:</del>(这样查看的是旧的定义)</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;objc/runtime.h&gt;</span><br><span class="line">#import &lt;objc/objc.h&gt;</span><br></pre></td></tr></table></figure>
-<p><del>首先我们先查看对象的定义,找到objc_object ，并查看:</del></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">typedef struct objc_class *Class;</span><br><span class="line"></span><br><span class="line">struct objc_object &#123;</span><br><span class="line">    Class _Nonnull isa  OBJC_ISA_AVAILABILITY;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">typedef struct objc_object *id;</span><br></pre></td></tr></table></figure>
-<p><del>我们看到objc_object中只定义了一个 Class 类型的变量，Class类型其实我们可以从上述代码第一条得知 Class其实就是一个objc_class类型的指针。<strong>对于对象来说isa指针就是指向对象所对应的类。</strong></del></p>
-<p>新定义:</p>
-<p>首先<a href="https://opensource.apple.com/tarballs/objc4/objc4-723.tar.gz" target="_blank" rel="noopener">下载文档</a>，然后我们打开它objc-private.h 文件。我们查看objc_object 定义:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">struct objc_object &#123;</span><br><span class="line">private:</span><br><span class="line">    isa_t isa;</span><br><span class="line">public:</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在 objc_object 中，isa 是一个 isa_t 类型的变量，继续在这个文件中查找 “union isa_t ”，然后我们看这个变量的定义:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">union isa_t </span><br><span class="line">&#123;</span><br><span class="line">    isa_t() &#123; &#125;</span><br><span class="line">    isa_t(uintptr_t value) : bits(value) &#123; &#125;</span><br><span class="line"></span><br><span class="line">    Class cls;</span><br><span class="line">    uintptr_t bits;</span><br><span class="line">    .....</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这个 isa_t 是一个union类型的结构体(或者称为联合体)。这个 isa_t 中定义了一个 Class 类型的cls 变量。然后我们接着查找这个 Class 类型。在同一个文件中搜索’objc_class *Class’，你会看到Class 类型的定义:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">typedef struct objc_class *Class;</span><br></pre></td></tr></table></figure>
-<p>你会看到其实 cls 变量是一个指针，其值指向的对象是objc_class结构体。接着我们打开objc-runtime-new.h 文件，搜索“objc_class ”：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">struct objc_class : objc_object &#123;</span><br><span class="line">    // Class ISA;</span><br><span class="line">    Class superclass;</span><br><span class="line">    cache_t cache;             // formerly cache pointer and vtable</span><br><span class="line">    class_data_bits_t bits;    // class_rw_t * plus custom rr/alloc flags</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这个结构体就是类的结构，所以我们说<strong>对于普通对象来说，isa 指针包含对象的类</strong>。为什么特指普通对象呢，我们继续看下去。</p>
-<h2 id="类其实也是一个对象"><a href="#类其实也是一个对象" class="headerlink" title="类其实也是一个对象"></a>类其实也是一个对象</h2><p>首先我们着重看上述几个变量,并逐条分析。objc_class 继承自objc_obbject，所以我们 objc_class 中也存在一个isa 变量。而且由这个继承结构我们可以得出：<strong>类其实也是一个对象</strong>。只不过这个对象并不是由我们来创建，而是由系统来创建。既然类也是一个对象，那么其 isa 指针中必定也包含对象的类，即<strong>“类对象的类“</strong>。那么”类对象的类“是什么呢？其实它就是<a href="https://zh.wikipedia.org/wiki/%E5%85%83%E7%B1%BB" target="_blank" rel="noopener">元类(metaclass)</a>，但是，元类有什么作用呢？先别急，我们等会讨论。</p>
-<h3 id="类对象中保存类的父类"><a href="#类对象中保存类的父类" class="headerlink" title="类对象中保存类的父类"></a>类对象中保存类的父类</h3><p>superclass 也是一个objc_class类型，就是一个类，按照其字面意思理解是指向本对象的父类，事实上真是这个意思，在这里就是元类的父类。这具体是指向的什么呢，这等我们讨论元类的时候再讨论。</p>
-<p>然后下一个就是cache，这个变量是cache_t类型的，它是一个<a href="https://zh.wikipedia.org/wiki/%E5%93%88%E5%B8%8C%E8%A1%A8" target="_blank" rel="noopener">散列表</a>(又名哈希表，是根据键(Key)而直接访问在内存存储位置的数据结构)，缓存的是曾经调用过的方法列表，并且它可以使用键值对的方式去读取，这样效率肯定比遍历快得多。如果你想了解更多请看<a href="https://juejin.im/post/5b1b45c36fb9a01e5b10f96b" target="_blank" rel="noopener">方法缓存与查找</a>。</p>
-<h3 id="类对象保存属性、实例所能执行的普通方法和所遵守的协议"><a href="#类对象保存属性、实例所能执行的普通方法和所遵守的协议" class="headerlink" title="类对象保存属性、实例所能执行的普通方法和所遵守的协议"></a>类对象保存属性、实例所能执行的普通方法和所遵守的协议</h3><p>接下来就是一个bits，它是class_data_bits_t类型的变量，在讲解这个变量之前，我们先看一个例子:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[@&quot;stringValue&quot;</span><br><span class="line">    writeToFile:@&quot;/file.txt&quot; atomically:YES encoding:NSUTF8StringEncoding error:NULL];</span><br></pre></td></tr></table></figure>
-<p>当字符串实例调用实例方法writeToFile:的时候，这个方法也是存在于内存中的，那么它是在哪里被定义的呢？在没有接触过 runtime 之前，你可能会对此感到疑惑，可能觉得它就是保存在对象里的，也可能觉得它是保存在对象的类中的，或者说根本就没有想法(刚开始我就是一脸懵逼)。我们接下来就来探讨这个问题，首先看对象类型objc_object 结构体。在这结构体中，大部分的函数和变量都是和 ARC 与 isa 有关的，你找了很久也没有找到名称类似的函数和变量。接着我们看objc_class 结构体，因为变量才是保存信息所用的单元，所以我们先看变量。在 objc_class 中，我们讲过了前面几个变量，接着就是要讲class_data_bits_t类型的变量bits。我们在”objc-runtime-new.h”中搜索class_data_bits_t，我们可以看到这个类型的定义:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">struct class_data_bits_t &#123;</span><br><span class="line"></span><br><span class="line">    // Values are the FAST_ flags above.</span><br><span class="line">    uintptr_t bits;</span><br><span class="line">    class_rw_t* data() &#123;</span><br><span class="line">        return (class_rw_t *)(bits &amp; FAST_DATA_MASK);</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>我们可以看到，我们发现了两个新的类型，分别是uintptr_t和class_rw_t。我们依次查看这两个类型的定义：首先我们使用快捷键 cmd+shift+o 调出快速搜索栏填入uintptr_t。</p>
-<p><img src="/2018/08/15/类和-isa-指针/快速查找uintptr_t.png" alt="image-20180817093327289"></p>
-<p>打开这个文件，你会看到uintptr_t 的定义如下:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#ifndef _UINTPTR_T</span><br><span class="line">#define _UINTPTR_T</span><br><span class="line">typedef unsigned long		uintptr_t;</span><br><span class="line">#endif /* _UINTPTR_T */</span><br></pre></td></tr></table></figure>
-<p>其实它就是一个长整型的别名，它不保存方法，我们接着看下一个变量类型class_rw_t。</p>
-<p>还是在objc-runtime-new.h 中，搜索class_rw_t，你会看到他的定义如下:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">struct class_rw_t &#123;</span><br><span class="line">    // Be warned that Symbolication knows the layout of this structure.</span><br><span class="line">    uint32_t flags;</span><br><span class="line">    uint32_t version;</span><br><span class="line"></span><br><span class="line">    const class_ro_t *ro;</span><br><span class="line"></span><br><span class="line">    method_array_t methods;</span><br><span class="line">    property_array_t properties;</span><br><span class="line">    protocol_array_t protocols;</span><br><span class="line"></span><br><span class="line">    Class firstSubclass;</span><br><span class="line">    Class nextSiblingClass;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>首先查看变量，你会惊喜的发现有一个类型为method_array_t的变量methods。这个变量难道就是我们需要找的保存方法的变量？对没错，他就是保存对象方法列表的变量。查看它的定义</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">class method_array_t : </span><br><span class="line">    public list_array_tt&lt;method_t, method_list_t&gt; </span><br><span class="line">&#123;</span><br><span class="line">    typedef list_array_tt&lt;method_t, method_list_t&gt; Super;</span><br><span class="line"></span><br><span class="line"> public:</span><br><span class="line">    method_list_t **beginCategoryMethodLists() &#123;</span><br><span class="line">        return beginLists();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    method_list_t **endCategoryMethodLists(Class cls);</span><br><span class="line"></span><br><span class="line">    method_array_t duplicate() &#123;</span><br><span class="line">        return Super::duplicate&lt;method_array_t&gt;();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>这里有多个新的类型，我们先查看第一个类型list_array_tt。同样的在”objc-runtime-new.h”中搜索list_array_tt，看到其定义如下:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Element, <span class="keyword">typename</span> List&gt;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">list_array_tt</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">array_t</span> &#123;</span></span><br><span class="line">        <span class="keyword">uint32_t</span> count;</span><br><span class="line">        List* lists[<span class="number">0</span>];</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">static</span> size_t <span class="title">byteSize</span><span class="params">(<span class="keyword">uint32_t</span> count)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">sizeof</span>(<span class="keyword">array_t</span>) + count*<span class="keyword">sizeof</span>(lists[<span class="number">0</span>]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">size_t</span> byteSize() &#123;</span><br><span class="line">            <span class="keyword">return</span> byteSize(count);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>有关template 关键字请看<a href="https://blog.csdn.net/hycoldrain/article/details/3716131" target="_blank" rel="noopener">这里</a>，所以我们可以知道，其实method_array_t就是一个二维数组，这个二维数组中保存的就是method_list_t数组，method_list_t数组中保存的是method_t。我们接着查看 method_t。我们继续在”objc-runtime-new.h”中搜索method_t ，我们可以看到 method_t 的定义:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">struct method_t &#123;</span><br><span class="line">    SEL name;</span><br><span class="line">    const char *types;</span><br><span class="line">    IMP imp;</span><br><span class="line"></span><br><span class="line">    struct SortBySELAddress :</span><br><span class="line">        public std::binary_function&lt;const method_t&amp;,</span><br><span class="line">                                    const method_t&amp;, bool&gt;</span><br><span class="line">    &#123;</span><br><span class="line">        bool operator() (const method_t&amp; lhs,</span><br><span class="line">                         const method_t&amp; rhs)</span><br><span class="line">        &#123; return lhs.name &lt; rhs.name; &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>wow，这不就是我们熟知的方法的结构吗！name 是 SEL 类型的表示方法名。imp 是 IMP 类型，表示指向方法的实现地址。<strong>所以，类对象保存着对象所能执行的普通方法。</strong>为什么是普通方法呢，等我们讨论元类的时候再做解释，接下来我们来看它们的定义:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// An opaque type that represents a method selector.</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">objc_selector</span> *<span class="title">SEL</span>;</span></span><br><span class="line"><span class="comment">/// A pointer to the function of a method implementation. </span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> !OBJC_OLD_DISPATCH_PROTOTYPES</span></span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">void</span> <span class="params">(*IMP)</span><span class="params">(<span class="keyword">void</span> <span class="comment">/* id, SEL, ... */</span> )</span></span>; </span><br><span class="line"><span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line"><span class="keyword">typedef</span> id _Nullable (*IMP)(id _Nonnull, SEL _Nonnull, ...); </span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
-<p>我们先看 IMP，IMP 类型我们根据新的 IMP 定义可以这样理解：<strong>IMP 作为一个指向 “一个拥有 至少一个 id 类型，一个 SEL 类型当作参数并回传不可为空的  id 的函数” 的指针的别名</strong>(如果对 typedef 不太了解的可以看<a href="https://zh.wikipedia.org/wiki/Typedef" target="_blank" rel="noopener">这里</a>)。IMP是最终消息执行所调用的代码，是方法真正实现的代码。</p>
-<p>接着我们看 SEL，SEL 类型是一个指针类型，其内容指向objc_selector。但是在 runtime 源码中找不到其定义，所以我们无法了解到这里面写了什么(但是有兴趣的同学可以看<a href="https://blog.csdn.net/jeffasd/article/details/52084639" target="_blank" rel="noopener">这篇文章</a>所写的内容，这文章中大胆的猜测了objc_selector类型定义)，所以我们没办法知道其具体定义，只知道 <strong>SEL 代表着方法的’’标识符’’</strong>。就像”人民大会堂”这个名字就代表着人民大会堂这个建筑一样。</p>
-<p>如果我们继续观察class_rw_t中的property_array_t类型和protocol_array_t类型，我们会发现这和list_array_tt类似，只不过property_array_t中保存的是<strong>对象所有的属性</strong>，protocol_array_t保存<strong>对象所遵守的协议</strong>。</p>
-<h2 id="元类"><a href="#元类" class="headerlink" title="元类"></a>元类</h2><p>我们在讨论类的时候多次出现了”元类“这个概念，我们说类对象的 isa 指针指向元类。但是什么是元类呢？我们引用<a href="https://zh.wikipedia.org/wiki/%E5%85%83%E7%B1%BB" target="_blank" rel="noopener">维基的释义</a>——<strong>元类</strong>（英语：metaclass）是一种实例是<a href="https://zh.wikipedia.org/wiki/%E7%B1%BB" target="_blank" rel="noopener">类</a>的类。普通的类定义的是特定对象的行为，元类定义的则是特定的类及其对象的行为。</p>
-<p>即：类对象的行为在元类中定义。</p>
-<p>看到这里你可能会感到疑惑：类对象的行为是什么呢？我们看如下例子：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSString *string = [NSString stringWithFormat:@&quot;%@&quot;,@&quot;class method&quot;];</span><br></pre></td></tr></table></figure>
-<p>我们知道实例对象的方法保存在类对象中，但是上述代码并不是实例对象调用，而是类调用，那么这个方法也是保存在类中的吗？目前我们还不知道答案，但是我们换一个角度思考。类调用方法既是类对象调用方法，按之前我们分析得到的结果：<strong>对象的方法保存在对象所对应的类中</strong>。类一个一个对象，那么其方法必定也保存在类所对应的类中，即：元类中，但是请注意这并不是一个新的结构，只是一个名词而已其结构还是 objc_class。</p>
-<p>元类我们从结构上知道，它也是一个 objc_class 的结构体。所以其中保存着类对象所执行的方法——类方法。既然是元类那么其必定也有 isa 指针，这个指针指向什么呢？请耐心看下去。</p>
-<h2 id="对象和类的继承机构"><a href="#对象和类的继承机构" class="headerlink" title="对象和类的继承机构"></a>对象和类的继承机构</h2><p>普通对象中有 isa 指针指向其类，类对象中也有superclass指向其父类，元类中的 superclass 指针指向的也是其父类，就是元类的父类。元类的父类是什么呢？我们看一张图来了解一下(一图胜千言):</p>
-<p><img src="/2018/08/15/类和-isa-指针/对象和类的结构.jpg" alt="F46657E4-1C70-45F0-A09D-FBC0A20E0C51"></p>
-<p>在这张图中我们可以看到：</p>
-<ul>
-<li><strong>实例对象的 isa 指针指向其类，类的 isa 指针指向元类，元类的 isa 指针指向根元类(即 NSObject 的元类)，根元类的 isa 指针指向自己。</strong></li>
-<li><strong>实例对象的类的 superclass 指向父类，父类的 superclass 指针指向其父类，最终指向 NSObject，NSObject 的 superclass 指针指向 nil。</strong></li>
-<li><strong>元类的superclass 指向其类对象父类的元类，并最终指向 NSObject 类的元类，NSObject 的元类的 isa 指针指向 NSObject。</strong></li>
-</ul>
-<blockquote>
-<p>参考资料:</p>
-<p>浅谈 Objective-C 中的元类 (meta-class):<a href="https://www.jianshu.com/p/79b06fabb459" target="_blank" rel="noopener">https://www.jianshu.com/p/79b06fabb459</a> </p>
-<p>iOS 常见知识点（一）：Runtime：<a href="https://www.jianshu.com/p/965bd18cb056" target="_blank" rel="noopener">https://www.jianshu.com/p/965bd18cb056</a> </p>
-<p>What is a meta-class in Objective-C?：<a href="https://www.cocoawithlove.com/2010/01/what-is-meta-class-in-objective-c.html" target="_blank" rel="noopener">https://www.cocoawithlove.com/2010/01/what-is-meta-class-in-objective-c.html</a></p>
-<p>方法缓存与查找：<a href="https://juejin.im/post/5b1b45c36fb9a01e5b10f96b" target="_blank" rel="noopener">https://juejin.im/post/5b1b45c36fb9a01e5b10f96b</a></p>
-<p>c++模板中的 typename 和 template 关键字用法:<a href="https://blog.csdn.net/hycoldrain/article/details/3716131" target="_blank" rel="noopener">https://blog.csdn.net/hycoldrain/article/details/3716131</a></p>
-<p>OC 中 objc_selector 结构体详解:<a href="https://blog.csdn.net/jeffasd/article/details/52084639" target="_blank" rel="noopener">https://blog.csdn.net/jeffasd/article/details/52084639</a></p>
-</blockquote>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -3199,7 +4403,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -3212,7 +4416,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">标签</span>
                 
               </div>
@@ -3249,7 +4453,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>

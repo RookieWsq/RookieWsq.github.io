@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="ios基础知识," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Mach-O文件结构初探索什么是 Mach-O 文件Mach-O（Mach Object File Format）是 macOS 上的可执行文件格式，类似于 Linux 和大部分 UNIX 的原生格式 ELF（Extensible Firmware Interface）以及 Windows 上的 PE。 Mach-O 构成Mach-O文件分成四部分：   header：包含文件的目标架构，CPU类">
+<meta name="keywords" content="ios基础知识">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mach-O文件结构初探索">
+<meta property="og:url" content="http://yoursite.com/2021/12/02/Mach-O文件结构初探索/index.html">
+<meta property="og:site_name" content="John 的技术博客">
+<meta property="og:description" content="Mach-O文件结构初探索什么是 Mach-O 文件Mach-O（Mach Object File Format）是 macOS 上的可执行文件格式，类似于 Linux 和大部分 UNIX 的原生格式 ELF（Extensible Firmware Interface）以及 Windows 上的 PE。 Mach-O 构成Mach-O文件分成四部分：   header：包含文件的目标架构，CPU类">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2021/12/02/Mach-O文件结构初探索/Mach-O%20结构.png">
+<meta property="og:image" content="http://yoursite.com/2021/12/02/Mach-O文件结构初探索/MachOView%20查看%20Mach-O.png">
+<meta property="og:image" content="http://yoursite.com/2021/12/02/Mach-O文件结构初探索/header-filetype.png">
+<meta property="og:image" content="http://yoursite.com/2021/12/02/Mach-O文件结构初探索/MachOView-header.png">
+<meta property="og:image" content="http://yoursite.com/2021/12/02/Mach-O文件结构初探索/MachOView-load%20command-overview.png">
+<meta property="og:updated_time" content="2021-12-02T10:48:01.813Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mach-O文件结构初探索">
+<meta name="twitter:description" content="Mach-O文件结构初探索什么是 Mach-O 文件Mach-O（Mach Object File Format）是 macOS 上的可执行文件格式，类似于 Linux 和大部分 UNIX 的原生格式 ELF（Extensible Firmware Interface）以及 Windows 上的 PE。 Mach-O 构成Mach-O文件分成四部分：   header：包含文件的目标架构，CPU类">
+<meta name="twitter:image" content="http://yoursite.com/2021/12/02/Mach-O文件结构初探索/Mach-O%20结构.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2021/12/02/Mach-O文件结构初探索/"/>
+
+
+
+
+
+  <title>Mach-O文件结构初探索 | John 的技术博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">John 的技术博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/12/02/Mach-O文件结构初探索/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Wong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="John 的技术博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Mach-O文件结构初探索</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-12-02T18:42:53+08:00">
+                2021-12-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Mach-O文件结构初探索"><a href="#Mach-O文件结构初探索" class="headerlink" title="Mach-O文件结构初探索"></a>Mach-O文件结构初探索</h1><h2 id="什么是-Mach-O-文件"><a href="#什么是-Mach-O-文件" class="headerlink" title="什么是 Mach-O 文件"></a>什么是 Mach-O 文件</h2><p><strong>Mach-O</strong>（Mach Object File Format）是 macOS 上的可执行文件格式，类似于 Linux 和大部分 UNIX 的原生格式 <strong>ELF</strong>（Extensible Firmware Interface）以及 Windows 上的 PE。</p>
+<h2 id="Mach-O-构成"><a href="#Mach-O-构成" class="headerlink" title="Mach-O 构成"></a>Mach-O 构成</h2><p>Mach-O文件分成四部分：</p>
+<p><img src="/2021/12/02/Mach-O文件结构初探索/Mach-O 结构.png" alt="image-20211115214823308" style="zoom:67%;"></p>
+<ul>
+<li>header：包含文件的目标架构，CPU类型，以及其他标志和信息以便读取文件的其他部分。</li>
+<li>Load Command：Load Command跟在 header 之后，指定了文件在加载时将如何在虚拟内存中布局和文件连接特性，还包括符号表（用于动态链接）位置，以及任何要加载的共享库的名字。</li>
+<li>segment 和 section：跟在 load command 之后，load command 中的具体描述保存在这部分。</li>
+<li>link edit segment：最后一部分是链接编辑段，该段包含链接编辑信息表，如符号表、字符串表等，由动态加载器用于链接可执行文件或Mach-O捆绑包到其依赖库。</li>
+</ul>
+<p><img src="/2021/12/02/Mach-O文件结构初探索/MachOView 查看 Mach-O.png" alt="image-20211129234917525" style="zoom:75%;"></p>
+<h2 id="一、header"><a href="#一、header" class="headerlink" title="一、header"></a>一、header</h2><h3 id="header-概述"><a href="#header-概述" class="headerlink" title="header 概述"></a>header 概述</h3><p>Mach-O 的第一部分 header 中包含的信息描述了Mach-O 结构的概况，包括：目标架构，CPU情况，文件类型，loadCommand 数量，loadCommand 所占用大小(字节为单位)等等。我们接下来从源码出发探寻 <a href="https://github.com/apple/darwin-xnu/blob/main/EXTERNAL_HEADERS/mach-o/loader.h" target="_blank" rel="noopener">darwin-xnu/blob/main/EXTERNAL_HEADERS/mach-o/loader.h</a> (文件中分别定义了32 位架构和 64 位架构的头结构，下文我们以 64 位为例)：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">mach_header_64</span> &#123;</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	magic;		<span class="comment">/* 魔数标记 */</span></span><br><span class="line">	<span class="keyword">cpu_type_t</span>	cputype;	<span class="comment">/* CPU 标记 */</span></span><br><span class="line">	<span class="keyword">cpu_subtype_t</span>	cpusubtype;	<span class="comment">/* CPU确切型号 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	filetype;	<span class="comment">/* 文件类型 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	ncmds;		<span class="comment">/* load command 数量 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	sizeofcmds;	<span class="comment">/* load commands 大小 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	flags;		<span class="comment">/* 额外标记 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	reserved;	<span class="comment">/* 保留 */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>变量说明：</p>
+<ul>
+<li><p>magic：本质上是一个 4 字节整型数据，用于标识是 32 位架构还是 64 位架构，并且还能标识Mach-O 文件的大小端序。</p>
+<ul>
+<li>值在 <a href="https://github.com/apple/darwin-xnu/blob/main/EXTERNAL_HEADERS/mach-o/loader.h" target="_blank" rel="noopener">loader.h</a> / <a href="https://github.com/apple/darwin-xnu/blob/main/EXTERNAL_HEADERS/mach-o/fat.h" target="_blank" rel="noopener">fat.h</a>中定义。</li>
+<li>64 位小端：<code>#define MH_MAGIC_64 0xfeedfacf</code>。</li>
+<li>64 位大端：<code>#define MH_CIGAM_64 0xcffaedfe</code>。</li>
+<li>32 位小端：<code>#define    MH_MAGIC    0xfeedface</code>。</li>
+<li>32 位大端：<code>#define MH_CIGAM    0xcefaedfe</code>。</li>
+<li>胖二进制小端：<code>#define FAT_MAGIC    0xcafebabe</code>。</li>
+<li>胖二进制大端：<code>#define FAT_CIGAM    0xbebafeca</code>。</li>
+</ul>
+</li>
+<li><p>cputype：本质上一个是4 字节整型数据，用于表示运行 Mach-O 文件平台 CPU 的架构。</p>
+<ul>
+<li>值在  <a href="https://github.com/apple/darwin-xnu/blob/8f02f2a044b9bb1ad951987ef5bab20ec9486310/osfmk/mach/machine.h" target="_blank" rel="noopener">machine.h</a> 文件中定义。</li>
+<li>早期 arm CPU：<code>#define CPU_TYPE_ARM            ((cpu_type_t) 12)</code>。</li>
+<li>arm64 CPU：<code>#define CPU_TYPE_ARM64          (CPU_TYPE_ARM | CPU_ARCH_ABI64)</code>，值为 <code>0100000C</code> 。</li>
+<li>64 位英特尔 CPU：<code>#define CPU_TYPE_X86_64         (CPU_TYPE_X86 | CPU_ARCH_ABI64)</code>，值为<code>01000007</code>。</li>
+</ul>
+</li>
+<li><p>cpusubtype：本质上一个是4 字节整型数据，用于在 cputtype 确定的情况下内核运行的确切 CPU 型号。</p>
+<ul>
+<li>值在  <a href="https://github.com/apple/darwin-xnu/blob/8f02f2a044b9bb1ad951987ef5bab20ec9486310/osfmk/mach/machine.h" target="_blank" rel="noopener">machine.h</a> 文件中定义。</li>
+<li>ARM64平台下：<ul>
+<li>ARM64所有型号：<code>#define CPU_SUBTYPE_ARM64_ALL           ((cpu_subtype_t) 0)</code>。</li>
+<li>ARM64_v8：<code>#define CPU_SUBTYPE_ARM64_V8            ((cpu_subtype_t) 1)</code>。</li>
+<li>ARM64e：<code>#define CPU_SUBTYPE_ARM64E              ((cpu_subtype_t) 2)</code>。</li>
+</ul>
+</li>
+<li>X86平台下：<ul>
+<li>X86 所有型号：<code>#define CPU_SUBTYPE_X86_ALL             ((cpu_subtype_t)3)</code>。</li>
+<li>X86 下 64位所有：<code>#define CPU_SUBTYPE_X86_64_ALL          ((cpu_subtype_t)3)</code>。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>filetype：表示 Mach-O 文件的类型。</p>
+<ul>
+<li><p>值在 <a href="https://github.com/apple/darwin-xnu/blob/main/EXTERNAL_HEADERS/mach-o/loader.h" target="_blank" rel="noopener">loader.h</a> 中定义。</p>
+<p><img src="/2021/12/02/Mach-O文件结构初探索/header-filetype.png" alt="image-20211128013604436"></p>
+</li>
+<li><p>MH_OBJECT:目标文件——通过对源代码编译得到的(中间)结果。目标文件（.o）、静态库文件(.a），静态库其实就是N个.o合并在一起。</p>
+</li>
+<li><p>MH_EXECUTE：标准可执行文件。</p>
+</li>
+<li><p>MH_DYLIB：动态库文件，*.dylib，.framework/xx。</p>
+</li>
+<li><p>MH_DYLINKER：动态链接编辑器，/usr/lib/dyld。注意 dyld 负责加载 MH_EXECUTE、MH_DYLIB和部分MH_BUNDLE文件(<a href="https://github.com/opensource-apple/dyld/blob/master/src/dyld.cpp" target="_blank" rel="noopener">dyld 源码</a>)。</p>
+</li>
+<li><p>MH_BUNDLE：插件，非独立的二进制文件，要加载至其他二进制文件才能发挥作用。和 DYLIB类型文件的区别在于：这些二进制文件是可执行文件显示地加载的，通常是调用 NSBundle(Objective-C)或 CFBundle(C)。</p>
+</li>
+<li><p>MH_DSYM：存储着二进制文件符号信息的文件，*.dSYM/Contents/Resources/DWARF/xx（常用于分析APP的崩溃信息）。</p>
+</li>
+</ul>
+</li>
+<li><p>ncmds：load command 数量(number of load commands)。</p>
+</li>
+<li><p>sizeofcmds：load command所占用的内存大小(字节为单位)。</p>
+</li>
+<li><p>flags：额外标记，表示Mach-O文件格式的某些可选特性的状态。</p>
+<ul>
+<li>值在 <a href="https://github.com/apple/darwin-xnu/blob/main/EXTERNAL_HEADERS/mach-o/loader.h" target="_blank" rel="noopener">loader.h</a> 中定义。</li>
+<li>MH_NOUNDEFS：该对象文件不包含未定义的符号。</li>
+<li>MH_INCRLINK：对象文件是针对基础文件的增量链接的输出，不能被再次链接。</li>
+<li>MH_DYLDLINK：该文件是动态链接器的输入，不能再次静态链接。</li>
+<li>MH_TWOLEVEL：该模块使用两级命名空间绑定。</li>
+<li>MH_FORCE_FLAT：可执行程序强迫所有模块使用平面名称空间绑定。</li>
+<li>MH_WEAK_DEFINES：最终的链接模块包含外部弱符号。</li>
+<li>MH_PREBOUND：该文件有其动态未定义引用的预绑定。</li>
+<li>MH_PIE：当这个位被设置时，操作系统将在一个随机地址加载主可执行文件(<a href="https://zh.wikipedia.org/wiki/%E4%BD%8D%E5%9D%80%E7%A9%BA%E9%96%93%E9%85%8D%E7%BD%AE%E9%9A%A8%E6%A9%9F%E8%BC%89%E5%85%A5" target="_blank" rel="noopener">ASLR 技术</a>)。 只在MH_EXECUTE文件类型中使用。</li>
+<li>MH_HAS_TLV_DESCRIPTORS：包含一个类型为S_THREAD_LOCAL_VARIABLES的section。</li>
+</ul>
+</li>
+<li><p>reserved：保留给未来用。</p>
+</li>
+</ul>
+<p>接下来我们通过实例来查看header 的具体构成：</p>
+<h3 id="header-查看"><a href="#header-查看" class="headerlink" title="header 查看"></a>header 查看</h3><ol>
+<li><p>使用 GUI 工具 MachOView：</p>
+<p><img src="/2021/12/02/Mach-O文件结构初探索/MachOView-header.png" alt="image-20211128185142510"></p>
+<p>由图可知该 MachO 文件类型是 NH_EXECUTE ，有 66 个 load command 等一系列信息。</p>
+</li>
+<li><p>file 命令查看文件类型及架构：<code>file &lt;filepath&gt;</code>，例如：<code>file /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/lipo</code>。</p>
+</li>
+<li><p>通过 lipo 命令查看所支持的架构：</p>
+<p>lipo命令路径：<code>/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/lipo</code>。</p>
+<p>开源地址：<a href="https://opensource.apple.com/tarballs/cctools/" target="_blank" rel="noopener">cctools/misc/lipo.c</a>。</p>
+<p>lipo命令格式：</p>
+<ul>
+<li><p>查看帮助：<code>man lipo</code>。</p>
+</li>
+<li><p>查看支持多少种 CPU架构：</p>
+<ul>
+<li>格式：<code>lipo -info 文件路径</code> 。</li>
+<li>例子：<code>lipo -info /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/lipo</code>。</li>
+</ul>
+</li>
+<li>合并多个架构：<ul>
+<li>格式：<code>lipo [-arch 指定架构] -create 文件1 文件2 -output 输出文件</code>。</li>
+<li>-arch 指定架构参数可选，如果指定的话会将文件 1 文件 2 中的指定架构从输入文件中复制到输出文件。</li>
+</ul>
+</li>
+<li>提取指定架构：<ul>
+<li>格式：<code>lipo 文件路径 -thin 指定架构 -output 输出文件</code>。</li>
+</ul>
+</li>
+<li>移除特定架构：<ul>
+<li>格式：<code>lipo 文件路径 -remove 指定架构 -output 输出文件</code>。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="二、Load-Command"><a href="#二、Load-Command" class="headerlink" title="二、Load Command"></a>二、Load Command</h2><h3 id="Load-Command概述"><a href="#Load-Command概述" class="headerlink" title="Load Command概述"></a>Load Command概述</h3><p>跟在 header 之后的就是 Load Command，Load Command负责描述指令在内存中的布局情况和文件连接特性，还包括符号表（用于动态链接）位置，以及任何要加载的共享库。</p>
+<p><img src="/2021/12/02/Mach-O文件结构初探索/MachOView-load command-overview.png" alt="image-20211128221136653" style="zoom: 67%;"></p>
+<p>LoadCommand 中的加载指令有很多种，<code>LC_SEGMENT_64</code>、<code>LC_DYLD_INFO_ONLY</code>、<code>LC_UUID</code>等等。接下来我们通过具体实例查看和分析 LoadCommand 实际组成。</p>
+<h3 id="Load-Command-查看"><a href="#Load-Command-查看" class="headerlink" title="Load Command 查看"></a>Load Command 查看</h3><p>在 <a href="https://github.com/apple/darwin-xnu/blob/main/EXTERNAL_HEADERS/mach-o/loader.h" target="_blank" rel="noopener">loader.h</a> 中声明了Load Command 指令的基础结构：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">load_command</span> &#123;</span></span><br><span class="line">	<span class="keyword">uint32_t</span> cmd;		<span class="comment">/* load command类型 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span> cmdsize;	<span class="comment">/* load command的字节长度 64位架构的值是 8 的倍数   32 位架构的值是 4 的倍数 */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>cmd：指令类型。定义在 <a href="https://github.com/apple/darwin-xnu/blob/main/EXTERNAL_HEADERS/mach-o/loader.h" target="_blank" rel="noopener">loader.h</a> 中：</p>
+<table>
+<thead>
+<tr>
+<th>指令(定义在<a href="https://github.com/apple/darwin-xnu/blob/main/EXTERNAL_HEADERS/mach-o/loader.h" target="_blank" rel="noopener">loader.h</a>)</th>
+<th>指令值(定义在<a href="https://github.com/apple/darwin-xnu/blob/main/EXTERNAL_HEADERS/mach-o/loader.h" target="_blank" rel="noopener">loader.h</a>)</th>
+<th>指令对应的函数(定义在 <a href="https://github.com/apple/darwin-xnu/blob/2ff845c2e033bd0ff64b5b6aa6063a1f8f65aa32/bsd/kern/mach_loader.c" target="_blank" rel="noopener">mach_loader.c</a> )</th>
+<th>对应的数据结构(定义在 <a href="https://github.com/apple/darwin-xnu/blob/main/EXTERNAL_HEADERS/mach-o/loader.h" target="_blank" rel="noopener">loader.h</a>)</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LC_SEGMENT_64</td>
+<td>0x19</td>
+<td>load_segment</td>
+<td>segment_command_64</td>
+<td>定义一个 64 位段，将其映射到加载该文件的进程的地址空间。它还包括该段所包含的所有部分。</td>
+</tr>
+<tr>
+<td>LC_DYLD_INFO_ONLY</td>
+<td>0x80000022</td>
+<td>由 dyld 处理</td>
+<td>dyld_info_command</td>
+<td>告知 dyld 加载 image 所需的偏移信息(Dynamic Loader Info包含具体信息)。</td>
+</tr>
+<tr>
+<td>LC_SYMTAB</td>
+<td>0x2</td>
+<td>由 dyld 处理</td>
+<td>symtab_command</td>
+<td>为文件定义符号表和字符串表，在链接文件时被链接器使用，同时也用于调试器映射符号到源文件。符号表定义的本地符号仅用于调试，而已定义的和未定义的 external 符号被链接器所使用。</td>
+</tr>
+<tr>
+<td>LC_DYSYMTAB</td>
+<td>0xb</td>
+<td>由 dyld 处理</td>
+<td>dysymtab_command</td>
+<td>指定动态链接器使用的额外符号表信息。</td>
+</tr>
+<tr>
+<td>LC_LOAD_DYLINKER</td>
+<td>0xe</td>
+<td>load_dylinker</td>
+<td>dylinker_command</td>
+<td>指定内核在加载该文件所链接的动态共享库的路径。</td>
+</tr>
+<tr>
+<td>LC_UUID</td>
+<td>0x1b</td>
+<td>load_uuid</td>
+<td>uuid_command</td>
+<td>产生一个唯一的 128 位随机数来标识当前可执行文件或其 dSYM 文件。</td>
+</tr>
+<tr>
+<td>LC_VERSION_MIN_IPHONEOS</td>
+<td>0x25</td>
+<td>load_version</td>
+<td>version_min_command</td>
+<td>指定当前可执行文件最低可运行系统版本。</td>
+</tr>
+<tr>
+<td>LC_SOURCE_VERSION</td>
+<td>0x2A</td>
+<td></td>
+<td>source_version_command</td>
+<td>用来构建二进制文件的源版本</td>
+</tr>
+<tr>
+<td>LC_MAIN</td>
+<td>0x80000028</td>
+<td>load_main</td>
+<td>entry_point_command</td>
+<td>定义程序入口，设置程序主线程的入口点地址和栈大小。</td>
+</tr>
+<tr>
+<td>LC_ENCRYPTION_INFO_64</td>
+<td>0x2C</td>
+<td>由 dyld 处理</td>
+<td>encryption_info_command_64</td>
+<td>指示加壳时加密段偏移和大小。</td>
+</tr>
+<tr>
+<td>LC_LOAD_DYLIB</td>
+<td>0xc</td>
+<td>由 dyld 处理</td>
+<td>dylib_command</td>
+<td>指示需要加载的额外的动态库的信息，包括：库版本、库路径等。可以使用命令”otool -L xxx”查看。</td>
+</tr>
+<tr>
+<td>LC_LOAD_WEAK_DYLIB</td>
+<td>0x80000018</td>
+<td>由 dyld 处理</td>
+<td>dylib_command</td>
+<td>建立在LC_LOAD_DYLIB功能的基础上，如果未找到指定的库，就忽略这个库。</td>
+</tr>
+<tr>
+<td>LC_RPATH</td>
+<td>0x8000001C</td>
+<td>由 dyld 处理</td>
+<td>rpath_command</td>
+<td>Runpath Search Paths，包含一个路径，在运行时应该被添加到当前的运行路径中，用于寻找@rpath前缀的dylibs。</td>
+</tr>
+<tr>
+<td>LC_FUNCTION_STARTS</td>
+<td>0x26</td>
+<td>由 dyld 处理</td>
+<td>linkedit_data_command</td>
+<td>指示函数起始地址表。</td>
+</tr>
+<tr>
+<td>LC_DATA_IN_CODE</td>
+<td>0x29</td>
+<td>由 dyld 处理</td>
+<td>linkedit_data_command</td>
+<td>指示定义在代码段内的非指令的表。</td>
+</tr>
+<tr>
+<td>LC_CODE_SIGNATURE</td>
+<td>0x1d</td>
+<td>load_code_signature</td>
+<td>linkedit_data_command</td>
+<td>定义代码签名信息。</td>
+</tr>
+</tbody>
+</table>
+<p>接下来我们着重分析几个加载命令：</p>
+<h4 id="1-LC-SEGMENT-64"><a href="#1-LC-SEGMENT-64" class="headerlink" title="1.LC_SEGMENT_64"></a>1.LC_SEGMENT_64</h4><p>LC_SEGMENT_64命令是最重要的加载命令之一。这条命令负责将 segment 映射到内存中。</p>
+<p>segument 定义了Mach-O文件中的字节范围，以及这些字节在动态链接器加载应用程序时被映射到虚拟内存的地址和内存保护属性。</p>
+<p>segument 提供的信息结构如下所示：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">segment_command_64</span> &#123;</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	cmd;		<span class="comment">/* 表示LC_SEGMENT_64 值为0x19 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	cmdsize;	<span class="comment">/* load command 所占用的字节大小 */</span></span><br><span class="line">	<span class="keyword">char</span>		segname[<span class="number">16</span>];	<span class="comment">/* segment 名称 */</span></span><br><span class="line">	<span class="keyword">uint64_t</span>	vmaddr;		<span class="comment">/* segment 映射到虚拟内存的偏移 */</span></span><br><span class="line">	<span class="keyword">uint64_t</span>	vmsize;		<span class="comment">/* segment 映射到虚拟内存的大小 */</span></span><br><span class="line">	<span class="keyword">uint64_t</span>	fileoff;	<span class="comment">/* segment 在当前架构文件中的偏移  */</span></span><br><span class="line">	<span class="keyword">uint64_t</span>	filesize;	<span class="comment">/* segment 在当前架构文件中所对应的文件的大小 */</span></span><br><span class="line">	<span class="keyword">vm_prot_t</span>	maxprot;	<span class="comment">/* segment 的最高内存保护级别，用八进制表示(4=r，2=w，1=x) */</span></span><br><span class="line">	<span class="keyword">vm_prot_t</span>	initprot;	<span class="comment">/* segment 最初始的内存保护级别 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	nsects;		<span class="comment">/* segment 中 section 的数量 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	flags;		<span class="comment">/* 标记位 */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>LC_SEGMENT_64的执行逻辑：内核将从偏移量 fileoff 出的 filesize 字节加载到虚拟内存中，这块虚拟内存起始地址为 vmaddr 长度是 vmsize。并且每个 segment 的页面的权限都由 initprot 进行初始化。segment 权限可以改变，但是最高不能超过 maxprot 所规定的的权限级别。级别权限在 <a href="osfmk/mach/vm_prot.h">osfmk/mach/vm_prot.h</a> 中定义。</p>
+<p>LC_SEGMENT_64能加载如下几个段：</p>
+<ul>
+<li><strong>PAGEZERO：静态链接器创建了 `</strong>PAGEZERO<code>段作为可执行文件的第一个段。这个段位于虚拟内存0 处，占据虚拟内存大小是64位架构下：0x100000000 。并且由于</code>__PAGEZERO`段中没有数据，所以它在文件中不占空间。</li>
+<li>__TEXT：包含可执行代码和其他只读数据，并且静态链接器将该 segment 的虚拟内存权限设置为不可写入。</li>
+<li>__DATA：包含可读写数据，静态链接器设置上个页面的虚拟内存权限为允许读和写。</li>
+<li>__OBJC：包含Objective-C语言运行时支持库所使用的数据。</li>
+<li>__IMPORT： 段包含了符号存根和指向未在可执行文件中定义的符号的非懒惰指针。这个段只为针对IA-32结构的可执行文件而产生。</li>
+<li>__LINKEDIT：包含动态链接器使用的原始数据，如符号、字符串和重定位表项。</li>
+</ul>
+<p>对于一些 segment (<code>__TEXT</code>、<code>__OBJC</code>、<code>__DATA</code>)来说，有时候其中包含的信息也被分解成不同的 section。section 的定义如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">section_64</span> &#123;</span> </span><br><span class="line">	<span class="keyword">char</span>		sectname[<span class="number">16</span>];	<span class="comment">/* section 名字 */</span></span><br><span class="line">	<span class="keyword">char</span>		segname[<span class="number">16</span>];	<span class="comment">/* segment 名字 */</span></span><br><span class="line">	<span class="keyword">uint64_t</span>	addr;		<span class="comment">/* section 映射到虚拟内存的偏移 */</span></span><br><span class="line">	<span class="keyword">uint64_t</span>	size;		<span class="comment">/* section 的字节数 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	offset;		<span class="comment">/* section 在当前架构文件中的偏移 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	align;		<span class="comment">/* section 的字节对齐大小 n，计算结果为2的n次方 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	reloff;		<span class="comment">/* 重定位入口的文件偏移 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	nreloc;		<span class="comment">/* 重定位入口的个数 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	flags;		<span class="comment">/* section 的类型和属性*/</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	reserved1;	<span class="comment">/* 保留位 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	reserved2;	<span class="comment">/* 保留位 */</span></span><br><span class="line">	<span class="keyword">uint32_t</span>	reserved3;	<span class="comment">/* 保留位 */</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>__TEXT的 section：</p>
+<table>
+<thead>
+<tr>
+<th>segment,section</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>__TEXT,__text</code></td>
+<td>程序可执行的代码</td>
+</tr>
+<tr>
+<td><code>__TEXT,__stubs</code></td>
+<td>用于动态链接的桩</td>
+</tr>
+<tr>
+<td><code>__TEXT,__stubs</code></td>
+<td>用于动态链接的桩</td>
+</tr>
+<tr>
+<td><code>__TEXT,__const</code></td>
+<td>const关键字修饰的常量</td>
+</tr>
+<tr>
+<td><code>__TEXT,__objc_methname</code></td>
+<td>Objective-C 方法名称</td>
+</tr>
+<tr>
+<td><code>__TEXT,__ustring</code></td>
+<td>unicode字符串</td>
+</tr>
+<tr>
+<td><code>__TEXT,__cstring</code></td>
+<td>C 中的常量字符串</td>
+</tr>
+<tr>
+<td><code>__TEXT,__objc_classname</code></td>
+<td>Objective-C 类名</td>
+</tr>
+<tr>
+<td><code>__TEXT,__objc_methtype</code></td>
+<td>Objective-C 方法类型</td>
+</tr>
+<tr>
+<td><code>__TEXT,__gcc_except_tab</code></td>
+<td>gcc异常表</td>
+</tr>
+<tr>
+<td><code>__TEXT,__unwind_info</code></td>
+<td>用于确定异常发生时栈所对应的信息</td>
+</tr>
+<tr>
+<td><code>__TEXT,__eh_frame</code></td>
+<td>调试符号信息</td>
+</tr>
+</tbody>
+</table>
+<p>__DATA 的 section：</p>
+<table>
+<thead>
+<tr>
+<th>segment,section</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>__DATA,__const</code></td>
+<td>初始化可重新定位的常量变量。</td>
+</tr>
+<tr>
+<td><code>__DATA,__cfstring</code></td>
+<td>程序中使用的 CoreFoundation 字符串(CFStringRefs)</td>
+</tr>
+<tr>
+<td><code>__DATA,__classlist</code></td>
+<td>Objective-C 类列表</td>
+</tr>
+<tr>
+<td><code>__DATA,__nlcslist</code></td>
+<td>保存了Objective-C 的categories的 +load函数列表。</td>
+</tr>
+<tr>
+<td><code>__DATA,__catlist</code></td>
+<td>Objective-C 分类信息</td>
+</tr>
+<tr>
+<td><code>__DATA,__protolist</code></td>
+<td>包含Objective-C所有协议列表</td>
+</tr>
+<tr>
+<td><code>__DATA,__imageinfo</code></td>
+<td>保存了Objective-C 镜像信息。</td>
+</tr>
+<tr>
+<td><code>__DATA,__selrefs</code></td>
+<td>保存了Objective-C 方法调用者的信息。</td>
+</tr>
+<tr>
+<td><code>__DATA,__objc_classrefs</code></td>
+<td>保存了 Objective-C 被使用的类的引用信息。</td>
+</tr>
+<tr>
+<td><code>__DATA,__objc_superrefs</code></td>
+<td>保存了 Objective-C 调用了 super 方法的类的引用。</td>
+</tr>
+<tr>
+<td><code>__DATA,__objc_ivar</code></td>
+<td>保存了 Objective-C 中的 ivar 指针。</td>
+</tr>
+<tr>
+<td><code>__DATA,__objc_data</code></td>
+<td>存储的就是<code>objc_class</code>的所有成员</td>
+</tr>
+<tr>
+<td><code>__DATA,__data</code></td>
+<td>储存可变变量。</td>
+</tr>
+</tbody>
+</table>
+<h4 id="2-LC-MAIN"><a href="#2-LC-MAIN" class="headerlink" title="2.LC_MAIN"></a>2.LC_MAIN</h4><p>这条命令的作用是设置程序主线程的入口点地址和栈大小。</p>
+<h4 id="3-LC-CODE-SIGNATURE"><a href="#3-LC-CODE-SIGNATURE" class="headerlink" title="3.LC_CODE_SIGNATURE"></a>3.LC_CODE_SIGNATURE</h4><p>可执行文件进行签名之后会添加此条 load command。</p>
+<h2 id="三、segment-和-section"><a href="#三、segment-和-section" class="headerlink" title="三、segment 和 section"></a>三、segment 和 section</h2><p>这部分所包含的信息是 load command 数据的具体描述。</p>
+<h2 id="四、link-edit-segment"><a href="#四、link-edit-segment" class="headerlink" title="四、link edit segment"></a>四、link edit segment</h2><p>该段包含链接编辑信息表，如符号表、字符串表等，由动态加载器用于链接可执行文件或Mach-O捆绑包到其依赖库。</p>
+<blockquote>
+<p>资料：</p>
+<p><a href="https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/MachOTopics/0-Introduction/introduction.html#//apple_ref/doc/uid/TP40001519" target="_blank" rel="noopener">Mach-O Programming Topics</a></p>
+<p><a href="https://github.com/aidansteele/osx-abi-macho-file-format-reference" target="_blank" rel="noopener">osx-abi-macho-file-format-reference</a></p>
+<p><a href="https://www.leewong.cn/2020/08/30/Mach-O/" target="_blank" rel="noopener">Mach-O 探究</a></p>
+<p><a href="https://devyang.space/2020/01/10/%E4%BB%8Ellvm%E7%9C%8BmachO/" target="_blank" rel="noopener">从LLVM看MachO</a></p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ios基础知识/" rel="tag"># ios基础知识</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/04/11/Instrument文档翻译/" rel="next" title="Instrument文档翻译">
+                <i class="fa fa-chevron-left"></i> Instrument文档翻译
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">John Wong</p>
+              <p class="site-description motion-element" itemprop="description">别在机会来临之时却无法握住。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Mach-O文件结构初探索"><span class="nav-number">1.</span> <span class="nav-text">Mach-O文件结构初探索</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是-Mach-O-文件"><span class="nav-number">1.1.</span> <span class="nav-text">什么是 Mach-O 文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mach-O-构成"><span class="nav-number">1.2.</span> <span class="nav-text">Mach-O 构成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一、header"><span class="nav-number">1.3.</span> <span class="nav-text">一、header</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#header-概述"><span class="nav-number">1.3.1.</span> <span class="nav-text">header 概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#header-查看"><span class="nav-number">1.3.2.</span> <span class="nav-text">header 查看</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、Load-Command"><span class="nav-number">1.4.</span> <span class="nav-text">二、Load Command</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Load-Command概述"><span class="nav-number">1.4.1.</span> <span class="nav-text">Load Command概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Load-Command-查看"><span class="nav-number">1.4.2.</span> <span class="nav-text">Load Command 查看</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-LC-SEGMENT-64"><span class="nav-number">1.4.2.1.</span> <span class="nav-text">1.LC_SEGMENT_64</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-LC-MAIN"><span class="nav-number">1.4.2.2.</span> <span class="nav-text">2.LC_MAIN</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-LC-CODE-SIGNATURE"><span class="nav-number">1.4.2.3.</span> <span class="nav-text">3.LC_CODE_SIGNATURE</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、segment-和-section"><span class="nav-number">1.5.</span> <span class="nav-text">三、segment 和 section</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、link-edit-segment"><span class="nav-number">1.6.</span> <span class="nav-text">四、link edit segment</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Wong</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Instrument文档翻译关于InstrumentInstruments概述Instrument是 Xcode 工具集中的一个强大且灵活的性能分析和测试工具。它能够分析iOS，watchOS和 macOS的 app，以便您能够更好的理解和优化其行为并提高其性能。在您 app 开发的最初就将 Instrument 加入您的工作流当中能够在app 开发早期就帮助您发现问题以便减少后来的时间。 在In">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Instrument文档翻译">
+<meta property="og:url" content="http://yoursite.com/2021/04/11/Instrument文档翻译/index.html">
+<meta property="og:site_name" content="John 的技术博客">
+<meta property="og:description" content="Instrument文档翻译关于InstrumentInstruments概述Instrument是 Xcode 工具集中的一个强大且灵活的性能分析和测试工具。它能够分析iOS，watchOS和 macOS的 app，以便您能够更好的理解和优化其行为并提高其性能。在您 app 开发的最初就将 Instrument 加入您的工作流当中能够在app 开发早期就帮助您发现问题以便减少后来的时间。 在In">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/51452EE2-B973-4C3C-A19F-A398AD0E5A59.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/3EB44883-494C-4B0C-8C4C-06EFE03313A4.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/82A15CE7-10F3-4DDA-B79B-E5F9E8951416.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/64707226-3F58-4156-8C51-7C205735C864.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/4AFEA707-9FC7-45C4-9243-225D355F2E9F.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/74EABEE3-8F29-43D6-8D85-95E9CF8A382C.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_detail_pane.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_detail_pane_navigation_bar.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_detail_pane_collected_data_table.png">
+<meta property="og:image" content="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACWElEQVRYw+2XZ4siQRCG9///EXNAVMQsooIJFQOCYkJBPyiiKMZanoZZ2r05xvO8deFWKJjQ9dYz1VXd7Zu8+Pf2A/DtAa7Xq2y3WxmPx9JqtaRcLksul5NsNiuZTEYZ1zzjHWMYiw++DwHgeLlcZL/fy3K5lOFwKJVKRVKplIRCIfH5fOLxeMTtdivjmme8Ywxj8cEXDbR+B2MKgMPhcJDFYiH1el2SyeRNYKfTaWo6CD74ooEWmncDQI1ju92WWCymhB0Oh9jt9ruMsfjgiwZaaN4FQKpIHfQI+P3+PwquQ+CLBlpomk3DLwCbzUbNHyk0vtxms5kGcblcEggElFELOig+RiaoCzQpTEuA0Wikqpl5tPpyAufzeSkUChIMBlUdfPbhHi0Kk+6wBKCNIKaYrNIciUSk0+lIr9dTENyTdjKjg6CFJtqWAMbXkzorgHg8LpPJRNbrtUynU2k2m2rqDAhjHFpolkolawAWFIhJpy7A1yGuW7ValdVqJefzWVX5fD6XRqOhFqdwOCxer/ejRdFE2xKAVc3odT3V3W5XBdCN4MfjUVW3AUG1DwYDKRaLEo1GPyDQRNsSAHoqWgdIJBIym83kdDrdGEH11jJAgGC+0+m0mg600ET7IQB6mTaiRXXb7XYq4FMBzKaAAqrVatLv92+MrJD2p06BWRFCDwSCulHVBHxqEf7LNkT7+y9ELJcsmy9bitkwjM3I2GD+djNC6+7NyNiOqfqXbMfPOpCQkYcOJM88kpHFh45kZodSWujLDqWfYVh2Oah82bH855/RfwXwDvGnbAtXk4lSAAAAAElFTkSuQmCC">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_detail_pane_filter_config_bar.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_inspector_pane_navigation_bar.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_inspector_pane_run_information.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_inspector_pane_extended_detail.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_library_palette.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_flags_window.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_profilingtemplateselection_dialog.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_profilingtemplate_dialog.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_prefs_general.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_instruments_menu.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/dock_xcode_contextualmenu_instruments.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_instruments_menu2.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_dock_contextual_menu_options_keepindock.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_instruments_menu.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_app_icon_small.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_dock_contextual_menu_options.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/launchpad_instruments.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_profiling_dialog_target.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_save_menu.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_save_dialog.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_save_menu.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_save_dialog.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/trace_document.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_drag_and_open_trace_doc.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_file_open_menu.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_open_trace_doc_dialog.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_targetspecificprocess_menuitem.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_targetallprocesses_menuitem.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_choosetarget_menuitem.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_choosetargetdialog.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_targetiosdevice.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/graphic_computerconnectedtodevice.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_targets_enablewireless.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_targtetlist_selectwirelessprocess.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/graphic_computerconnectedtodevice.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_devices_pairedwatch.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_targetwatch.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_library_palette.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_library_menu.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_library_palette_filterterm.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_trace_document_addinstrument.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_trace_document_selectedinstrument.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_deleteinstrument_menu.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_deleteinstrumentconfirmation_dialog.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_trace_document_timeline_config_popover.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_detail_pane_filter_config_bar.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/inline_record_button.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_recordtrace_menu.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/FAB7CADB-6C17-439F-8811-CF7511D35243.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/pause.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/11ACD438-6F73-4A25-A067-0E5099AB9423.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/inline_stop_button.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_stoptrace_menu.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_toolbar_build_menu_profile_option.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_product_menu_profile_menu.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_profiling_template_window_initiatedbyxcode.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_targetdevice_list_editscheme_option.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_product_menu_editscheme_menu.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_scheme_editor_dialog_sidebar_profile_option.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_scheme_editor_dialog_profile_option_instrument_popup.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_activitymonitorprofilingfromxcode.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_navigatorselector_bar_debugnaviagator_button.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_view_menu_debugnavigator_menu.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_debug_navigator_selectedgauge.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_gauge_profileininstruments_button.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_timeprofiler_gauge_profileininstruments_button.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_profileininstrruments_alert.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_app_icon_small.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_dock_menu.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_fileopen_menu.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_opentracefile_dialog.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_loadedtrace_file.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_recordoptions_menu.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_preferences_menu.png">
+<meta property="og:image" content="https://help.apple.com/instruments/mac/current/en.lproj/Art/instruments_prefs_recording_deferred_option.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_trace_document_timeline_pane_zooming.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_view_menu_snaptracktofit_menuitem.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_view_menu_increasedecksize_menuitem.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_trace_document_timeline_pane_largertrack.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_view_menu_decreasedecksize_menuitem.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_trace_document_timeline_pane_selectedrange.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_trace_document_timeline_pane_selectingrange.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_clearinspectionrange_menu.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_trace_document_timeline_pane_flags.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_addflag_menu.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_manageflags_menu.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_flags_palette_disabledflag.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/pin_add_button.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/timeline_pin_add.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/timeline_pin_delete.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_detail_pane_detailtypelist.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_detail_pane_calltreeexpanded.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_extendeddetail_button_inline.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_inspector_pane_navigation_bar.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/inline_hidesystemcalls_button.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_extendeddetail_pane_hiddensystemcalls.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_strategy_pane_multipleruns.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/inline_usercode_icon.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_detail_pane_usersourcecode_popover.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_file_menu_symbols_menuitem.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_symbols_dialog_binaries.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_symbols_dialog_locatedysmpath_button.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_prefs_general.png">
+<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_prefs_recording.png">
+<meta property="og:updated_time" content="2021-05-09T15:21:44.725Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Instrument文档翻译">
+<meta name="twitter:description" content="Instrument文档翻译关于InstrumentInstruments概述Instrument是 Xcode 工具集中的一个强大且灵活的性能分析和测试工具。它能够分析iOS，watchOS和 macOS的 app，以便您能够更好的理解和优化其行为并提高其性能。在您 app 开发的最初就将 Instrument 加入您的工作流当中能够在app 开发早期就帮助您发现问题以便减少后来的时间。 在In">
+<meta name="twitter:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/51452EE2-B973-4C3C-A19F-A398AD0E5A59.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2021/04/11/Instrument文档翻译/"/>
+
+
+
+
+
+  <title>Instrument文档翻译 | John 的技术博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">John 的技术博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/04/11/Instrument文档翻译/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Wong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="John 的技术博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Instrument文档翻译</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-11T17:11:59+08:00">
+                2021-04-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Instrument文档翻译"><a href="#Instrument文档翻译" class="headerlink" title="Instrument文档翻译"></a>Instrument文档翻译</h1><h2 id="关于Instrument"><a href="#关于Instrument" class="headerlink" title="关于Instrument"></a>关于Instrument</h2><h3 id="Instruments概述"><a href="#Instruments概述" class="headerlink" title="Instruments概述"></a>Instruments概述</h3><p>Instrument是 Xcode 工具集中的一个强大且灵活的性能分析和测试工具。它能够分析iOS，watchOS和 macOS的 app，以便您能够更好的理解和优化其行为并提高其性能。在您 app 开发的最初就将 Instrument 加入您的工作流当中能够在app 开发早期就帮助您发现问题以便减少后来的时间。</p>
+<p>在Instrument中您使用的特殊工具被称作instruments，他们能够跟踪您app进程和硬件设备等不同方面。instruments将会手机数据以作分析，并将分析结果以图标的形式呈现出来。</p>
+<p>Instruments与其他性能和调试工具不同的是，instruments允许你收集多种不同类型的数据并将其并排展示。这养能够轻易的分辨可能被遗漏的趋势。举个例子，由于多个开放的网络连接，您 app 出现巨大的内存增长时，通过同时使用Allocations和Connections这俩instruments工具，你能够识别出因未关闭而导致内存暴增的连接。</p>
+<p>通过高效使用Instrument，你能够</p>
+<ul>
+<li>检查一个或多个 app 或进程</li>
+<li>检查类似 WIFI和蓝牙这类设备特性</li>
+<li>在模拟器或者真机上做性能分析</li>
+<li>跟踪代码中出现的问题</li>
+<li>对您的 app 进行性能分析</li>
+<li>在您 app 中找到类似内存泄漏，弃用内存和僵尸对象</li>
+<li>识别出使您 app 提高电源效率的方法</li>
+<li>进行的常规系统级别的问题分析</li>
+<li>将 Instrument 配置信息作为模板保存</li>
+</ul>
+<p>尽管他已嵌入并可以与Xcode 一同使用，Instruments还是一个独立的软件，这意味着在需要的时候Instruments可以独立使用。</p>
+<p><a href="https://help.apple.com/instruments/developer/mac/current/" target="_blank" rel="noopener">Instruments开发帮助</a></p>
+<h3 id="关于跟踪-trace-的文档"><a href="#关于跟踪-trace-的文档" class="headerlink" title="关于跟踪(trace)的文档"></a>关于跟踪(trace)的文档</h3><p>跟踪文档常被用来作为组织和配置用于分析的instruments，数据收集的发起，和查看分析结果。你可以通过启动Instruments之后选择分析模板或者直接从Xcode，Dock，命令行启动分析的方式来创建一个新的跟踪文档。您同样可以保存和重新打开您已经配置过的instruments并收集过数据的跟踪文档。一个跟踪文档可以通过多个窗格和区域的方式呈现出极其详尽的信息。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/51452EE2-B973-4C3C-A19F-A398AD0E5A59.png" alt="51452EE2-B973-4C3C-A19F-A398AD0E5A59"></p>
+<p>跟踪文档包括如下多个主区域</p>
+<ul>
+<li>工具栏：允许但不限于您开始，暂停和结束数据分析，添加instruments，隐藏或者显示窗格。查看<a href="https://help.apple.com/instruments/mac/10.0/#/dev546b5b54" target="_blank" rel="noopener">关于跟踪文档工具栏</a></li>
+<li>时间线窗格：以图形化模式展示指定跟踪(trace)所记录的数据的概要。查看<a href="https://help.apple.com/instruments/mac/10.0/#/devc12c5417" target="_blank" rel="noopener">关于跟踪文档时间线窗格</a></li>
+<li>详情窗格：展示在您跟踪文档中使用instruments所收集的数据的详细信息。查看<a href="https://help.apple.com/instruments/mac/10.0/#/dev9b08bd72" target="_blank" rel="noopener">关于跟踪文档详情窗格</a></li>
+<li>检查器窗格：包含关于当前数据记录的信息概要和instruments具体的扩展详情。查看<a href="https://help.apple.com/instruments/mac/10.0/#/devd72c957d" target="_blank" rel="noopener">关于跟踪文档检查器窗格</a></li>
+</ul>
+<h3 id="关于跟踪文档工具栏"><a href="#关于跟踪文档工具栏" class="headerlink" title="关于跟踪文档工具栏"></a>关于跟踪文档工具栏</h3><p>跟踪文档工具栏允许但不限于您开始，暂停和结束数据分析，添加instruments，隐藏或者显示窗格。</p>
+<p>工具栏包含如下主要对象：</p>
+<ul>
+<li>分析控件：允许您记录，暂停和停止数据收集。</li>
+<li>目标设备列表：允许您选择您希望分析的设备。</li>
+<li>目标进程列表：允许您选择一个或多个进程用于分析。</li>
+<li>活动查看器：展示跟踪文档的运行数量和当前跟踪(trace)的流逝时间。</li>
+<li>添加Instrument按钮(+)：展示或隐藏包含所有可用instruments库模列表。在列表中你可以单独选择将它们添加到跟踪文档中。</li>
+<li>查看按钮：显示或隐藏详情和检查器窗格。</li>
+</ul>
+<h3 id="关于跟踪文档时间线窗格"><a href="#关于跟踪文档时间线窗格" class="headerlink" title="关于跟踪文档时间线窗格"></a>关于跟踪文档时间线窗格</h3><p>时间线窗格以图形化模式展示指定跟踪(trace)所记录的数据的概要。在这个窗格中任意一个instrument，CPU核心或线程都有其各自跟踪(trace)，这个跟踪能够提供所收集到数据的图形化表格。</p>
+<p>虽然这个窗格的信息是只读的，但是你能够通过滑动数据来选择需要仔细查看的指定区域，并插入标记以突显您感兴趣的点。你可以通过改变缩放级别，或者使用<a href="https://help.apple.com/instruments/mac/10.0/#/deva13e2923b" target="_blank" rel="noopener">显示配置弹出框</a>来改变一个独立instruments的显示配置来更改图形信息显示方式。instrument有一个可选择的过滤器栏来控制过滤数据的显示方式。例如，一个简单的instrument能够通过线程来过滤数据。</p>
+<p>当你调查问题的时候可以通过将时间线固定到隔窗底部的方式来保持重要信息的显示。举个例子，你能够固定将Leaks instrument固定在窗格底部，接着通过滑动其他instruments来查找和发现可能发生内存泄漏的地方。被固定的instruments不会在多个运行之间保存。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/3EB44883-494C-4B0C-8C4C-06EFE03313A4.png" alt="3EB44883-494C-4B0C-8C4C-06EFE03313A4"></p>
+<p>策略视图</p>
+<p>点击筛选视图中的策略按钮在时间线中单独或同时显示instruments或CPU核心或线程数据。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/82A15CE7-10F3-4DDA-B79B-E5F9E8951416.png" alt="82A15CE7-10F3-4DDA-B79B-E5F9E8951416"></p>
+<p>ALL：在时间线中展示instruments，线程和CPU核心数据。</p>
+<p>CPUs：显示CPU核心列表，并在时间线窗格中单独展示随着时间改变它们的使用情况。只有当一个跟踪文档中包含记录了CPU数据的instruments时，才可用。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/64707226-3F58-4156-8C51-7C205735C864.png" alt="64707226-3F58-4156-8C51-7C205735C864"></p>
+<p>Instruments：在时间线窗格中展示instruments列表和其数据。</p>
+<p>当你在列表中选择了instrument，你可以在监控窗格中删除或者配置它。当你创建一个跟踪文档时instruments列表是默认可见的。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/4AFEA707-9FC7-45C4-9243-225D355F2E9F.png" alt="4AFEA707-9FC7-45C4-9243-225D355F2E9F"></p>
+<p>Threads：在时间窗格中显示线程列表和其所使用的数据。只有在跟踪文档所包含的instruments记录了线程数据时才可见。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/74EABEE3-8F29-43D6-8D85-95E9CF8A382C.png" alt="74EABEE3-8F29-43D6-8D85-95E9CF8A382C"></p>
+<h3 id="关于显示配置弹窗"><a href="#关于显示配置弹窗" class="headerlink" title="关于显示配置弹窗"></a>关于显示配置弹窗</h3><p>使用显示配置弹窗来配置在时间线中需要展示的数据和其展示格式。</p>
+<p>在显示配置弹窗中可用的显示设置根据instrument而异。这些设置能帮助你：</p>
+<ul>
+<li>控制数据在时间线中的出现。例如：Activity instrument允许你切换总线程，虚拟机大小，和其他系统统计信息的显示。</li>
+<li>调整被记录信息在时间线中的呈现方式。例如，instrument可能能让你在峰图和框图中切换。</li>
+</ul>
+<p>要打开显示配置窗口，请在跟踪文档的时间线窗格中点击instrument图标。当指针移到图标上方时，支持显示配置弹出框的instrument会显示一个指示器。</p>
+<h3 id="关于跟踪文档详情窗格"><a href="#关于跟踪文档详情窗格" class="headerlink" title="关于跟踪文档详情窗格"></a>关于跟踪文档详情窗格</h3><p>详情窗格中展示在跟踪文档中使用instruments所收集到的数据的详情信息。正在分析时可以在时间线窗格中选择独立的instruments来查看所收集到的数据。</p>
+<p>详情窗格由导航栏，数据收集区域和筛选配置栏三个区域构成。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_detail_pane.png" alt="img"></p>
+<h4 id="导航栏"><a href="#导航栏" class="headerlink" title="导航栏"></a>导航栏</h4><p>导航栏在详情窗格的顶部，它能够帮助你快速浏览收集到的数据。</p>
+<p>你能够在导航栏中切换数据类型并查看不同的级别的数据。</p>
+<ul>
+<li>Instrument：当前时间线窗格中所选择的instrument的图标。点击它能够查看instrument的控制台。</li>
+<li>Detail type list：能够在不同类型数据之间切换。对不同的Instrument其显示选项有差异。对于多数instruments，它们都包含了例如数据概要，调用树和控制台。</li>
+<li>Detail tree：对您在详情窗格中数据查看时对其层级持续的跟踪。点击tree分支来选择与层级相符的数据。</li>
+</ul>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_detail_pane_navigation_bar.png" alt="img"></p>
+<h4 id="数据收集区"><a href="#数据收集区" class="headerlink" title="数据收集区"></a>数据收集区</h4><p>数据收集区展示所选instrument收集的所有数据，并通常以表格形式展现。不同instrument之间在这里展现的内容也会有显著不同。例如，Activity Monitor显示进程，CPU和线程，以及更多信息。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_detail_pane_collected_data_table.png" alt="img"></p>
+<p>通常，在这个区域中的独立符号和数据点包含了导航按钮(<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACWElEQVRYw+2XZ4siQRCG9///EXNAVMQsooIJFQOCYkJBPyiiKMZanoZZ2r05xvO8deFWKJjQ9dYz1VXd7Zu8+Pf2A/DtAa7Xq2y3WxmPx9JqtaRcLksul5NsNiuZTEYZ1zzjHWMYiw++DwHgeLlcZL/fy3K5lOFwKJVKRVKplIRCIfH5fOLxeMTtdivjmme8Ywxj8cEXDbR+B2MKgMPhcJDFYiH1el2SyeRNYKfTaWo6CD74ooEWmncDQI1ju92WWCymhB0Oh9jt9ruMsfjgiwZaaN4FQKpIHfQI+P3+PwquQ+CLBlpomk3DLwCbzUbNHyk0vtxms5kGcblcEggElFELOig+RiaoCzQpTEuA0Wikqpl5tPpyAufzeSkUChIMBlUdfPbhHi0Kk+6wBKCNIKaYrNIciUSk0+lIr9dTENyTdjKjg6CFJtqWAMbXkzorgHg8LpPJRNbrtUynU2k2m2rqDAhjHFpolkolawAWFIhJpy7A1yGuW7ValdVqJefzWVX5fD6XRqOhFqdwOCxer/ejRdFE2xKAVc3odT3V3W5XBdCN4MfjUVW3AUG1DwYDKRaLEo1GPyDQRNsSAHoqWgdIJBIym83kdDrdGEH11jJAgGC+0+m0mg600ET7IQB6mTaiRXXb7XYq4FMBzKaAAqrVatLv92+MrJD2p06BWRFCDwSCulHVBHxqEf7LNkT7+y9ELJcsmy9bitkwjM3I2GD+djNC6+7NyNiOqfqXbMfPOpCQkYcOJM88kpHFh45kZodSWujLDqWfYVh2Oah82bH855/RfwXwDvGnbAtXk4lSAAAAAElFTkSuQmCC" alt="img">)，当你指向它的时候它才会出现。您可以点击按钮进入数据的更深层。当你点击进入时，在导航栏的详情树会随之更新并指向您所在的层级。</p>
+<h4 id="筛选配置栏"><a href="#筛选配置栏" class="headerlink" title="筛选配置栏"></a>筛选配置栏</h4><p>在详情窗格底部的筛选配置栏能够帮你筛选所收集到的数据并配置数据显示的方式。</p>
+<ul>
+<li>Filter field：允许您以指定条件筛选所收集到的数据。点击筛选按钮区域会出现一些筛选选项。你同样可以通过在展示配置弹窗中调整显示设置的方式收集更多的数据。</li>
+<li>Display configuration controls：通过筛选，排序和数据挖掘来优化显示结果。instrument之间的控制会有差异，包括不同的结果选择菜单和用于数据显示的弹窗。</li>
+</ul>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_detail_pane_filter_config_bar.png" alt="A screenshot of the filter and display configuration bar showing the filter field on the left followed by a configuration drop-down, and buttons that show popovers with other display configuration options."></p>
+<h3 id="关于跟踪文档的监视器窗格"><a href="#关于跟踪文档的监视器窗格" class="headerlink" title="关于跟踪文档的监视器窗格"></a>关于跟踪文档的监视器窗格</h3><p>监视器窗口包含在当前详情窗格当前运行的信息。这些信息包含当前记录的信息，并对于一些instruments还会包含当前所选数据的额外详情。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_inspector_pane_navigation_bar.png" alt="img"></p>
+<h4 id="运行信息区域"><a href="#运行信息区域" class="headerlink" title="运行信息区域"></a>运行信息区域</h4><p>运行区域展示详情窗格中当前的运行信息。包含目标，记录时间，记录所用到的设置。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_inspector_pane_run_information.png" alt="A screenshot of the run information area of the detail pain inspector showing the recording information and recording settings for the current recording."></p>
+<h4 id="额外详情区域"><a href="#额外详情区域" class="headerlink" title="额外详情区域"></a>额外详情区域</h4><p>额外详情区域常被用来展示特定instrument的关于在详情窗格中选中数据的额外信息，例如完整的栈跟踪。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_inspector_pane_extended_detail.png" alt="img"></p>
+<h3 id="关于库面板"><a href="#关于库面板" class="headerlink" title="关于库面板"></a>关于库面板</h3><p>库面板提供了可用instrument的完整列表，并能让你添加到跟踪文档中。在面板中你可以浏览instrument描述也可以筛选出指定的instrument。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_library_palette.png" alt="img"></p>
+<p>要显示库面板，请点击Window &gt; Library或按快捷键(Command-L)，还可以通过点击跟踪文档工具栏中Instrument的加号按钮(+)。</p>
+<h3 id="关于标记面板"><a href="#关于标记面板" class="headerlink" title="关于标记面板"></a>关于标记面板</h3><p>标记面板中展示当前活动的跟踪文档中您需要在时间线窗格中添加的标记列表。</p>
+<p>在标记文档中你可以通过选择标记来快速在时间线中导航到指定位置。你同样可以在一个较大的标记列表中筛选出指定标记，展示或隐藏标记和查看您标记的时间戳信息。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_flags_window.png" alt="img"></p>
+<h3 id="关于分析模板"><a href="#关于分析模板" class="headerlink" title="关于分析模板"></a>关于分析模板</h3><p>在Instruments中你可以选择分析模板来分析您的app。分析模板是跟踪文档为了执行通用跟踪使用instruments已经预配置和设置过的。</p>
+<p>在Instruments启动时或在Xcode中初始化一个跟踪或者创造新的跟踪文档的时候分析模板就已经可已使用。当您拥有更高级或者自定义的需求的时候也可以创造您自己的分析模板。</p>
+<h3 id="关于分析模板选择框"><a href="#关于分析模板选择框" class="headerlink" title="关于分析模板选择框"></a><img src="/2021/04/11/Instrument文档翻译/instruments_profilingtemplateselection_dialog.png" alt="img">关于分析模板选择框</h3><p>在Instruments启动时你会看到一个模板列表，并可以从中选择，这列表是instruments预先设置好的集合。这个列表里包含标准的模板集合，同样也包含了你自定义的模板。</p>
+<p>分析选择框由如下几个主要的要素组成：</p>
+<ul>
+<li>Target device list(目标设备列表)：点击这个可以选择您需要分析的载体设备。</li>
+<li>Target process list(目标进程列表)：点击这个可以选择一个或者多个需要分析的进程。</li>
+<li>Filter buttons(筛选按钮)：点击这些按钮在模板列表中筛选出标准模板，自定义模板和最近使用的模板。</li>
+<li>Search field(搜索框)：通过输入文本来快速筛选出您需要的模板。它能够搜索模板的标题和描述。</li>
+<li>Template list(模板列表)：可能被您输入的内容筛选过的模板列表。</li>
+<li>Template description(模板描述)：当前所选中的模板的简短的描述，这段描述可能能够帮助您选择出符合您需求的模板。</li>
+<li>Choose button(选择按钮)：点击它可以会基于你当前选择的来创建分析文档。 </li>
+</ul>
+<p>​       当你按住Option按键的时候它会变成分析(Profile)按钮。点击分析按钮会基于你当前选择的模板创建一个新的文档并直接开始分析。</p>
+<ul>
+<li>Open button(打开按钮)：点击它可以打开之前保存的分析文档，而不是以一个全新的模板开始。</li>
+<li>Cancel button(取消按钮)：点击它关闭模板选择框。</li>
+</ul>
+<p>注意：你可以随时通过选择File &gt; New或者按下Command-N来呼出分析模板选择框。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_profilingtemplate_dialog.png" alt="img"></p>
+<h3 id="关于引用窗口"><a href="#关于引用窗口" class="headerlink" title="关于引用窗口"></a>关于引用窗口</h3><p>引用窗口被用来控制各种Instruments相关的行为设置。</p>
+<p>在引用窗口中。你可以调整启动，保存和其他的相关设置。你同样可以调整记录设置，CPU设置和符号引用。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_prefs_general.png" alt="img"></p>
+<h2 id="启动Instruments"><a href="#启动Instruments" class="headerlink" title="启动Instruments"></a>启动Instruments</h2><h3 id="从Xcode中启动Instruments"><a href="#从Xcode中启动Instruments" class="headerlink" title="从Xcode中启动Instruments"></a>从Xcode中启动Instruments</h3><p>在Xcode中启动Instruments最直接的方法。</p>
+<ul>
+<li>在Xcode中选择Xcode &gt; Open Developer Tool &gt; Instruments</li>
+</ul>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_instruments_menu.png" alt="img"></p>
+<h3 id="从Docker中启动Instruments"><a href="#从Docker中启动Instruments" class="headerlink" title="从Docker中启动Instruments"></a>从Docker中启动Instruments</h3><p>当Xcode运行的时候可以在Docker中的Xcode图标中启动Instruments。</p>
+<ol>
+<li>在Xcode中选择Xcode &gt; Open Developer Tool &gt; Instruments。</li>
+</ol>
+<p><img src="/2021/04/11/Instrument文档翻译/dock_xcode_contextualmenu_instruments.png" alt="img"></p>
+<p>这样Instruments就启动了。</p>
+<h3 id="将Instruments添加到Docker中"><a href="#将Instruments添加到Docker中" class="headerlink" title="将Instruments添加到Docker中"></a>将Instruments添加到Docker中</h3><p>你可以将Instruments添加到Docker中来随时快速访问。实现添加最简单的方法就是启动Instruments然后将其固定在Docker中。</p>
+<ol>
+<li>在Xcode中选择Xcode &gt; Open Developer Tool &gt; Instruments。</li>
+</ol>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_instruments_menu2.png" alt="img">、Instruments启动并在Docker中出现了Instruments的图标。</p>
+<ol>
+<li>在Docker中右键点击Instruments图标，接着选择Options &gt; 在程序坞中保留。</li>
+</ol>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_dock_contextual_menu_options_keepindock.png" alt="img"></p>
+<h3 id="添加Instruments到Launchpad"><a href="#添加Instruments到Launchpad" class="headerlink" title="添加Instruments到Launchpad"></a>添加Instruments到Launchpad</h3><p>Launchpad会自动显示您在应用程序文件夹内的 App。由于Instruments并不是应用程序文件夹内的程序(至少不是直属与应用程序文件夹内，它是在Xcode 中的，而 Xcode 直属与应用程序文件夹)，因此Instruments不会在Launchpad中出现。当然你可以通过对Instruments创建一个别名并将其放入Applications文件夹。</p>
+<ol>
+<li><p>在Xcode中，选择 Xcode > Open Developer Tool &gt; Instruments。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_instruments_menu.png" alt="img"></p>
+<p>Instruments图标在您 Docker 中出现。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_app_icon_small.png" alt="img"></p>
+</li>
+<li><p>在 Docker 中右键点击Instruments图标，之后选择选项 -&gt; 在文件夹中显示。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_dock_contextual_menu_options.png" alt="img"></p>
+</li>
+<li><p>按住 option 键并将Instruments图标拖动到您的应用程序文件夹目录中。一个Instruments的别名就已经创建成功并添加到您的应用程序文件夹中了。</p>
+</li>
+<li><p>删除Instruments别名文件名中的别名前缀。</p>
+<p>Instruments现在将会出现在你的Launchpad中。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/launchpad_instruments.png" alt="img"></p>
+</li>
+</ol>
+<h3 id="从命令行中启动Instruments"><a href="#从命令行中启动Instruments" class="headerlink" title="从命令行中启动Instruments"></a>从命令行中启动Instruments</h3><p>你可以在OS X中通过终端使用开放命令打开包括Instruments在内的任意软件。</p>
+<ol>
+<li><p>打开终端(在/Applications/Utilities/)。</p>
+</li>
+<li><p>运行如下命令：</p>
+<p>open /Applications/Xcode.app/Contents/Applications/Instruments.app</p>
+</li>
+</ol>
+<p>Instruments被运行了。</p>
+<p>注意：你可以使用两个命令行工具的任意一个来分析您的 app，而无需显示Instruments用户图形界面。</p>
+<ul>
+<li>instruments——此实用程序使用指定的模板对应用程序进行配置。可以将结果保存到文件中，然后在主要的仪器应用程序中手动打开以进行查看和分析。在<a href="https://help.apple.com/instruments/mac/current/#/devb14ffaa5" target="_blank" rel="noopener">使用instruments命令行工具分析</a>中查看更多。</li>
+</ul>
+<h2 id="创建，保存和打开跟踪文档"><a href="#创建，保存和打开跟踪文档" class="headerlink" title="创建，保存和打开跟踪文档"></a>创建，保存和打开跟踪文档</h2><h3 id="创建一个跟踪文档"><a href="#创建一个跟踪文档" class="headerlink" title="创建一个跟踪文档"></a>创建一个跟踪文档</h3><p>在使用Instruments开始分析之前，你需要创建跟踪文档。</p>
+<ol>
+<li>打开Instruments</li>
+<li>当出现的分析模板选择框中选择目标设备和进程。</li>
+</ol>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_profiling_dialog_target.png" alt="img"></p>
+<ol>
+<li>选择期望的分析模板</li>
+<li>点击Choose</li>
+</ol>
+<p>从您选择的模板中使用预配置好的instruments创建了一个新的跟踪文档。</p>
+<p>提示：要在您创建跟踪文档之后立即自动开始分析，请在模板选择框中按住 option 键。当你如上述所述操作时，Choose按钮会变为Profile按钮。点击Profile按钮立即开始分析跟踪文档。</p>
+<p>如果你找不到您所需要模板或者想从头开始创建自己的模板，在模板选择提示框中选择空白模板。</p>
+<h3 id="保存一个跟踪文档"><a href="#保存一个跟踪文档" class="headerlink" title="保存一个跟踪文档"></a>保存一个跟踪文档</h3><p>当你创建了一个跟踪文档，你能够保存上次引用。Instruments将以 .trace 扩展名保存保存跟踪文档文件。</p>
+<ol>
+<li><p>创建一个跟踪文档。<a href="#创建一个跟踪文档">在创建跟踪文档中查看</a></p>
+</li>
+<li><p>选择 File &gt; Save. Or, choose File &gt; Save 当你希望将之前保存的跟踪文档保存成新的文件。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_save_menu.png" alt="img"></p>
+</li>
+<li><p>输入文件名</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_save_dialog.png" alt="img"></p>
+</li>
+<li><p>选择文件保存目录</p>
+</li>
+<li><p>点击保存</p>
+</li>
+</ol>
+<h3 id="将跟踪文档保存为分析模板"><a href="#将跟踪文档保存为分析模板" class="headerlink" title="将跟踪文档保存为分析模板"></a>将跟踪文档保存为分析模板</h3><p>如果你创建了一个跟踪文档，并且可能会在之后分析其他app时用到这个模板，你可以将它保存为自定义模板以便你不用每次运行Instruments时都重新创建。</p>
+<ol>
+<li><p>创建或打开跟踪文档。</p>
+</li>
+<li><p>选择 File &gt; Save As Template。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_save_menu.png" alt="img"></p>
+</li>
+<li><p>输入模板名称。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_save_dialog.png" alt="img"></p>
+</li>
+<li><p>选择模板保存目录。</p>
+<p>将您模板保存在/Users/<username>/Library/Application Support/Instruments/Templates目录下以保证它能够在Instruments模板窗口中的的自定义部分中可用。</username></p>
+</li>
+<li><p>为模板选择一个图标。</p>
+</li>
+<li><p>输入模板的描述。</p>
+</li>
+<li><p>点击保存。</p>
+<p>当你保存了模板，这个模板会自动出现在模板选择框中的Custom模板组中出现。下次当你创建一个跟踪文档时，可以将其作为您分析的起点。</p>
+</li>
+</ol>
+<h3 id="打开跟踪文档"><a href="#打开跟踪文档" class="headerlink" title="打开跟踪文档"></a>打开跟踪文档</h3><p>打开已保存的跟踪文档来查看之前运行的结果或者对其进行额外的分析。</p>
+<p>按如下操作之一来打开跟踪文档：</p>
+<ul>
+<li><p>在文件夹中双击 .trace 文档文件。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/trace_document.png" alt="img"></p>
+</li>
+<li><p>将 .trace 文档文件拖入Instruments软件图标中。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_drag_and_open_trace_doc.png" alt="img"></p>
+</li>
+<li><p>打开Instruments并按如下步骤来操作：</p>
+<ol>
+<li><p>选择 File &gt; Open (或按快捷键Command + O)。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_file_open_menu.png" alt="img"></p>
+</li>
+<li><p>找到所保存的 .trance 文档文件。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_open_trace_doc_dialog.png" alt="img"></p>
+</li>
+<li><p>点击open。</p>
+</li>
+</ol>
+</li>
+</ul>
+<p>这样跟踪文档就在Instruments中显示。</p>
+<h3 id="关闭跟踪文档"><a href="#关闭跟踪文档" class="headerlink" title="关闭跟踪文档"></a>关闭跟踪文档</h3><p>当你使用跟踪文档完毕时，关闭它。</p>
+<ol>
+<li>选择 File &gt; Close(或按下Command + W)</li>
+<li>当你的跟踪文档中包含尚未保存的数据，请选择是否保存更新文档。</li>
+</ol>
+<h2 id="目标设备和进程"><a href="#目标设备和进程" class="headerlink" title="目标设备和进程"></a>目标设备和进程</h2><h3 id="目标设备和进程-1"><a href="#目标设备和进程-1" class="headerlink" title="目标设备和进程"></a>目标设备和进程</h3><p>目标设备列表能在每个跟踪文档中的工具栏中看到，这个列表允许你跟踪文档运行中的任何时候更改指定设备和进程。</p>
+<ul>
+<li><p>点击目标设备列表或目标进程列表并选择指定目标和进程。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_targetspecificprocess_menuitem.png" alt="img"></p>
+<p>部分instruments能以所有进程为目标。如果逆向选择全部进程，请在目标进程列表中选择全部进程。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_targetallprocesses_menuitem.png" alt="img"></p>
+<p>如果目标进程并不在列表中，在目标进程列表中选择Choose Target。之后会显示一个弹窗，在这个弹窗内你可以浏览所有进程。你也可以在这个弹窗中为一个进程配置环境变量。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_choosetarget_menuitem.png" alt="img"></p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_choosetargetdialog.png" alt="img"></p>
+</li>
+</ul>
+<p>提示：如果一个你已被设置为目标的app，但是并没有主动运行app，instruments会自动将其运行。</p>
+<h3 id="以iOS设备作为目标"><a href="#以iOS设备作为目标" class="headerlink" title="以iOS设备作为目标"></a>以iOS设备作为目标</h3><p>为了将iOS设备作为目标，请把设备连接到开发Mac上。一旦连接，设备会出现在设备列表中。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_targetiosdevice.png" alt="img"></p>
+<p>注意：在你能使用Instruments分析iOS设备之前，你的设备必须已经拥有了能够搜集数据的开发环境。关于提供开发环境，请在<a href="https://developer.apple.com/library/ios/documentation/IDEs/Conceptual/AppDistributionGuide/index.html" target="_blank" rel="noopener">App分发指南上</a>查看<a href="https://developer.apple.com/library/watchos/documentation/IDEs/Conceptual/AppDistributionGuide/MaintainingProfiles/MaintainingProfiles.html#//apple_ref/doc/uid/TP40012582-CH30-SW61" target="_blank" rel="noopener">创建Provision 开发文件</a>。</p>
+<h3 id="启动iOS设备无线分析"><a href="#启动iOS设备无线分析" class="headerlink" title="启动iOS设备无线分析"></a>启动iOS设备无线分析</h3><p>Instruments能够使用无线的方式来从iOS设备上收集数据。</p>
+<ol>
+<li><p>请确保您iOS设备已经连接到开发Mac上。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/graphic_computerconnectedtodevice.png" alt="img"></p>
+</li>
+<li><p>按住Option按键，并点击目标设备列表。</p>
+</li>
+<li><p>选择您需要开启无线分析的移动设备。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_targets_enablewireless.png" alt="img"></p>
+</li>
+<li><p>再次点击设备目标列表并打开它，为您设备选择无线版本并选择进程。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_targtetlist_selectwirelessprocess.png" alt="img"></p>
+</li>
+</ol>
+<p>现在您应该可以在您设备商以无线的形式分析进程。</p>
+<p>无线调试模式费事如下情况十分有用：</p>
+<ul>
+<li>Accelerometers(加速度计)：在所有方向是移动设备，而非只在一条线上。</li>
+<li>Accessories(配件)：将您的USB配件插入插槽并进行测试。</li>
+</ul>
+<p>当你在设备上使用无线分析时，对设备关机会导致停止收集数据。你必须重新将设备连接到电脑上才能继续数据收集。</p>
+<p><strong>重点：</strong>在Instruments收集数据之前，您的设备必须要有开发环境。并且您必须在无线网络访问端口上启用Bonjour和multicast。请在<a href="https://developer.apple.com/library/archive/documentation/NetworkingInternetWeb/Conceptual/NetworkingOverview/Discovering,Browsing,AndAdvertisingNetworkServices/Discovering,Browsing,AndAdvertisingNetworkServices.html#//apple_ref/doc/uid/TP40010220-CH9-SW7" target="_blank" rel="noopener">Bonjour服务预览</a>中查看。且记录数据所用 Mac 和设备必须都处于同一个子网中。</p>
+<h3 id="准备Apple-Watch分析"><a href="#准备Apple-Watch分析" class="headerlink" title="准备Apple Watch分析"></a>准备Apple Watch分析</h3><p>在你使用instruments以Apple Watch作为目标之前，必须先对其进行分析。</p>
+<ol>
+<li><p>确保Apple Watch已与开发iPhone配对过。</p>
+</li>
+<li><p>退出Instruments。</p>
+</li>
+<li><p>打开Xcode。</p>
+</li>
+<li><p>将已于Apple Watch配对的iPhone连接到开发Mac上。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/graphic_computerconnectedtodevice.png" alt="img"></p>
+</li>
+<li><p>选择Window &gt; Devices(或按下Shift+Command+2)打开Xcode中设备窗口。</p>
+</li>
+<li><p>等待设备出现在列表窗口中。</p>
+</li>
+<li><p>等待Apple Watch作为iPhone配对设备出现。</p>
+</li>
+<li><p>等待Xcode将Apple Watch标记为准备完成。这个过程可能会花费好几分钟。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_devices_pairedwatch.png" alt="img"></p>
+</li>
+<li><p>断开iPhone连接。</p>
+</li>
+<li><p>再次连接iPhone。</p>
+</li>
+</ol>
+<p>当你的Apple Watch完成分析准备，重启Instruments，然后Apple Watch会出现在目的设备列表中。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_targetwatch.png" alt="img"></p>
+<p>注意：在您分析Apple Watch的时候，你的开发iPhone充当代理，在Instruments和Apple Watch之间传递信息。</p>
+<h2 id="访问和使用Instruments"><a href="#访问和使用Instruments" class="headerlink" title="访问和使用Instruments"></a>访问和使用Instruments</h2><h3 id="显示模板库"><a href="#显示模板库" class="headerlink" title="显示模板库"></a>显示模板库</h3><p>库模板中显示所有你能够添加到跟踪文档上的instruments。库中包含所有内置和您可能自定义好instruments。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_library_palette.png" alt="img"></p>
+<ul>
+<li><p>请按如下操作之一：</p>
+<ul>
+<li><p>在跟踪文档中点击Instrument工具栏上的加号按钮(+)。</p>
+</li>
+<li><p>选择Window &gt; Library(或按下Command+L)。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_library_menu.png" alt="img"></p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="在模板库中筛选出指定instrument"><a href="#在模板库中筛选出指定instrument" class="headerlink" title="在模板库中筛选出指定instrument"></a>在模板库中筛选出指定instrument</h3><p>模板库列表十分的长，尤其是当您添加过您自己的自定义模板时。请使用位于模板库列表底部的筛选输入框内容来根据名字，描述或者关键字快速查找指定instrument。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_library_palette_filterterm.png" alt="img"></p>
+<h3 id="将一个instrument添加到跟踪文档"><a href="#将一个instrument添加到跟踪文档" class="headerlink" title="将一个instrument添加到跟踪文档"></a>将一个instrument添加到跟踪文档</h3><p>无论你创建的跟踪文档是根据模板创建的还是空白的，都能够通过添加新的instruments来扩展其功能。</p>
+<ol>
+<li><p>打开目标跟踪文档。</p>
+</li>
+<li><p>显示模板库。</p>
+</li>
+<li><p>找到所需要的instruments。</p>
+</li>
+<li><p>将instruments从模板库中拖拽出来添加到跟踪文档中策略窗格里的instrument列表中。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_trace_document_addinstrument.png" alt="img"></p>
+</li>
+</ol>
+<h3 id="在跟踪文档中移除一个instrument"><a href="#在跟踪文档中移除一个instrument" class="headerlink" title="在跟踪文档中移除一个instrument"></a>在跟踪文档中移除一个instrument</h3><p>在您不再需要instruments的时候，你可以轻易的将其从跟踪文档中移除。</p>
+<ol>
+<li><p>打开您需要的跟踪文档。</p>
+</li>
+<li><p>在策略窗格的instruments列表中选中您需要删除的instrument。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_trace_document_selectedinstrument.png" alt="img"></p>
+</li>
+<li><p>按下delete(删除)键或者选择 Instrument &gt; Delete [Instrument名] Instrument</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_deleteinstrument_menu.png" alt="img"></p>
+</li>
+<li><p>当出现提示时，点击 ok 确认您真要将instrument移除。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_deleteinstrumentconfirmation_dialog.png" alt="img"></p>
+</li>
+</ol>
+<h3 id="配置instrument的显示设置"><a href="#配置instrument的显示设置" class="headerlink" title="配置instrument的显示设置"></a>配置instrument的显示设置</h3><p>在录制跟踪(trace)时，Instruments会在时间线窗格中展示选中instrument结果的概览并在详情窗格中显示结果详情。这些结果会在不同的instrument之间有所差异。它们可能会包含像概览，调用树和样本列表。通常这里会展示很多的数据，导航会非常耗时。为了帮助您能够快速获取正确的信息，Instruments通常同样的，这也根据Instrument类型不同而有差距)能够让你对其调整，并在时间线窗格和详情窗格中过滤出信息。</p>
+<ul>
+<li>在时间线中配置显示设置</li>
+</ul>
+<ol>
+<li><p>将鼠标移动到时间线中instrument图标上。如果该仪器支持不同的显示配置，则图标旁边会出现一个指示器</p>
+</li>
+<li><p>点击图标弹出<a href="https://help.apple.com/instruments/mac/current/#/deva13e2923b" target="_blank" rel="noopener">显示设置框</a>。</p>
+</li>
+<li><p>选择所需显示配置。时间线会在选择之后更新。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_trace_document_timeline_config_popover.png" alt="A screenshot showing a trace document with the display configuration popover for the activity monitor instrument."></p>
+</li>
+<li><p>点击弹窗之外的区域来关闭它。</p>
+</li>
+</ol>
+<h3 id="配置详情显示设置"><a href="#配置详情显示设置" class="headerlink" title="配置详情显示设置"></a>配置详情显示设置</h3><ul>
+<li><p>使用在详情窗格底部的控件<a href="https://help.apple.com/instruments/mac/current/#/devadf729aef" target="_blank" rel="noopener">筛选和配置栏</a>来配置显示设置。不同instrument之间控件和配置选项会有所差异。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_detail_pane_filter_config_bar.png" alt="A screenshot of the filter and display configuration bar showing the filter field on the left followed by a configuration drop-down, and buttons that show popovers with other display configuration options."></p>
+</li>
+</ul>
+<h2 id="记录，暂停和开始跟踪"><a href="#记录，暂停和开始跟踪" class="headerlink" title="记录，暂停和开始跟踪"></a>记录，暂停和开始跟踪</h2><h3 id="记录跟踪"><a href="#记录跟踪" class="headerlink" title="记录跟踪"></a>记录跟踪</h3><p>当你准备好分析您的 App 时，请开始收集。在收集期间，在跟踪文档中的instruments会根据其配置来监听您的App。当开始收集时，时间线窗格和详情窗格将会更新用以提供展示所捕获的实时数据的视图。</p>
+<p>请按如下操作之一进行操作：</p>
+<ul>
+<li><p>点击在跟踪文档工具栏的收集按钮(<img src="/2021/04/11/Instrument文档翻译/inline_record_button.png" alt="img" style="zoom:50%;">)。</p>
+<ul>
+<li><p>选择 File &gt; Record Trace(或者按下 Command+R )。</p>
+</li>
+<li><p>再次按下 Command+R 将会停止收集。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_recordtrace_menu.png" alt="img"></p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="配置收集选项"><a href="#配置收集选项" class="headerlink" title="配置收集选项"></a>配置收集选项</h3><p>在收集选项弹窗选择全局收集选项，例如，将推迟结果处理推迟到开始收集之后和自定义instrument选项，来改善数据收集。</p>
+<p>举个例子，你可能会希望调整Time Profiler instrument的样本速率或者使用Allocations instrument分析时放弃事件以释放内存。想如上所述的自定义选项会根据instrument的不同而有差异。很多instruments能控制其本身所生成信息的信息类型。</p>
+<ul>
+<li><p>配置全局收集选项</p>
+<ol>
+<li><p>选择 File &gt; Recording Options 来打开录制选项弹窗。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/FAB7CADB-6C17-439F-8811-CF7511D35243.png" alt="FAB7CADB-6C17-439F-8811-CF7511D35243"></p>
+</li>
+<li><p>点击 Global options 。</p>
+</li>
+<li><p>自定义所需选项。</p>
+<p>选项包括：</p>
+<p>Time limit:instruments收集数据的时间数值的最大值，以秒为单位。</p>
+<p>Window limit:保存数据的最长时间，以秒为单位。如果录制超过了你作为window limit定义的时间(举个例子，长于四秒)，只有所用时长的最后四秒的数据才会被保存。</p>
+<p>Deferred mode:选择以在数据收集完毕之后延迟数据分析。它能带来更快更精准的数据集合，因为更多系统资源被直接记录的过程。在数据收集期间在时间线和详情窗格不会有数据显示。</p>
+</li>
+<li><p>点击关闭或者录制按钮来保存选项。</p>
+<p>点击录制按钮来使用新的选项开始跟踪。</p>
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="暂停跟踪"><a href="#暂停跟踪" class="headerlink" title="暂停跟踪"></a>暂停跟踪</h3><p>如果需要的话你可以暂停跟踪，并在之后继续。</p>
+<p>注意:当收集暂停时，被暂停的App不会响应输入。</p>
+<ul>
+<li><p>按如下之一进行操作：</p>
+<ul>
+<li>在跟踪文档的工具栏按下暂停按钮(<img src="/2021/04/11/Instrument文档翻译/pause.png" alt="img" style="zoom:60%;">)。</li>
+<li>选择 File &gt; Pause Trace(或按下Shift+Command+R))。</li>
+</ul>
+<p><img src="/2021/04/11/Instrument文档翻译/11ACD438-6F73-4A25-A067-0E5099AB9423.png" alt="11ACD438-6F73-4A25-A067-0E5099AB9423"></p>
+</li>
+</ul>
+<h3 id="停止跟踪"><a href="#停止跟踪" class="headerlink" title="停止跟踪"></a>停止跟踪</h3><p>在你已经搜集到了你想要的数据之后，停止收集来让你能够开始对所收集的数据进行分析。</p>
+<ul>
+<li><p>按如下之一操作进行:    </p>
+<ul>
+<li><p>在跟踪文档的工具栏上按下停止按钮<img src="/2021/04/11/Instrument文档翻译/inline_stop_button.png" alt="img" style="zoom:67%;">。</p>
+</li>
+<li><p>选择 File &gt; Stop Trace (或者按下Command-R)。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_stoptrace_menu.png" alt="img"></p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="在-Xcode-构建和产品菜单中分析您的-App"><a href="#在-Xcode-构建和产品菜单中分析您的-App" class="headerlink" title="在 Xcode 构建和产品菜单中分析您的 App"></a>在 Xcode 构建和产品菜单中分析您的 App</h3><p>Xcode 构建菜单允许您对您的 app 进行运行、测试和分析等操作。它同样也可以使用instruments分析您的 App。</p>
+<ol>
+<li><p>在 Xcode 中打开项目。</p>
+</li>
+<li><p>进行如下之一操作：</p>
+<ul>
+<li><p>在Xcode 主页面中点击并长按构建按钮，并在出现的菜单中选择Profile。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_toolbar_build_menu_profile_option.png" alt="img"></p>
+</li>
+<li><p>选择 Product &gt; Profile (或按下Command-I)。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_product_menu_profile_menu.png" alt="img"></p>
+</li>
+</ul>
+</li>
+</ol>
+<p>Instruments启动并出现模板选择提示框。注意此时您的 app 会在自动在设备和进程列表中被选中。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_profiling_template_window_initiatedbyxcode.png" alt="img"></p>
+<h3 id="在-Xcode-构建和产品菜单中启动分析时使用默认模板"><a href="#在-Xcode-构建和产品菜单中启动分析时使用默认模板" class="headerlink" title="在 Xcode 构建和产品菜单中启动分析时使用默认模板"></a>在 Xcode 构建和产品菜单中启动分析时使用默认模板</h3><p>如果你经常需要使用同一个模板来分析您的 App，你可以对 Xcode 项目进行设置，并让其在启动分析时使用指定模板。</p>
+<ol>
+<li>启动 Xcode 并开启您的项目。</li>
+<li>进行如下操作之一来打开计划编辑弹窗：</li>
+</ol>
+<ul>
+<li><p>选中在 Xcode 主页面工具栏设备目标列表中的Edit Scheme。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_targetdevice_list_editscheme_option.png" alt="img"></p>
+</li>
+<li><p>选择 Product &gt; Scheme &gt; Edit Scheme 或按下 Command + (小于号)&lt;。</p>
+</li>
+</ul>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_product_menu_editscheme_menu.png" alt="img"></p>
+<ol>
+<li>在编辑弹窗的侧边栏中选择 profile。</li>
+</ol>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_scheme_editor_dialog_sidebar_profile_option.png" alt="img"></p>
+<ol>
+<li>在Instrument下出现的菜单中选择你需要的模板。</li>
+</ol>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_scheme_editor_dialog_profile_option_instrument_popup.png" alt="img"></p>
+<ol>
+<li><p>点击 close。</p>
+</li>
+<li><p>启动分析。请查看 在<a href="https://help.apple.com/instruments/mac/current/#/dev54a36a4b" target="_blank" rel="noopener">Xcode 构建和产品菜单中分析您的 App</a>。</p>
+<p>Xcode 构建您的项目，Instruments启动并以scheme editor中配置过的模板开始分析您的App。</p>
+</li>
+</ol>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_activitymonitorprofilingfromxcode.png" alt="img"></p>
+<h3 id="debug时从-Xcode-仪器中分析"><a href="#debug时从-Xcode-仪器中分析" class="headerlink" title="debug时从 Xcode 仪器中分析"></a>debug时从 Xcode 仪器中分析</h3><p>当您测试和 debug App 的时候，Xcode debug 导航区中包含了一些列仪表来监视您的 App。这些仪表监视多种元素，包括 CPU 使用量，内存和电量消耗，这些能够提示你影响性能，能量消耗等潜在问题。如果您在测试应用时发现希望进一步调查的趋势，则可以将监控转换为仪器以进行更详细的分析。</p>
+<ol>
+<li><p>打开一个 App 项目并运行。</p>
+</li>
+<li><p>当你App 已经运行，使用如下操作之一来显示debug 导航区：</p>
+<ul>
+<li><p>在导航栏的选择栏中选择 Debug 导航按钮。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_navigatorselector_bar_debugnaviagator_button.png" alt="img"></p>
+</li>
+<li><p>选择View &gt; Navigators &gt; Show Debug Navigator (或按下 Command + 6)。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_view_menu_debugnavigator_menu.png" alt="img"></p>
+</li>
+</ul>
+</li>
+<li><p>在 debug 导航区中点击需要的仪器。</p>
+</li>
+</ol>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_debug_navigator_selectedgauge.png" alt="img"></p>
+<ol>
+<li><p>在主编辑区中点击仪器的 Profile in Instruments 按钮。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_gauge_profileininstruments_button.png" alt="img"></p>
+<p>注意：并不是每个仪器都拥有 Profile in Instruments 按钮。举个例子，Energy Impact 仪器拥有一系列按钮来初始化不同的 Instruments 。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_timeprofiler_gauge_profileininstruments_button.png" alt="img"></p>
+</li>
+<li><p>当如下提示出现，选择是将应用当前运行的实例转移到仪器上，还是停止应用，然后用仪器启动新的实例。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/xcode_profileininstrruments_alert.png" alt="img"></p>
+<p>在这两种情况下，请注意 Xcode 停止分析您的应用、启动文书并启动分析。如果您选择transfer，仪器将以当前状态开始分析应用。</p>
+</li>
+</ol>
+<h3 id="在-Dock-中启动分析"><a href="#在-Dock-中启动分析" class="headerlink" title="在 Dock 中启动分析"></a>在 Dock 中启动分析</h3><p>你能够通过触发在Dock上的Instruments App 图标中的Time Profiler来后台自动录制确切的事件。</p>
+<p>在 Dock 收集 Time Profiler 数据。</p>
+<ol>
+<li><p>Instruments打开后，右键 Dock 上的Instruments图标。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_app_icon_small.png" alt="img"></p>
+</li>
+<li><p>在出现的菜单中选择您需要开始分析的进程。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_dock_menu.png" alt="img"></p>
+<p>选项包括：</p>
+<ul>
+<li><em>System Time Profile</em>：开始分析所有系统进程。</li>
+<li><em>Time Profile Specific Process</em>：在子菜单中选择指定的进程开始Time Profiler instrument。</li>
+<li><em>Automatically Time Profile Spinning Applications</em>：自动分析在未来被阻隔的App。</li>
+<li><em>Allow Tracing of Any Process (10 hours)</em>：在接下来的十小时内跟踪任意进程，在此十小时内需要绕过密码进入。</li>
+</ul>
+</li>
+</ol>
+<p>注意：以这种方式记录的数据以 .dtps 格式保存到  ~/Library/Application Support/Instruments/Unimported/.。</p>
+<h3 id="使用instruments命令行工具启动分析"><a href="#使用instruments命令行工具启动分析" class="headerlink" title="使用instruments命令行工具启动分析"></a>使用instruments命令行工具启动分析</h3><p>使用仪器命令行工具使用指定的模板来描述应用，而无需启动仪器。在分析过程中收集的数据保存在 .trace 文件中到指定目录中。分析完成后，您可以使用仪器打开记录的数据文件，查看数据的可视化表示。</p>
+<ol>
+<li><p>打开在 /Applications/Utilities. 中的终端。</p>
+</li>
+<li><p>输入一个 instruments 命令来收集数据。</p>
+<p>举个例子，以下命令配置了带有分配模板的应用，并将结果保存到.trace文件中的桌面。</p>
+<p><code>instruments -t &quot;Allocations&quot; -D ~/Desktop/*YourTraceFileName*.trace *PathToYourApp*</code></p>
+</li>
+<li><p>打开 Instruments ，并选择File &gt; Open。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_fileopen_menu.png" alt="img"></p>
+</li>
+<li><p>找到你保存的 .trace 文件，并打开。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_opentracefile_dialog.png" alt="img"></p>
+</li>
+</ol>
+<p>打开保存的文件后，仪器会自动将相关文书添加到跟踪文档中，并将它们填充到收集的数据中。您可以查看和分析数据，以便查找应用的任何问题。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_loadedtrace_file.png" alt="img"></p>
+<p><strong>instruments</strong>选项</p>
+<p>instruments提供了以下一组配置选项，用于定义要收集的数据。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Configuration option</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>-t template</code></td>
+<td style="text-align:left">分析 App 时，所要用到的模板名字或者是模板路径。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>-s</code></td>
+<td style="text-align:left">返回所有已安装的模板的列表。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>-D document</code></td>
+<td style="text-align:left">.trace 文档的保存路径。如果路径已存在，则新数据会覆盖旧数据。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>-l #</code></td>
+<td style="text-align:left">指定收集的时间，以毫秒为单位。如果不提供则会无限录制下去，知道 App 被手动终止。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>-i #</code></td>
+<td style="text-align:left">被用于录制的 instrument 的索引。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>-p pid</code></td>
+<td style="text-align:left">需要被收集的 App 的进程 ID。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>application</code></td>
+<td style="text-align:left">需要被收集的 App 的路径。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>-w hardware device</code></td>
+<td style="text-align:left">需要被设为目标的设备的 ID。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>-e variable value</code></td>
+<td style="text-align:left">在分析时需要被应用的一个环境变量。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>argument</code></td>
+<td style="text-align:left">要传递到正在配置的应用程序的命令行参数。如果需要，可以指定多个参数。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>-v</code></td>
+<td style="text-align:left">在分析时启用详细的日志记录。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="延时启动分析"><a href="#延时启动分析" class="headerlink" title="延时启动分析"></a>延时启动分析</h3><p>对于特长的跟踪，延迟模式造成的延迟可能非常显著。仅为需要极其精确的数据收集的痕迹设置延期模式，从而避免此延迟。</p>
+<ol>
+<li><p>选择 File &gt; Recording Options。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_recordoptions_menu.png" alt="img"></p>
+</li>
+<li><p>在出现的弹窗中选择Deferred Mode 复选框接着按下 OK。</p>
+<p>如果在Instruments设置中中启用”始终使用递延模式”，则此选项将禁用。</p>
+</li>
+</ol>
+<p>通过将数据分析推迟到退出正在测试的应用之前，提高性能相关数据的准确性。通常，仪器会在应用运行时分析和显示数据，从而允许您在收集数据时查看数据。通过占用 CPU 时间和内存进行实时分析会减慢目标过程，从而获得可能无法反映该过程通常表现的测量结果。在延期模式下运行文书会延迟数据分析，直到数据收集完成，无论是在应用完成运行后还是在单击”停止”之后。在延期模式下，您被阻止与正在收集数据的仪器交互。</p>
+<p>在延期模式下，仪器完成数据收集后，仪器处理数据并将其显示在屏幕上。延迟数据分析为数据收集过程的后期阶段增加了时间，但它有助于确保与性能相关的数据准确无误。</p>
+<h3 id="在延迟模式下启动Instruments"><a href="#在延迟模式下启动Instruments" class="headerlink" title="在延迟模式下启动Instruments"></a>在延迟模式下启动Instruments</h3><p>通过将数据分析推迟到退出正在测试的应用之前，提高性能相关数据的准确性。通常，仪器会在应用运行时分析和显示数据，从而允许您在收集数据时查看数据。通过占用 CPU 时间和内存进行实时分析会减慢目标过程，从而获得可能无法反映该过程通常表现的测量结果。在延期模式下运行文书会延迟数据分析，直到数据收集完成，无论是在应用完成运行后还是在单击”停止”之后。在延期模式下，您被阻止与正在收集数据的仪器交互。</p>
+<ol>
+<li><p>选择Instruments &gt; Preferences。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_preferences_menu.png" alt="img"></p>
+</li>
+<li><p>在录制窗格中，选择 Always use deferred mode 复选框。</p>
+<p><img src="https://help.apple.com/instruments/mac/current/en.lproj/Art/instruments_prefs_recording_deferred_option.png" alt="img"></p>
+</li>
+</ol>
+<p>在延期模式下，仪器完成数据收集后，仪器处理数据并将其显示在屏幕上。延迟数据分析为数据收集过程的后期阶段增加了时间，但它有助于确保与性能相关的数据准确无误。</p>
+<h2 id="导航所收集的数据"><a href="#导航所收集的数据" class="headerlink" title="导航所收集的数据"></a>导航所收集的数据</h2><h3 id="在时间线窗格中放大或者缩小"><a href="#在时间线窗格中放大或者缩小" class="headerlink" title="在时间线窗格中放大或者缩小"></a>在时间线窗格中放大或者缩小</h3><p>如果你使用跟踪文档收集了很多的数据，你可以对在详情窗格中的详情数据的显示区域进行扩大或者缩小，这样你能够专注于指定数据的子集。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_trace_document_timeline_pane_zooming.png" alt="img"></p>
+<h4 id="扩大或者缩小您的数据"><a href="#扩大或者缩小您的数据" class="headerlink" title="扩大或者缩小您的数据"></a>扩大或者缩小您的数据</h4><ul>
+<li>进行如下之一的操作<ul>
+<li>捏住触控板选择放大或者缩小。</li>
+<li>滑动鼠标滚轮同时按下Option 按键并将鼠标指向跟踪视图上，来放大。</li>
+<li>按下Option按键并拖动您希望分离出的数据，来放大。</li>
+<li>按下Control按键并拖动数据来缩小。</li>
+</ul>
+</li>
+</ul>
+<h4 id="选中所有在时间线窗格中的数据"><a href="#选中所有在时间线窗格中的数据" class="headerlink" title="选中所有在时间线窗格中的数据"></a>选中所有在时间线窗格中的数据</h4><ul>
+<li><p>选择 view > Snap Track To Fit (或者按下 Control-Command-Z)。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_view_menu_snaptracktofit_menuitem.png" alt="img">、</p>
+</li>
+</ul>
+<h4 id="增加在时间线窗格中显示的数据"><a href="#增加在时间线窗格中显示的数据" class="headerlink" title="增加在时间线窗格中显示的数据"></a>增加在时间线窗格中显示的数据</h4><ul>
+<li><p>选择 View &gt; Increase Deck Size (或者按下 Command+加号)。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_view_menu_increasedecksize_menuitem.png" alt="img"></p>
+<p>instrument当前所选中的跟踪增加了高度，这能让你查看的更加详细。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_trace_document_timeline_pane_largertrack.png" alt="img"></p>
+</li>
+</ul>
+<h4 id="减少在时间线窗格中显示的数据"><a href="#减少在时间线窗格中显示的数据" class="headerlink" title="减少在时间线窗格中显示的数据"></a>减少在时间线窗格中显示的数据</h4><ul>
+<li>选择View &gt; Decrease Deck Size (或者按下 Command+减号)。</li>
+</ul>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_view_menu_decreasedecksize_menuitem.png" alt="img"></p>
+<p>instrument当前所选中的跟踪减少了高度。</p>
+<h3 id="在详情窗格中筛选一段数据"><a href="#在详情窗格中筛选一段数据" class="headerlink" title="在详情窗格中筛选一段数据"></a>在详情窗格中筛选一段数据</h3><p>Instruments会收集大量数据用于分析。您可以通过设置详情窗格只显示指定时间段的事件来快速筛选数据。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_trace_document_timeline_pane_selectedrange.png" alt="img"></p>
+<h4 id="选择时间区域用于查看"><a href="#选择时间区域用于查看" class="headerlink" title="选择时间区域用于查看"></a>选择时间区域用于查看</h4><ul>
+<li>在不使用任何按键的情况下拖动部分数据。只有您拖动的数据才会显示。</li>
+</ul>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_trace_document_timeline_pane_selectingrange.png" alt="img"></p>
+<p>在Instruments中时间线窗格高亮部分的内容，都是您指定的范围。</p>
+<h4 id="清除所选区域"><a href="#清除所选区域" class="headerlink" title="清除所选区域"></a>清除所选区域</h4><ul>
+<li>进行如下操作期中之一：<ul>
+<li>点击时间线窗格中所选区域以外。</li>
+<li>选择 View &gt; Clear Inspection Range 。</li>
+</ul>
+</li>
+</ul>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_clearinspectionrange_menu.png" alt="img"></p>
+<h3 id="在时间线窗格中设置标记"><a href="#在时间线窗格中设置标记" class="headerlink" title="在时间线窗格中设置标记"></a>在时间线窗格中设置标记</h3><p>标记让你能够快速的在时间线窗格中访问点。你能够为每个标记都添加名字和描述。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_trace_document_timeline_pane_flags.png" alt="img"></p>
+<ul>
+<li><p>在时间线窗格中的当前位置设置一个标记</p>
+<ul>
+<li><p>选择 Edit &gt; Add Flag  (或者按下 Command + ↓)。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_addflag_menu.png" alt="img"></p>
+</li>
+</ul>
+</li>
+<li><p>在时间线标记中导航</p>
+<ol>
+<li><p>选择 Window &gt; Manage Flags (或按下 Shift-Command-T )来显示标记面板。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_manageflags_menu.png" alt="img"></p>
+</li>
+<li><p>点击标记面板中的一个标记来导航到时间线窗格。</p>
+</li>
+</ol>
+</li>
+<li><p>删除标记</p>
+<ul>
+<li>将标记点拖拽出时间线导航栏。</li>
+</ul>
+</li>
+<li><p>隐藏标记点</p>
+<ol>
+<li><p>选择 Window &gt; Manage Flags (或按下 Shift-Command-T)来显示标记面板。</p>
+</li>
+<li><p>在标记面板中反选标记边上的复选框来隐藏时间线窗格中的标记点。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_flags_palette_disabledflag.png" alt="img"></p>
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="固定和取消固定时间线"><a href="#固定和取消固定时间线" class="headerlink" title="固定和取消固定时间线"></a>固定和取消固定时间线</h3><ul>
+<li><p>固定时间线</p>
+<ol>
+<li><p>如果目标时间线未选中，将鼠标移动到该时间线的左侧。</p>
+</li>
+<li><p>点击加号按钮 (<img src="/2021/04/11/Instrument文档翻译/pin_add_button.png" alt="img" style="zoom:67%;">)。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/timeline_pin_add.png" alt="Screenshot showing the timeline pane with the mouse over the Frames Per Second instrument that shows the pin button."></p>
+</li>
+</ol>
+</li>
+<li><p>取消固定时间线</p>
+<p><img src="/2021/04/11/Instrument文档翻译/timeline_pin_delete.png" alt="Screenshot showing the timeline pane with the mouse over the pinned Frames Per Second instrument that shows the unpin button"></p>
+</li>
+</ul>
+<h3 id="在详情窗格中查看不同类型的数据"><a href="#在详情窗格中查看不同类型的数据" class="headerlink" title="在详情窗格中查看不同类型的数据"></a>在详情窗格中查看不同类型的数据</h3><p>在一些instruments中你可以在详情窗格中展示多种格式的数据。举个例子，在Activity Monitor中，你可以查看到数据概览，父子信息和一些样本的列表。</p>
+<ul>
+<li><p>对详情窗格中导航栏列表里的详情列表类型选择合适的模式。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_detail_pane_detailtypelist.png" alt="img"></p>
+<p>instrument支持哪种数据要依赖于instrument所收集到的数据的类型。</p>
+<p>对于一些详情类型，像 Allocations 称为 call tree 模式，你可以使用确切详情窗格中的下箭头来进一步深入到与其相对应的层级中。点击三角形会展开或者收起行信息。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_detail_pane_calltreeexpanded.png" alt="img"></p>
+<p>提示：按住option并点击三角形来递归展开到当前行的子节点发生数据更改的位置。按住Shift-Option点击左键来展开当前行的所有字节点。</p>
+<p>当查看调用树时(call tree)，多数instruments都包含 hide system calls 和 invert the call tree选项。这些选项在inspector窗格的显示设置中的调用树区域(call tree area)可以找到。Hiding system calls能够让你快速筛选出您 App 中的调用方法。Inverting the call tree 能够让你最先查看到最后的调用。</p>
+</li>
+</ul>
+<h3 id="使用额外详情区域"><a href="#使用额外详情区域" class="headerlink" title="使用额外详情区域"></a>使用额外详情区域</h3><p>对于一些instruments，其检查区域中的额外详情区域能够展示在当前详情窗格中所选中条目的额外信息。这些额外的详情信息可以包括一些结果的描述或者是被记录的事件或调用跟踪和信息被记录的时间或者是其他信息。</p>
+<ul>
+<li><p>请按如下操作之一进行操作：</p>
+<ul>
+<li><p>选择 View &gt; Inspectors &gt; Show Extended Detail or Hide Extended Detail (或按下 Command - 1)。</p>
+</li>
+<li><p>点击指示器窗格顶部的额外详情按钮 (<img src="/2021/04/11/Instrument文档翻译/instruments_extendeddetail_button_inline.png" alt="img" style="zoom:67%;">)。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_inspector_pane_navigation_bar.png" alt="img"></p>
+</li>
+</ul>
+</li>
+</ul>
+<p>你可以通过点击额外详情区域中栈跟踪区域顶部的折叠按钮<img src="/2021/04/11/Instrument文档翻译/inline_hidesystemcalls_button.png" alt="img" style="zoom:67%;"> 来隐藏系统调用方法。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_extendeddetail_pane_hiddensystemcalls.png" alt="Hiding system calls in the extended detail area of the inspector pane"></p>
+<h3 id="访问多次运行的跟踪数据"><a href="#访问多次运行的跟踪数据" class="headerlink" title="访问多次运行的跟踪数据"></a>访问多次运行的跟踪数据</h3><p>一个跟踪文档能够为你的 app 收集多次运行的数据。这样做时，这并不会抛弃之前所收集的数据。在工具栏的活动区域(Activity area)展示出总共运行的次数，当前运行，和当前运行的时间。更改当前运行会为trace document中每一个instrument更新为当前运行的数据。数据只会在跟踪文档选中的运行期间的instruments展示。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_strategy_pane_multipleruns.png" alt="img"></p>
+<ul>
+<li>移动到下一次运行<ul>
+<li>选择 Instrument &gt; Next Run ，点击在活动区域顶部工具栏中的 Previous Run 按钮或者按下 Command + {。</li>
+</ul>
+</li>
+<li>移动到之前的运行<ul>
+<li>选择 Instrument &gt; Previous Run ，点击在活动区域顶部工具栏中的 Next Run 按钮或者按下 Command + }。</li>
+</ul>
+</li>
+</ul>
+<h3 id="在Instruments中访问源代码"><a href="#在Instruments中访问源代码" class="headerlink" title="在Instruments中访问源代码"></a>在Instruments中访问源代码</h3><p>如果您拥有的 Xcode 项目源代码能够列出跟踪栈中的符号，Instruments能够打开 Xcode ，以便你能够对其进行任何所需的更改。</p>
+<ol>
+<li>在详情窗格中找到您代码的图标(<img src="/2021/04/11/Instrument文档翻译/inline_usercode_icon.png" alt="img" style="zoom:67%;">表示用户)。</li>
+<li>右键条目，并在所出现的弹窗中选择 Reveal in Xcode 。</li>
+</ol>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_detail_pane_usersourcecode_popover.png" alt="Screenshot showing the popover for opening the user symbol in Xcode"></p>
+<p>为了更轻松地查找代码符号，您可以通过展示窗口底部的<a href="https://help.apple.com/instruments/mac/current/#/devadf729aef" target="_blank" rel="noopener">筛选和配置栏</a>中 instrument 的显示设置来从系统库中筛选出符号。</p>
+<h2 id="配置instruments"><a href="#配置instruments" class="headerlink" title="配置instruments"></a>配置instruments</h2><h3 id="将数据映射到源码中"><a href="#将数据映射到源码中" class="headerlink" title="将数据映射到源码中"></a>将数据映射到源码中</h3><p>Instruments需要关于您项目的精确信息以提供最棒的结果。如果系统能够查看所有与您项目相关的符号你可以获取最完整的数据。在跟踪文档通过Instruments分析工具所产生而显示的是地址而非符号时，你可以手动提供缺失信息。地址所对应的符号被包含在dSYM文件中。通常Instruments会通过你在Instruments偏好设置中指定的路径索引来自动寻找dSYM文件。然而，您可以在Instruments无法自动找到 dSYM时指定其正确的路径。一旦您这样做了，Instruments能将地址映射到其相关联的符号和行信息。</p>
+<h4 id="为跟踪文档查找dSYM路径"><a href="#为跟踪文档查找dSYM路径" class="headerlink" title="为跟踪文档查找dSYM路径"></a>为跟踪文档查找dSYM路径</h4><ol>
+<li><p>选择 File &gt; Symbols 。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_file_menu_symbols_menuitem.png" alt="img"></p>
+<p>这个选项只有在运行了一个跟踪或者载入之前运行的跟踪结果时才会出现。</p>
+</li>
+<li><p>选择缺失符号的可执行的库或者框架。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_symbols_dialog_binaries.png" alt="img"></p>
+</li>
+<li><p>点击查找按钮。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_symbols_dialog_locatedysmpath_button.png" alt="img"></p>
+</li>
+<li><p>在出现的弹窗中选择您的符号或者包含它的文件夹。</p>
+</li>
+<li><p>点击 open。</p>
+</li>
+</ol>
+<p>为了在跟踪文档中正确显示符号，Instruments需要访问指定符号文件，这个符号文件是在您测试的可执行文件构建之后生成的。因此当您在一台电脑上构建并在另一台电脑上测试性能时，您可能需要手动查找dSYM文件。</p>
+<p>在符号弹窗中的筛选栏能让你通过可执行文件、不完整的二进制文件和框架中筛选。同样您也能够通过在搜索框中输入文本来搜索特定的二进制或框架。</p>
+<p>注意：默认情况下，Xcode会在构建路径中将symbols保存为dSYM文件。Xcode 通过将扩展添加到可执行名称创建默认的 dSYM 捆绑路径。为了在 Xcode 中创建dSYM文件，进入您项目中的Build Settings(构建设置)，然后选中在Build Options栏中的 Debug Information Format &gt; Dwarf with dSYM File 。</p>
+<p>注意：通常，当显示的不是符号而是地址而，地址以黑色显示在左边，在细节窗格中以灰色显示库。您可以通过定位适当的 dSYM 文件来识别这些地址。</p>
+<p>如果地址为灰色且未列出拥有库，则无法显示符号名称。没有库名称的灰色地址意味着在记录跟踪时，您无权查看有关该过程的信息。这通常发生在构建设置中的代码签名标识设置为发布生成的发布/分发标识时。您的发布生成应使用与调试生成相同的设置（通常为”iOS 开发人员”）。</p>
+<h3 id="设置通用选项"><a href="#设置通用选项" class="headerlink" title="设置通用选项"></a>设置通用选项</h3><p>使用在选项窗口中的通用窗格来配置Instruments的类似启动选项，键盘快捷键和警告选项等基础行为。</p>
+<p>选择 Instruments &gt; Preferences 并点击 General。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_prefs_general.png" alt="img"></p>
+<p>你能够设置如下选项：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">选项</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Compress run data</td>
+<td style="text-align:left">将每次运行都以 zip 格式保存</td>
+</tr>
+<tr>
+<td style="text-align:left">Enforce initial deck height</td>
+<td style="text-align:left">当instrument文档被重新加载并使用模板默认高度时可以防止回复自定义高度。取消选择时，保存并回复当前高度。</td>
+</tr>
+<tr>
+<td style="text-align:left">Sort process lists by identifier</td>
+<td style="text-align:left">对所有Instruments App 列表内容以进程 ID 排序。当未选中时，默认以字母排列。</td>
+</tr>
+<tr>
+<td style="text-align:left">Always snap track to fit at end of run</td>
+<td style="text-align:left">在运行结束时自动将跟踪缩放到跟踪文档中，以适应窗口中的所有数据。</td>
+</tr>
+<tr>
+<td style="text-align:left">Reset “Don’t Ask Me” Warnings</td>
+<td style="text-align:left">重新发布对话警告您以前选择不显示。文书有几个警告对话框，您可以通过在对话框中选择”不要再次显示此消息”复选框来禁用这些对话框。要重新发布所有这些警告对话，请单击重置”不要问我”警告按钮。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="设置收集选项"><a href="#设置收集选项" class="headerlink" title="设置收集选项"></a>设置收集选项</h3><p>使用在选项窗口中的 Recording 窗格来配置跟踪在跟踪文档中显示的样式。</p>
+<ul>
+<li><p>选择 Instruments &gt; Preferences 并点击 Recording。</p>
+<p><img src="/2021/04/11/Instrument文档翻译/instruments_prefs_recording.png" alt="img"></p>
+</li>
+</ul>
+<p>你能够配置如下选项：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">选项</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Recording location</td>
+<td style="text-align:left">为新创建的Instruments 文档指定一个位置。默认是一个临时的路径。在这个弹出菜单中自定义一个不同的路径。</td>
+</tr>
+<tr>
+<td style="text-align:left">Background sampling duration</td>
+<td style="text-align:left">Sets the length of a sample trace operating in the background. Type a numeric value in the field. Defaults to 5 seconds.</td>
+</tr>
+<tr>
+<td style="text-align:left">Global keyboard shortcuts</td>
+<td style="text-align:left">Opens the Keyboard &gt; Shortcuts &gt; Services pane in the System Preferences app, as shown in the Keyboard &gt; Shortcuts &gt; Services pane in System Preferences. From here, you can assign keyboard shortcuts to development services, such as a service that automatically opens an Xcode project in Instruments and profiles it with the System Trace profiling template.</td>
+</tr>
+<tr>
+<td style="text-align:left">Always use deferred mode</td>
+<td style="text-align:left">Performs data analysis for all traces after data collection is complete.</td>
+</tr>
+<tr>
+<td style="text-align:left">Automatically time profile spinning applications</td>
+<td style="text-align:left">Automatically monitors for a spinning process while a trace is recorded. This can be a process other than the one being recorded. If detected, Instruments starts the Time Profiler instrument on the spinning process.</td>
+</tr>
+<tr>
+<td style="text-align:left">DTrace max buffer size</td>
+<td style="text-align:left">Sets the size of the DTrace kernel buffer (in megabytes). The default is 25 MB.</td>
+</tr>
+<tr>
+<td style="text-align:left">DTrace max backtrace depth</td>
+<td style="text-align:left">Sets the maximum stack depth that is captured when using a DTrace instrument. The default is 128 frames.</td>
+</tr>
+<tr>
+<td style="text-align:left">Permit zero match probes</td>
+<td style="text-align:left">Prevents an error when a specified DTrace probe is not found.</td>
+</tr>
+<tr>
+<td style="text-align:left">Preserve intermediate files</td>
+<td style="text-align:left">Prevents Instruments from removing intermediate DTrace data output files from the disk.</td>
+</tr>
+<tr>
+<td style="text-align:left">Flag runtime messages</td>
+<td style="text-align:left">Adds flags to the timeline for DTrace runtime status and error messages encountered during a recording.</td>
+</tr>
+</tbody>
+</table>
+<p>参考资料</p>
+<blockquote>
+<p>Instruments Help:<a href="https://help.apple.com/instruments/mac/current/#/dev7b09c84f5" target="_blank" rel="noopener">https://help.apple.com/instruments/mac/current/#/dev7b09c84f5</a></p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/02/iOS推送-APNs/" rel="next" title="iOS推送(APNs)">
+                <i class="fa fa-chevron-left"></i> iOS推送(APNs)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/12/02/Mach-O文件结构初探索/" rel="prev" title="Mach-O文件结构初探索">
+                Mach-O文件结构初探索 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">John Wong</p>
+              <p class="site-description motion-element" itemprop="description">别在机会来临之时却无法握住。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Instrument文档翻译"><span class="nav-number">1.</span> <span class="nav-text">Instrument文档翻译</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#关于Instrument"><span class="nav-number">1.1.</span> <span class="nav-text">关于Instrument</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Instruments概述"><span class="nav-number">1.1.1.</span> <span class="nav-text">Instruments概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于跟踪-trace-的文档"><span class="nav-number">1.1.2.</span> <span class="nav-text">关于跟踪(trace)的文档</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于跟踪文档工具栏"><span class="nav-number">1.1.3.</span> <span class="nav-text">关于跟踪文档工具栏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于跟踪文档时间线窗格"><span class="nav-number">1.1.4.</span> <span class="nav-text">关于跟踪文档时间线窗格</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于显示配置弹窗"><span class="nav-number">1.1.5.</span> <span class="nav-text">关于显示配置弹窗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于跟踪文档详情窗格"><span class="nav-number">1.1.6.</span> <span class="nav-text">关于跟踪文档详情窗格</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#导航栏"><span class="nav-number">1.1.6.1.</span> <span class="nav-text">导航栏</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据收集区"><span class="nav-number">1.1.6.2.</span> <span class="nav-text">数据收集区</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#筛选配置栏"><span class="nav-number">1.1.6.3.</span> <span class="nav-text">筛选配置栏</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于跟踪文档的监视器窗格"><span class="nav-number">1.1.7.</span> <span class="nav-text">关于跟踪文档的监视器窗格</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#运行信息区域"><span class="nav-number">1.1.7.1.</span> <span class="nav-text">运行信息区域</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#额外详情区域"><span class="nav-number">1.1.7.2.</span> <span class="nav-text">额外详情区域</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于库面板"><span class="nav-number">1.1.8.</span> <span class="nav-text">关于库面板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于标记面板"><span class="nav-number">1.1.9.</span> <span class="nav-text">关于标记面板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于分析模板"><span class="nav-number">1.1.10.</span> <span class="nav-text">关于分析模板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于分析模板选择框"><span class="nav-number">1.1.11.</span> <span class="nav-text">关于分析模板选择框</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于引用窗口"><span class="nav-number">1.1.12.</span> <span class="nav-text">关于引用窗口</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动Instruments"><span class="nav-number">1.2.</span> <span class="nav-text">启动Instruments</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#从Xcode中启动Instruments"><span class="nav-number">1.2.1.</span> <span class="nav-text">从Xcode中启动Instruments</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从Docker中启动Instruments"><span class="nav-number">1.2.2.</span> <span class="nav-text">从Docker中启动Instruments</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将Instruments添加到Docker中"><span class="nav-number">1.2.3.</span> <span class="nav-text">将Instruments添加到Docker中</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加Instruments到Launchpad"><span class="nav-number">1.2.4.</span> <span class="nav-text">添加Instruments到Launchpad</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从命令行中启动Instruments"><span class="nav-number">1.2.5.</span> <span class="nav-text">从命令行中启动Instruments</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建，保存和打开跟踪文档"><span class="nav-number">1.3.</span> <span class="nav-text">创建，保存和打开跟踪文档</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建一个跟踪文档"><span class="nav-number">1.3.1.</span> <span class="nav-text">创建一个跟踪文档</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#保存一个跟踪文档"><span class="nav-number">1.3.2.</span> <span class="nav-text">保存一个跟踪文档</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将跟踪文档保存为分析模板"><span class="nav-number">1.3.3.</span> <span class="nav-text">将跟踪文档保存为分析模板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#打开跟踪文档"><span class="nav-number">1.3.4.</span> <span class="nav-text">打开跟踪文档</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关闭跟踪文档"><span class="nav-number">1.3.5.</span> <span class="nav-text">关闭跟踪文档</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目标设备和进程"><span class="nav-number">1.4.</span> <span class="nav-text">目标设备和进程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#目标设备和进程-1"><span class="nav-number">1.4.1.</span> <span class="nav-text">目标设备和进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#以iOS设备作为目标"><span class="nav-number">1.4.2.</span> <span class="nav-text">以iOS设备作为目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动iOS设备无线分析"><span class="nav-number">1.4.3.</span> <span class="nav-text">启动iOS设备无线分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#准备Apple-Watch分析"><span class="nav-number">1.4.4.</span> <span class="nav-text">准备Apple Watch分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#访问和使用Instruments"><span class="nav-number">1.5.</span> <span class="nav-text">访问和使用Instruments</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#显示模板库"><span class="nav-number">1.5.1.</span> <span class="nav-text">显示模板库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在模板库中筛选出指定instrument"><span class="nav-number">1.5.2.</span> <span class="nav-text">在模板库中筛选出指定instrument</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将一个instrument添加到跟踪文档"><span class="nav-number">1.5.3.</span> <span class="nav-text">将一个instrument添加到跟踪文档</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在跟踪文档中移除一个instrument"><span class="nav-number">1.5.4.</span> <span class="nav-text">在跟踪文档中移除一个instrument</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置instrument的显示设置"><span class="nav-number">1.5.5.</span> <span class="nav-text">配置instrument的显示设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置详情显示设置"><span class="nav-number">1.5.6.</span> <span class="nav-text">配置详情显示设置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#记录，暂停和开始跟踪"><span class="nav-number">1.6.</span> <span class="nav-text">记录，暂停和开始跟踪</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#记录跟踪"><span class="nav-number">1.6.1.</span> <span class="nav-text">记录跟踪</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置收集选项"><span class="nav-number">1.6.2.</span> <span class="nav-text">配置收集选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#暂停跟踪"><span class="nav-number">1.6.3.</span> <span class="nav-text">暂停跟踪</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#停止跟踪"><span class="nav-number">1.6.4.</span> <span class="nav-text">停止跟踪</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在-Xcode-构建和产品菜单中分析您的-App"><span class="nav-number">1.6.5.</span> <span class="nav-text">在 Xcode 构建和产品菜单中分析您的 App</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在-Xcode-构建和产品菜单中启动分析时使用默认模板"><span class="nav-number">1.6.6.</span> <span class="nav-text">在 Xcode 构建和产品菜单中启动分析时使用默认模板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#debug时从-Xcode-仪器中分析"><span class="nav-number">1.6.7.</span> <span class="nav-text">debug时从 Xcode 仪器中分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在-Dock-中启动分析"><span class="nav-number">1.6.8.</span> <span class="nav-text">在 Dock 中启动分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用instruments命令行工具启动分析"><span class="nav-number">1.6.9.</span> <span class="nav-text">使用instruments命令行工具启动分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#延时启动分析"><span class="nav-number">1.6.10.</span> <span class="nav-text">延时启动分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在延迟模式下启动Instruments"><span class="nav-number">1.6.11.</span> <span class="nav-text">在延迟模式下启动Instruments</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#导航所收集的数据"><span class="nav-number">1.7.</span> <span class="nav-text">导航所收集的数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#在时间线窗格中放大或者缩小"><span class="nav-number">1.7.1.</span> <span class="nav-text">在时间线窗格中放大或者缩小</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#扩大或者缩小您的数据"><span class="nav-number">1.7.1.1.</span> <span class="nav-text">扩大或者缩小您的数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#选中所有在时间线窗格中的数据"><span class="nav-number">1.7.1.2.</span> <span class="nav-text">选中所有在时间线窗格中的数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#增加在时间线窗格中显示的数据"><span class="nav-number">1.7.1.3.</span> <span class="nav-text">增加在时间线窗格中显示的数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#减少在时间线窗格中显示的数据"><span class="nav-number">1.7.1.4.</span> <span class="nav-text">减少在时间线窗格中显示的数据</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在详情窗格中筛选一段数据"><span class="nav-number">1.7.2.</span> <span class="nav-text">在详情窗格中筛选一段数据</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#选择时间区域用于查看"><span class="nav-number">1.7.2.1.</span> <span class="nav-text">选择时间区域用于查看</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#清除所选区域"><span class="nav-number">1.7.2.2.</span> <span class="nav-text">清除所选区域</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在时间线窗格中设置标记"><span class="nav-number">1.7.3.</span> <span class="nav-text">在时间线窗格中设置标记</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#固定和取消固定时间线"><span class="nav-number">1.7.4.</span> <span class="nav-text">固定和取消固定时间线</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在详情窗格中查看不同类型的数据"><span class="nav-number">1.7.5.</span> <span class="nav-text">在详情窗格中查看不同类型的数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用额外详情区域"><span class="nav-number">1.7.6.</span> <span class="nav-text">使用额外详情区域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#访问多次运行的跟踪数据"><span class="nav-number">1.7.7.</span> <span class="nav-text">访问多次运行的跟踪数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在Instruments中访问源代码"><span class="nav-number">1.7.8.</span> <span class="nav-text">在Instruments中访问源代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置instruments"><span class="nav-number">1.8.</span> <span class="nav-text">配置instruments</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#将数据映射到源码中"><span class="nav-number">1.8.1.</span> <span class="nav-text">将数据映射到源码中</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#为跟踪文档查找dSYM路径"><span class="nav-number">1.8.1.1.</span> <span class="nav-text">为跟踪文档查找dSYM路径</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置通用选项"><span class="nav-number">1.8.2.</span> <span class="nav-text">设置通用选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置收集选项"><span class="nav-number">1.8.3.</span> <span class="nav-text">设置收集选项</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Wong</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
