@@ -1,314 +1,72 @@
 <!DOCTYPE html>
+<html lang="en">
 
-
-
-  
-
-
-<html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
-
-
-
-
-
-
-
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
-
-
-
-
-
-  <meta name="keywords" content="iOS 知识点," />
-
-
-
-
-
-
-
-
-
-
-<meta name="description" content="iOS 中的拷贝(copy 和 mutableCopy)NSCopying和NSMutableCopying协议在 iOS 中并不是所有的的对象都具有拷贝功能，而是只有遵守了NSCopying 或 NSMutableCopying协议的类的对象才能具有拷贝功能。遵守了NSMutableCopying类的对象可以发送 mutableCopy 消息，遵守了NSCopying的类的对象可以发送 copy">
-<meta name="keywords" content="iOS 知识点">
-<meta property="og:type" content="article">
-<meta property="og:title" content="iOS 中的拷贝(copy 和 mutableCopy)">
-<meta property="og:url" content="http://yoursite.com/2018/07/20/iOS-中的拷贝-copy-和-mutableCopy/index.html">
-<meta property="og:site_name" content="John 的技术博客">
-<meta property="og:description" content="iOS 中的拷贝(copy 和 mutableCopy)NSCopying和NSMutableCopying协议在 iOS 中并不是所有的的对象都具有拷贝功能，而是只有遵守了NSCopying 或 NSMutableCopying协议的类的对象才能具有拷贝功能。遵守了NSMutableCopying类的对象可以发送 mutableCopy 消息，遵守了NSCopying的类的对象可以发送 copy">
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/2018/07/20/iOS-中的拷贝-copy-和-mutableCopy/Deep_copy_in_progress.svg.png">
-<meta property="og:image" content="http://yoursite.com/2018/07/20/iOS-中的拷贝-copy-和-mutableCopy/400px-Deep_copy_done.svg.png">
-<meta property="og:image" content="http://yoursite.com/2018/07/20/iOS-中的拷贝-copy-和-mutableCopy/400px-Shallow_copy_in_progress.svg.png">
-<meta property="og:image" content="http://yoursite.com/2018/07/20/iOS-中的拷贝-copy-和-mutableCopy/400px-Shallow_copy_done.svg.png">
-<meta property="og:image" content="http://yoursite.com/2018/07/20/iOS-中的拷贝-copy-和-mutableCopy/copy_table.png">
-<meta property="og:updated_time" content="2018-08-14T14:34:05.180Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="iOS 中的拷贝(copy 和 mutableCopy)">
-<meta name="twitter:description" content="iOS 中的拷贝(copy 和 mutableCopy)NSCopying和NSMutableCopying协议在 iOS 中并不是所有的的对象都具有拷贝功能，而是只有遵守了NSCopying 或 NSMutableCopying协议的类的对象才能具有拷贝功能。遵守了NSMutableCopying类的对象可以发送 mutableCopy 消息，遵守了NSCopying的类的对象可以发送 copy">
-<meta name="twitter:image" content="http://yoursite.com/2018/07/20/iOS-中的拷贝-copy-和-mutableCopy/Deep_copy_in_progress.svg.png">
-
-
-
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Muse',
-    version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: true,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    duoshuo: {
-      userId: '0',
-      author: '博主'
-    },
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
-
-  <link rel="canonical" href="http://yoursite.com/2018/07/20/iOS-中的拷贝-copy-和-mutableCopy/"/>
-
-
-
-
-
-  <title>iOS 中的拷贝(copy 和 mutableCopy) | John 的技术博客</title>
   
-
-
-
-
-
-
-
-
+  <meta name="description" content="别在机会来临之时却无法握住。">
+  
+  <title>
+    iOS 中的拷贝(copy 和 mutableCopy) |
+    
+    John 的技术博客
+  </title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+  
+  <script src="/js/pace.min.js"></script>
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<body>
+  <main class="content">
+    <section class="outer">
+  <article id="post-iOS-中的拷贝-copy-和-mutableCopy" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
 
-  
-  
+  <div class="article-inner">
     
-  
-
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta ">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">John 的技术博客</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
-      
-        <p class="site-subtitle"></p>
-      
-  </div>
-
-  <div class="site-nav-toggle">
-    <button>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
-  </div>
-</div>
-
-<nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
-        
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
-            
-            首页
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-archives">
-          <a href="/archives/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
-            
-            归档
-          </a>
-        </li>
+    <header class="article-header">
       
 
-      
-    </ul>
-  
-
-  
-</nav>
+<h1 class="article-title" itemprop="name">
+  iOS 中的拷贝(copy 和 mutableCopy)
+</h1>
 
 
 
- </div>
     </header>
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
     
 
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/20/iOS-中的拷贝-copy-和-mutableCopy/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="John Wong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="John 的技术博客">
-    </span>
-
     
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">iOS 中的拷贝(copy 和 mutableCopy)</h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-20T09:06:02+08:00">
-                2018-07-20
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
+    <div class="article-meta">
+      <a href="/2018/07/20/iOS-中的拷贝-copy-和-mutableCopy/" class="article-date">
+  <time datetime="2018-07-20T01:06:02.000Z" itemprop="datePublished">2018-07-20</time>
+</a>
+      
+    </div>
     
 
     
     
-    
-    <div class="post-body" itemprop="articleBody">
+<div class="tocbot"></div>
 
+    
+
+    <div class="article-entry" itemprop="articleBody">
       
       
-
       
-        <h1 id="iOS-中的拷贝-copy-和-mutableCopy"><a href="#iOS-中的拷贝-copy-和-mutableCopy" class="headerlink" title="iOS 中的拷贝(copy 和 mutableCopy)"></a>iOS 中的拷贝(copy 和 mutableCopy)</h1><h2 id="NSCopying和NSMutableCopying协议"><a href="#NSCopying和NSMutableCopying协议" class="headerlink" title="NSCopying和NSMutableCopying协议"></a>NSCopying和NSMutableCopying协议</h2><p>在 iOS 中并不是所有的的对象都具有拷贝功能，而是只有遵守了NSCopying 或 NSMutableCopying协议的类的对象才能具有拷贝功能。遵守了NSMutableCopying类的对象可以发送 mutableCopy 消息，遵守了NSCopying的类的对象可以发送 copy 消息。</p>
+      <h1 id="iOS-中的拷贝-copy-和-mutableCopy"><a href="#iOS-中的拷贝-copy-和-mutableCopy" class="headerlink" title="iOS 中的拷贝(copy 和 mutableCopy)"></a>iOS 中的拷贝(copy 和 mutableCopy)</h1><h2 id="NSCopying和NSMutableCopying协议"><a href="#NSCopying和NSMutableCopying协议" class="headerlink" title="NSCopying和NSMutableCopying协议"></a>NSCopying和NSMutableCopying协议</h2><p>在 iOS 中并不是所有的的对象都具有拷贝功能，而是只有遵守了NSCopying 或 NSMutableCopying协议的类的对象才能具有拷贝功能。遵守了NSMutableCopying类的对象可以发送 mutableCopy 消息，遵守了NSCopying的类的对象可以发送 copy 消息。</p>
 <p>对于NSCopying协议我们先看看官方文档是怎么写的:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">NSCopying declares one method, copyWithZone:, but copying is commonly invoked with </span><br><span class="line">the convenience method copy. The copy method is defined for all objects inheriting </span><br><span class="line">from NSObject and simply invokes copyWithZone: with the default zone.</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
 <p>NSCopying 声明了一个copyWithZone:方法，但是通常使用便捷方法(convenience method)copy 方法进行拷贝。copy 方法是为所有继承了 NSObject 类的对象所定义的，其使用时默认调用传入一个默认 zone 的 copyWithZone: 方法。</p>
 <p>遵守 NSCoping 也是有要求的。官方文档描述如下:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Your options for implementing this protocol are as follows:</span><br><span class="line"></span><br><span class="line">1.Implement NSCopying using alloc and init... in classes that don’t inherit copyWithZone:.</span><br><span class="line"></span><br><span class="line">2.Implement NSCopying by invoking the superclass’s copyWithZone: when NSCopying behavior is inherited. If the superclass implementation might use the NSCopyObject function, make explicit assignments to pointer instance variables for retained objects.</span><br><span class="line"></span><br><span class="line">3.Implement NSCopying by retaining the original instead of creating a new copy when the class and its contents are immutable.</span><br><span class="line">    </span><br><span class="line">4.If a subclass inherits NSCopying from its superclass and declares additional instance variables, the subclass has to override copyWithZone: to properly handle its own instance variables, invoking the superclass’s implementation first.</span><br></pre></td></tr></table></figure>
@@ -375,372 +133,151 @@
 
       
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/07/20/iOS-中的拷贝-copy-和-mutableCopy/" data-id="ckwozp2ml000bwy92ue2i5t9j" class="article-share-link">
+        分享
+      </a>
       
-        <div class="post-tags">
-          
-            <a href="/tags/iOS-知识点/" rel="tag"># iOS 知识点</a>
-          
-        </div>
-      
+<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS-知识点/">iOS 知识点</a></li></ul>
 
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2018/07/19/iOS-面试题-一/" rel="next" title="iOS 面试题(一)">
-                <i class="fa fa-chevron-left"></i> iOS 面试题(一)
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/07/20/iOS-中的指针、指针变量和对象/" rel="prev" title="iOS-中的指针、指针变量、变量和对象">
-                iOS-中的指针、指针变量、变量和对象 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
     </footer>
+
   </div>
+
   
   
+<nav class="article-nav">
   
-  </article>
-
-
-
-    <div class="post-spread">
+  <a href="/2018/07/20/iOS-中的指针、指针变量和对象/" class="article-nav-link">
+    <strong class="article-nav-caption">前一篇</strong>
+    <div class="article-nav-title">
+      
+      iOS-中的指针、指针变量、变量和对象
       
     </div>
-  </div>
-
-
-          </div>
-          
-
-
-          
+  </a>
+  
+  
+  <a href="/2018/07/19/iOS-面试题-一/" class="article-nav-link">
+    <strong class="article-nav-caption">后一篇</strong>
+    <div class="article-nav-title">iOS 面试题(一)</div>
+  </a>
+  
+</nav>
 
   
 
-
-
-        </div>
-        
-          
   
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  
+  
+  
+
+</article>
+</section>
+    <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+  <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+  <li><i class="fe fe-bookmark"></i> <span id="busuanzi_value_page_pv"></span></li>
+  
+</ul>
     </div>
+    <ul class="list-inline">
+      <li>John 的技术博客 &copy; 2021</li>
+      
+        <li>ZHWANGART</li>
+      
+      <li>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></li>
+      <li>theme  <a href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li>
+    </ul>
   </div>
-
-  <aside id="sidebar" class="sidebar">
+</footer>
+  </main>
+  <aside class="sidebar">
+    <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/hexo.svg" alt="John 的技术博客"></a>
+  </div>
+  
+  <ul class="nav nav-main">
     
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <p class="site-author-name" itemprop="name">John Wong</p>
-              <p class="site-description motion-element" itemprop="description">别在机会来临之时却无法握住。</p>
-          </div>
-
-          <nav class="site-state motion-element">
-
-            
-              <div class="site-state-item site-state-posts">
-              
-                <a href="/archives/">
-              
-                  <span class="site-state-item-count">22</span>
-                  <span class="site-state-item-name">日志</span>
-                </a>
-              </div>
-            
-
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-tags">
-                
-                  <span class="site-state-item-count">7</span>
-                  <span class="site-state-item-name">标签</span>
-                
-              </div>
-            
-
-          </nav>
-
-          
-
-          
-
-          
-          
-
-          
-          
-
-          
-
-        </div>
-      </section>
-
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#iOS-中的拷贝-copy-和-mutableCopy"><span class="nav-number">1.</span> <span class="nav-text">iOS 中的拷贝(copy 和 mutableCopy)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#NSCopying和NSMutableCopying协议"><span class="nav-number">1.1.</span> <span class="nav-text">NSCopying和NSMutableCopying协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#深拷贝和浅拷贝"><span class="nav-number">1.2.</span> <span class="nav-text">深拷贝和浅拷贝</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#copy-标识符"><span class="nav-number">1.3.</span> <span class="nav-text">copy 标识符</span></a></li></ol></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
-
-
-        
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
-  <span class="with-love">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">John Wong</span>
-
-  
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">Home</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">Archives</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">About</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link nav-item-search" title="搜索">
+        <i class="fe fe-search"></i>
+        搜索
+      </a>
+    </li>
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
 </div>
+    </li>
+    <li class="nav-item">
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="fe fe-feed"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
 
 
-  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+<script src="/js/copybtn.js"></script>
 
 
 
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
-
-
-
-
-        
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
-    
-
-    
-
-  </div>
-
-  
-
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
+<script src="/js/tocbot.min.js"></script>
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+  });
 </script>
 
 
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
-
-
-
-  
-  
-
-  
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  
-
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-  
-
-  
-
-  
-  
-
-  
-
-  
-
-  
-
+<script src="/js/ocean.js"></script>
 </body>
+
 </html>

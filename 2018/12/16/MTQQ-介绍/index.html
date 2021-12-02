@@ -1,308 +1,69 @@
 <!DOCTYPE html>
+<html lang="en">
 
-
-
-  
-
-
-<html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
-
-
-
-
-
-
-
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
-
-
-
-
-
-  <meta name="keywords" content="Hexo, NexT" />
-
-
-
-
-
-
-
-
-
-
-<meta name="description" content="原文出处:https://mcxiaoke.gitbooks.io/mqtt-cn/content/mqtt/01-Introduction.html 本文只为自己快速查看资料，原文出处如上。  2.1 MQTT控制报文的结构 Structure of an MQTT Control PacketMQTT控制报文的结构   Fixed header 固定报头，所有控制报文都包含     Vari">
-<meta property="og:type" content="article">
-<meta property="og:title" content="MTQQ 介绍">
-<meta property="og:url" content="http://yoursite.com/2018/12/16/MTQQ-介绍/index.html">
-<meta property="og:site_name" content="John 的技术博客">
-<meta property="og:description" content="原文出处:https://mcxiaoke.gitbooks.io/mqtt-cn/content/mqtt/01-Introduction.html 本文只为自己快速查看资料，原文出处如上。  2.1 MQTT控制报文的结构 Structure of an MQTT Control PacketMQTT控制报文的结构   Fixed header 固定报头，所有控制报文都包含     Vari">
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/2018/12/16/MTQQ-介绍/figure0304.png">
-<meta property="og:image" content="http://yoursite.com/2018/12/16/MTQQ-介绍/figure0306.png">
-<meta property="og:updated_time" content="2019-01-03T13:54:29.768Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="MTQQ 介绍">
-<meta name="twitter:description" content="原文出处:https://mcxiaoke.gitbooks.io/mqtt-cn/content/mqtt/01-Introduction.html 本文只为自己快速查看资料，原文出处如上。  2.1 MQTT控制报文的结构 Structure of an MQTT Control PacketMQTT控制报文的结构   Fixed header 固定报头，所有控制报文都包含     Vari">
-<meta name="twitter:image" content="http://yoursite.com/2018/12/16/MTQQ-介绍/figure0304.png">
-
-
-
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Muse',
-    version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: true,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    duoshuo: {
-      userId: '0',
-      author: '博主'
-    },
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
-
-  <link rel="canonical" href="http://yoursite.com/2018/12/16/MTQQ-介绍/"/>
-
-
-
-
-
-  <title>MTQQ 介绍 | John 的技术博客</title>
   
-
-
-
-
-
-
-
-
+  <meta name="description" content="别在机会来临之时却无法握住。">
+  
+  <title>
+    MTQQ 介绍 |
+    
+    John 的技术博客
+  </title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+  
+  <script src="/js/pace.min.js"></script>
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<body>
+  <main class="content">
+    <section class="outer">
+  <article id="post-MTQQ-介绍" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
 
-  
-  
+  <div class="article-inner">
     
-  
-
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta ">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">John 的技术博客</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
-      
-        <p class="site-subtitle"></p>
-      
-  </div>
-
-  <div class="site-nav-toggle">
-    <button>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
-  </div>
-</div>
-
-<nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
-        
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
-            
-            首页
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-archives">
-          <a href="/archives/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
-            
-            归档
-          </a>
-        </li>
+    <header class="article-header">
       
 
-      
-    </ul>
-  
-
-  
-</nav>
+<h1 class="article-title" itemprop="name">
+  MTQQ 介绍
+</h1>
 
 
 
- </div>
     </header>
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
     
 
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/16/MTQQ-介绍/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="John Wong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="John 的技术博客">
-    </span>
-
     
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">MTQQ 介绍</h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-16T14:51:14+08:00">
-                2018-12-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
+    <div class="article-meta">
+      <a href="/2018/12/16/MTQQ-介绍/" class="article-date">
+  <time datetime="2018-12-16T06:51:14.000Z" itemprop="datePublished">2018-12-16</time>
+</a>
+      
+    </div>
     
 
     
     
-    
-    <div class="post-body" itemprop="articleBody">
+<div class="tocbot"></div>
 
+    
+
+    <div class="article-entry" itemprop="articleBody">
       
       
-
       
-        <blockquote>
+      <blockquote>
 <p>原文出处:<a href="https://mcxiaoke.gitbooks.io/mqtt-cn/content/mqtt/01-Introduction.html" target="_blank" rel="noopener">https://mcxiaoke.gitbooks.io/mqtt-cn/content/mqtt/01-Introduction.html</a></p>
 <p>本文只为自己快速查看资料，原文出处如上。</p>
 </blockquote>
@@ -324,6 +85,7 @@
 </tr>
 </tbody>
 </table>
+<a id="more"></a>
 <h2 id="2-2-固定报头-Fixed-header"><a href="#2-2-固定报头-Fixed-header" class="headerlink" title="2.2 固定报头 Fixed header"></a>2.2 固定报头 Fixed header</h2><h5 id="固定报头的格式"><a href="#固定报头的格式" class="headerlink" title="固定报头的格式"></a>固定报头的格式</h5><table><br>    <tr><br>        <td><center><strong>Bit</strong></center></td><br>        <td><center><strong>7</strong></center></td><br>        <td><center><strong>6</strong></center></td><br>        <td><center><strong>5</strong></center></td><br>        <td><center><strong>4</strong></center></td><br>        <td><center><strong>3</strong></center></td><br>        <td><center><strong>2</strong></center></td><br>        <td><center><strong>1</strong></center></td><br>        <td><center><strong>0</strong></center></td><br>   </tr><br>   <tr><br>           <td colspan="1"><center>byte 1</center></td><br>        <td colspan="4"><center>MQTT控制报文的类型</center></td><br>        <td colspan="4"><center>用于指定控制报文类型的标志位</center></td><br>   </tr><br>     <tr><br>           <td colspan="1"><center>byte 2…</center></td><br>        <td colspan="8"><center>剩余长度</center></td><br>   </tr><br></table>
 
 <h3 id="2-2-1-MQTT控制报文的类型-MQTT-Control-Packet-type"><a href="#2-2-1-MQTT控制报文的类型-MQTT-Control-Packet-type" class="headerlink" title="2.2.1 MQTT控制报文的类型 MQTT Control Packet type"></a>2.2.1 MQTT控制报文的类型 MQTT Control Packet type</h3><h5 id="控制报文的类型"><a href="#控制报文的类型" class="headerlink" title="控制报文的类型"></a>控制报文的类型</h5><table>
@@ -1442,366 +1204,149 @@
 
       
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2018/12/14/UIView和-CALayer/" rel="next" title="UIView和 CALayer">
-                <i class="fa fa-chevron-left"></i> UIView和 CALayer
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/01/01/iOS-CALayer-教程-入门/" rel="prev" title="iOS CALayer 教程:入门">
-                iOS CALayer 教程:入门 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/12/16/MTQQ-介绍/" data-id="ckwozp2mb0006wy92opz7pac4" class="article-share-link">
+        分享
+      </a>
       
     </footer>
+
   </div>
+
   
   
+<nav class="article-nav">
   
-  </article>
-
-
-
-    <div class="post-spread">
+  <a href="/2019/01/01/iOS-CALayer-教程-入门/" class="article-nav-link">
+    <strong class="article-nav-caption">前一篇</strong>
+    <div class="article-nav-title">
+      
+      iOS CALayer 教程:入门
       
     </div>
-  </div>
-
-
-          </div>
-          
-
-
-          
+  </a>
+  
+  
+  <a href="/2018/12/05/Objective-C-代码转换为-C-代码/" class="article-nav-link">
+    <strong class="article-nav-caption">后一篇</strong>
+    <div class="article-nav-title"> Objective-C 代码转换为 C++代码</div>
+  </a>
+  
+</nav>
 
   
 
-
-
-        </div>
-        
-          
   
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  
+  
+  
+
+</article>
+</section>
+    <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+  <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+  <li><i class="fe fe-bookmark"></i> <span id="busuanzi_value_page_pv"></span></li>
+  
+</ul>
     </div>
+    <ul class="list-inline">
+      <li>John 的技术博客 &copy; 2021</li>
+      
+        <li>ZHWANGART</li>
+      
+      <li>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></li>
+      <li>theme  <a href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li>
+    </ul>
   </div>
-
-  <aside id="sidebar" class="sidebar">
+</footer>
+  </main>
+  <aside class="sidebar">
+    <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/hexo.svg" alt="John 的技术博客"></a>
+  </div>
+  
+  <ul class="nav nav-main">
     
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <p class="site-author-name" itemprop="name">John Wong</p>
-              <p class="site-description motion-element" itemprop="description">别在机会来临之时却无法握住。</p>
-          </div>
-
-          <nav class="site-state motion-element">
-
-            
-              <div class="site-state-item site-state-posts">
-              
-                <a href="/archives/">
-              
-                  <span class="site-state-item-count">22</span>
-                  <span class="site-state-item-name">日志</span>
-                </a>
-              </div>
-            
-
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-tags">
-                
-                  <span class="site-state-item-count">7</span>
-                  <span class="site-state-item-name">标签</span>
-                
-              </div>
-            
-
-          </nav>
-
-          
-
-          
-
-          
-          
-
-          
-          
-
-          
-
-        </div>
-      </section>
-
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-MQTT控制报文的结构-Structure-of-an-MQTT-Control-Packet"><span class="nav-number">1.</span> <span class="nav-text">2.1 MQTT控制报文的结构 Structure of an MQTT Control Packet</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#MQTT控制报文的结构"><span class="nav-number">1.0.0.1.</span> <span class="nav-text">MQTT控制报文的结构</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-固定报头-Fixed-header"><span class="nav-number">2.</span> <span class="nav-text">2.2 固定报头 Fixed header</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#固定报头的格式"><span class="nav-number">2.0.0.1.</span> <span class="nav-text">固定报头的格式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-1-MQTT控制报文的类型-MQTT-Control-Packet-type"><span class="nav-number">2.1.</span> <span class="nav-text">2.2.1 MQTT控制报文的类型 MQTT Control Packet type</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#控制报文的类型"><span class="nav-number">2.1.0.1.</span> <span class="nav-text">控制报文的类型</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-2-标志-Flags"><span class="nav-number">2.2.</span> <span class="nav-text">2.2.2 标志 Flags</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#标志位-Flag-Bits"><span class="nav-number">2.2.0.1.</span> <span class="nav-text">标志位 Flag Bits</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-3-剩余长度-Remaining-Length"><span class="nav-number">2.3.</span> <span class="nav-text">2.2.3 剩余长度 Remaining Length</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#表格-2-4剩余长度字段的大小-Size-of-Remaining-Length-field"><span class="nav-number">2.3.0.1.</span> <span class="nav-text">表格 2.4剩余长度字段的大小 Size of Remaining Length field</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-可变报头-Variable-header"><span class="nav-number">3.</span> <span class="nav-text">2.3 可变报头 Variable header</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#图例-2-3-报文标识符字节-Packet-Identifier-bytes"><span class="nav-number">3.0.0.1.</span> <span class="nav-text">图例 2.3 -报文标识符字节 Packet Identifier bytes</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#表格-2-5-包含报文标识符的控制报文-Control-Packets-that-contain-a-Packet-Identifier"><span class="nav-number">3.0.0.2.</span> <span class="nav-text">表格 2.5 -包含报文标识符的控制报文 Control Packets that contain a Packet Identifier</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-有效载荷-Payload"><span class="nav-number">4.</span> <span class="nav-text">2.4 有效载荷 Payload</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#表格-2-6-–-包含有效载荷的控制报文-Control-Packets-that-contain-a-Payload"><span class="nav-number">4.0.0.1.</span> <span class="nav-text">表格 2.6 – 包含有效载荷的控制报文 Control Packets that contain a Payload</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-CONNECT-–-连接服务端"><span class="nav-number">5.</span> <span class="nav-text">3.1 CONNECT – 连接服务端</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-1-固定报头-Fixed-header"><span class="nav-number">5.1.</span> <span class="nav-text">3.1.1 固定报头 Fixed header</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#图例-3-1-–CONNECT报文的固定报头"><span class="nav-number">5.1.0.1.</span> <span class="nav-text">图例 3.1 –CONNECT报文的固定报头</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#剩余长度字段"><span class="nav-number">5.2.</span> <span class="nav-text">剩余长度字段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-2-可变报头-Variable-header"><span class="nav-number">5.3.</span> <span class="nav-text">3.1.2 可变报头 Variable header</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#协议名-Protocol-Name"><span class="nav-number">5.3.1.</span> <span class="nav-text">协议名 Protocol Name</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#图例-3-2-协议名字节构成"><span class="nav-number">5.3.1.1.</span> <span class="nav-text">图例 3.2 -协议名字节构成</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#协议级别-Protocol-Level"><span class="nav-number">5.3.2.</span> <span class="nav-text">协议级别 Protocol Level</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#图例-3-3-Protocol-Level-byte协议级别字节构成"><span class="nav-number">5.3.2.1.</span> <span class="nav-text">图例 3.3 - Protocol Level byte协议级别字节构成</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#连接标志-Connect-Flags"><span class="nav-number">5.3.3.</span> <span class="nav-text">连接标志 Connect Flags</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#图例-3-4-连接标志位"><span class="nav-number">5.3.3.1.</span> <span class="nav-text">图例 3.4 -连接标志位</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#清理会话-Clean-Session"><span class="nav-number">5.3.4.</span> <span class="nav-text">清理会话 Clean Session</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#遗嘱标志-Will-Flag"><span class="nav-number">5.3.5.</span> <span class="nav-text">遗嘱标志 Will Flag</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#遗嘱QoS-Will-QoS"><span class="nav-number">5.3.6.</span> <span class="nav-text">遗嘱QoS Will QoS</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#遗嘱保留-Will-Retain"><span class="nav-number">5.3.7.</span> <span class="nav-text">遗嘱保留 Will Retain</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#用户名标志-User-Name-Flag"><span class="nav-number">5.3.8.</span> <span class="nav-text">用户名标志 User Name Flag</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#密码标志-Password-Flag"><span class="nav-number">5.3.9.</span> <span class="nav-text">密码标志 Password Flag</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#保持连接-Keep-Alive"><span class="nav-number">5.3.10.</span> <span class="nav-text">保持连接 Keep Alive</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#图例-3-5保持连接字节"><span class="nav-number">5.3.10.1.</span> <span class="nav-text">图例 3.5保持连接字节</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#可变报头非规范示例"><span class="nav-number">5.3.11.</span> <span class="nav-text">可变报头非规范示例</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#图例-3-6-可变报头非规范示例"><span class="nav-number">5.3.11.1.</span> <span class="nav-text">图例 3.6 -可变报头非规范示例</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-3-有效载荷-Payload"><span class="nav-number">5.4.</span> <span class="nav-text">3.1.3 有效载荷 Payload</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#客户端标识符-Client-Identifier"><span class="nav-number">5.4.1.</span> <span class="nav-text">客户端标识符 Client Identifier</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#遗嘱主题-Will-Topic"><span class="nav-number">5.4.2.</span> <span class="nav-text">遗嘱主题 Will Topic</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#遗嘱消息-Will-Message"><span class="nav-number">5.4.3.</span> <span class="nav-text">遗嘱消息 Will Message</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#用户名-User-Name"><span class="nav-number">5.4.4.</span> <span class="nav-text">用户名 User Name</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#密码-Password"><span class="nav-number">5.4.5.</span> <span class="nav-text">密码 Password</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#图例-3-7-密码字节"><span class="nav-number">5.4.5.1.</span> <span class="nav-text">图例 3.7 - 密码字节</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-4-响应-Response"><span class="nav-number">5.5.</span> <span class="nav-text">3.1.4 响应 Response</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-CONNACK-–-确认连接请求"><span class="nav-number">6.</span> <span class="nav-text">3.2 CONNACK – 确认连接请求</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-1-固定报头"><span class="nav-number">6.1.</span> <span class="nav-text">3.2.1 固定报头</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#图例-3-8-–-CONNACK-报文固定报头"><span class="nav-number">6.1.0.1.</span> <span class="nav-text">图例 3.8 – CONNACK 报文固定报头</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-2-可变报头"><span class="nav-number">6.2.</span> <span class="nav-text">3.2.2 可变报头</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#图例-3-9-–CONNACK报文可变报头"><span class="nav-number">6.2.0.1.</span> <span class="nav-text">图例 3.9 –CONNACK报文可变报头</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#连接确认标志-Connect-Acknowledge-Flags"><span class="nav-number">6.2.1.</span> <span class="nav-text">连接确认标志 Connect Acknowledge Flags</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#当前会话-Session-Present"><span class="nav-number">6.2.2.</span> <span class="nav-text">当前会话 Session Present</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#连接返回码-Connect-Return-code"><span class="nav-number">6.2.3.</span> <span class="nav-text">连接返回码 Connect Return code</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#表格-3-1-–连接返回码的值"><span class="nav-number">6.2.3.1.</span> <span class="nav-text">表格 3.1 –连接返回码的值</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-3-有效载荷"><span class="nav-number">6.3.</span> <span class="nav-text">3.2.3 有效载荷</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-PUBLISH-–-发布消息"><span class="nav-number">7.</span> <span class="nav-text">3.3 PUBLISH – 发布消息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-1-固定报头"><span class="nav-number">7.1.</span> <span class="nav-text">3.3.1 固定报头</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#图例-3-10-–-PUBLISH报文固定报头"><span class="nav-number">7.1.0.1.</span> <span class="nav-text">图例 3.10 – PUBLISH报文固定报头</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#重发标志-DUP"><span class="nav-number">7.1.1.</span> <span class="nav-text">重发标志 DUP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#服务质量等级-QoS"><span class="nav-number">7.1.2.</span> <span class="nav-text">服务质量等级 QoS</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#表格-3-2-服务质量定义"><span class="nav-number">7.1.2.1.</span> <span class="nav-text">表格 3.2 -服务质量定义</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#保留标志-RETAIN"><span class="nav-number">7.1.3.</span> <span class="nav-text">保留标志 RETAIN</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-2-可变报头"><span class="nav-number">7.2.</span> <span class="nav-text">3.3.2 可变报头</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#主题名-Topic-Name"><span class="nav-number">7.2.1.</span> <span class="nav-text">主题名 Topic Name</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#报文标识符-Packet-Identifier"><span class="nav-number">7.2.2.</span> <span class="nav-text">报文标识符 Packet Identifier</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#可变报头非规范示例-1"><span class="nav-number">7.2.3.</span> <span class="nav-text">可变报头非规范示例</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#表格-3-3-PUBLISH报文非规范示例"><span class="nav-number">7.2.3.1.</span> <span class="nav-text">表格 3.3 - PUBLISH报文非规范示例</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#图例-3-11-–-PUBLISH报文可变报头非规范示例"><span class="nav-number">7.2.3.2.</span> <span class="nav-text">图例 3.11 – PUBLISH报文可变报头非规范示例</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-3-有效载荷"><span class="nav-number">7.3.</span> <span class="nav-text">3.3.3 有效载荷</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-4-响应"><span class="nav-number">7.4.</span> <span class="nav-text">3.3.4 响应</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#表格-3-4-–-PUBLISH报文的预期响应"><span class="nav-number">7.4.0.1.</span> <span class="nav-text">表格 3.4 – PUBLISH报文的预期响应</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-5-动作-Actions"><span class="nav-number">7.5.</span> <span class="nav-text">3.3.5 动作 Actions</span></a></li></ol></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
-
-
-        
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
-  <span class="with-love">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">John Wong</span>
-
-  
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">Home</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">Archives</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">About</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link nav-item-search" title="搜索">
+        <i class="fe fe-search"></i>
+        搜索
+      </a>
+    </li>
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
 </div>
+    </li>
+    <li class="nav-item">
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="fe fe-feed"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
 
 
-  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+<script src="/js/copybtn.js"></script>
 
 
 
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
-
-
-
-
-        
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
-    
-
-    
-
-  </div>
-
-  
-
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
+<script src="/js/tocbot.min.js"></script>
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+  });
 </script>
 
 
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
-
-
-
-  
-  
-
-  
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  
-
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-  
-
-  
-
-  
-  
-
-  
-
-  
-
-  
-
+<script src="/js/ocean.js"></script>
 </body>
+
 </html>

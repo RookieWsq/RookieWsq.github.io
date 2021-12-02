@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="别在机会来临之时却无法握住。">
+  
+  <title>
+    LLDB动态调试 |
+    
+    John 的技术博客
+  </title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+  
+  <script src="/js/pace.min.js"></script>
+</head>
+
+<body>
+  <main class="content">
+    <section class="outer">
+  <article id="post-LLDB动态调试" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+      
+
+<h1 class="article-title" itemprop="name">
+  LLDB动态调试
+</h1>
+
+
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2021/12/02/LLDB动态调试/" class="article-date">
+  <time datetime="2021-12-02T13:22:51.000Z" itemprop="datePublished">2021-12-02</time>
+</a>
+      
+    </div>
+    
+
+    
+    
+<div class="tocbot"></div>
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+      
+      <h1 id="LLDB动态调试"><a href="#LLDB动态调试" class="headerlink" title="LLDB动态调试"></a>LLDB动态调试</h1><blockquote>
+<p>资料：</p>
+<ol>
+<li><a href="https://developer.apple.com/library/archive/documentation/General/Conceptual/lldb-guide/chapters/Introduction.html#//apple_ref/doc/uid/TP40016717-CH1-DontLinkElementID_42" target="_blank" rel="noopener">LLDB 调试指南</a></li>
+<li><a href="https://lldb.llvm.org/" target="_blank" rel="noopener">LLDB 文档</a></li>
+</ol>
+</blockquote>
+<p>Xcode编译器和调试器的演变过程：</p>
+<ul>
+<li>编译器：GCC-&gt;LLVM</li>
+<li>调试器：GDB-&gt;LLDB</li>
+</ul>
+<p><a href="https://lldb.llvm.org/" target="_blank" rel="noopener">LLDB</a> 和 <a href="https://iphonedev.wiki/index.php/debugserver" target="_blank" rel="noopener">debugserver</a></p>
+<p>LLDB 是 Xcode 自带的调试器，是 <a href="https://llvm.org/" target="_blank" rel="noopener">LLVM</a> 的调试器组件。它可以在本地调试 Mac 应用程序，也可以远程调试 iPhone 应用程序。debugserver是一个控制台应用程序，当第一次使用 Xcode 调试iPhone/iPad 设备时，会被安装到设备中，目录：<code>/Developer/usr/bin</code>。但是，默认情况下，由于权限不足， debugserver 只能调试通过 Xcode 安装的应用。</p>
+<a id="more"></a>
+<h2 id="远程调试指定-App"><a href="#远程调试指定-App" class="headerlink" title="远程调试指定 App"></a>远程调试指定 App</h2><h3 id="给-debugserver-添加权限"><a href="#给-debugserver-添加权限" class="headerlink" title="给 debugserver 添加权限"></a>给 debugserver 添加权限</h3><ol>
+<li><p>由于<code>/Developer/usr/bin</code>下 debugserver 无法进行权限签名，所以使用mac 中的debugserver进行签名，从地址<code>/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/DeviceSupport/12.0/DeveloperDiskImage.dmg/usr/bin</code>拷贝到桌面。然后一次执行如下命令，对 debugserver 进行签名：</p>
+<ul>
+<li><p>导出原权限文件：<code>ldid -e debugserver &gt; debuger.entitlements</code>。</p>
+</li>
+<li><p>打开导出的 <code>debuger.entitlements</code> 文件并添加如下两个键：<code>get-task-allow</code>和<code>task_for_pid_allow</code>，将其值均设为 true。</p>
+</li>
+<li><p>用已经添加完成权限的<code>debuger.entitlements</code>文件签名<code>debugserver</code>(任选其一)：</p>
+<ul>
+<li><code>codesign -s - --entitlements debuger.entitlements -f debugserver</code></li>
+<li><code>ldid -Sdebuger.entitlements debugserver</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>将已经赋予权限的 debugserver 拷贝到手机的<code>/usr/bin</code>目录下</p>
+</li>
+<li><p>赋予 debugserver 执行权限(在 iPhone 上执行命令)：<code>chmod /usr/bin/debugserver</code></p>
+</li>
+</ol>
+<h3 id="启动-debugserver"><a href="#启动-debugserver" class="headerlink" title="启动 debugserver"></a>启动 debugserver</h3><p>在 iPhone 终端中输入如下命令启动进程并附加到指定程序：</p>
+<p>命令：<code>debugserver 127.0.0.1:指定端口 -a 指定程序</code></p>
+<p>例如：<code>debugserver 127.0.0.1:11100 -a Snapchat</code></p>
+<p>此时 debugserver 服务会在 iPhone 的11100端口开启这个服务，并附加到 Snapchat 上。</p>
+<h3 id="lldb-连接-debugserver"><a href="#lldb-连接-debugserver" class="headerlink" title="lldb 连接 debugserver"></a>lldb 连接 debugserver</h3><p>在 mac 的终端里输入<code>lldb</code>，随后在 <code>lldb</code> 中输入如下命令来与 iPhone 设备上的 debugserver 进行通信：</p>
+<p>命令：<code>process connect connect://iPhone设备IP:端口号</code></p>
+<p>例如：<code>process connect connect://localhost:11100</code>。</p>
+<p>自此已完成 lldb 与 debugserver 连接。</p>
+<p>ps.如果在 lldb 连接 debugserver 时出现<code>debugserver rejecting incoming connection</code>问题，可以尝试在启动 debugserver 时使用此命令<code>debugserver *:11100 -a Snapchat</code>。</p>
+<h2 id="LLDB-调试命令"><a href="#LLDB-调试命令" class="headerlink" title="LLDB 调试命令"></a>LLDB 调试命令</h2><blockquote>
+<p><a href="https://developer.apple.com/library/archive/documentation/General/Conceptual/lldb-guide/chapters/Introduction.html#//apple_ref/doc/uid/TP40016717-CH1-DontLinkElementID_42" target="_blank" rel="noopener">LLDB 调试指南</a></p>
+</blockquote>
+<p>命令格式：<code>&lt;command&gt; [&lt;subcommand&gt;...] [--&lt;option&gt; [&lt;option-value&gt;]]... [argument]...</code>。</p>
+<p>注意事项：由于lldb 命令解释器对命令名称进行最短的唯一字符串匹配，因此以下两个命令将执行相同的命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(lldb) breakpoint set -n &quot;-[SKTGraphicView alignLeftEdges:]&quot;</span><br><span class="line">(lldb) br s -n &quot;-[SKTGraphicView alignLeftEdges:]&quot;</span><br></pre></td></tr></table></figure>
+<p>常用命令：</p>
+<ul>
+<li><code>breakpoint &lt;subcommand&gt; [&lt;command-options&gt;]</code>：显示命令的子命令帮助,例如<code>help breakpoint、help breakpoint set</code>。</li>
+<li><code>breakpoint</code>命令：<ul>
+<li>格式：<code>return [-x] -- [&lt;expr&gt;]</code>或<code>return [&lt;expr&gt;]</code>。</li>
+<li>功能：对断点进行操作。</li>
+<li>例子：<code>breakpoint set -n test</code>，通过方法名对方法添加断点。</li>
+<li>子命令：<ul>
+<li><code>name</code>:对断点名字进行操作。</li>
+<li><code>list</code>：以可配置的详细程度列出部分或全部断点。</li>
+<li><code>delete [&lt;breakpt-id | breakpt-id-list&gt;]</code> ：删除指定的断点。 如果没有指定断点，则全部删除。</li>
+<li><code>disable [&lt;breakpt-id | breakpt-id-list&gt;]</code>：禁用指定的断点而不删除它们。 如果没有指定，则禁用所有断点。</li>
+<li><code>enable [&lt;breakpt-id | breakpt-id-list&gt;]</code>：启用指定的禁用断点。如果没有指定断点，则启用所有的断点。</li>
+<li><code>set</code>：在可执行文件中设置一个或一组断点。<ul>
+<li>命令选项：<ul>
+<li><code>-n &lt;function-name&gt;</code>：通过方法名对方法添加断点，一个断点可以对应多个方法名，例如：<code>breakpoint set -n testA</code>。</li>
+<li><code>-n &lt;classname function-name&gt;</code>：对指定类的方法添加断点，例如：<code>breakpoint set -n &quot;-[ViewController testA]&quot;</code>;</li>
+<li><code>-r &lt;regular-expression&gt;</code>：通过正则表达式查找方法，并对结果方法设置断点。</li>
+<li><code>-s &lt;shlib-name&gt;</code>：指定动态库里的方法设置断点，例如：<code>breakpoint set -s libdyld.dylib -r load</code>。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>command &lt;sub-command&gt; [&lt;sub-command-options&gt;] &lt;breakpoint-id&gt;</code>：用于添加、删除和列出在断点时执行的LLDB命令。<ul>
+<li>子命令：<ul>
+<li><code>add &lt;breakpoint-id&gt;</code>：添加在断点触发时自动执行的指令，例如：<code>breakpoint command add 1</code>，在随后出现的&gt;内出入指令，并且以 DONE 结束指令。</li>
+<li><code>list &lt;breakpoint-id&gt;</code>：查看在断点触发时执行的指令，例如：<code>breakpoint command list 1</code>。</li>
+<li><code>delete &lt;breakpoint-id&gt;</code>：删除在断点触发时执行的指令，例如：<code>breakpoint command delete 1</code>。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>watchpoint</code>命令：<ul>
+<li>格式：<code>watchpoint &lt;subcommand&gt; [&lt;command-options&gt;]</code>。</li>
+<li>功能：与<code>breakpoint</code>类似，<code>breakpoint</code>是为方法添加断点，而<code>watchpoint</code>则是为内存空间添加断点。</li>
+<li>例子：<code>watchpoint set variable touches</code>，对储存变量 touches 的内存空间添加断点。</li>
+<li>子命令：<ul>
+<li><code>command/delete/disable/enable/list</code>：同<code>breakpoint</code>。</li>
+<li><code>set &lt;subcommand&gt; [&lt;subcommand-options&gt;]</code>：。<ul>
+<li>命令选项：<ul>
+<li><code>expression</code>：直接观察某个内存地址，例如：<code>watchpoint set expression 0x00007fe0dbfd3433</code>。</li>
+<li><code>variable</code>：观察存储变量的内存地址，例如：<code>watchpoint set variable touches</code>。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>expression</code>命令:<ul>
+<li>格式：<code>expression &lt;cmd-options&gt; -- &lt;expr&gt;</code>。</li>
+<li>功能：执行表达式，其中<code>--</code>表示<code>&lt;cmd-options&gt;</code>截止。</li>
+<li>例子：<code>expression self.view.alpha = 0.5、expr -f bin -- (index * 8) + 5</code>。</li>
+<li>命令选项：<ul>
+<li><code>-O</code>:打印 description 方法。</li>
+</ul>
+</li>
+<li>简写命令：<ul>
+<li><code>call</code>、<code>p</code>、<code>print</code>：调用函数，是<code>expression --</code>的缩写，例如：<code>call/print/p [self  view]</code>。</li>
+<li><code>po</code>：是<code>expression -O  --</code>的缩写，打印 description 方法。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>thread</code>命令<ul>
+<li>格式：<code>thread &lt;subcommand&gt; [&lt;subcommand-options&gt;]</code>。</li>
+<li>功能：打印方法调用栈。</li>
+<li>命令选项：<ul>
+<li><code>backtrace</code>：展示当前方法调用栈。<ul>
+<li>简写：<code>bt</code>。</li>
+</ul>
+</li>
+<li><code>return</code>：可以提早从栈帧(方法)中返回，可以在 <code>return</code> 之后添加函数返回值，例如在<code>-(int)number;</code>方法中的断点可以使用如下命令提早结束方法调用并返回指定值<code>thread return 33</code>。</li>
+<li><code>continue</code>:继续执行当前目标进程。 可以指定一个或多个线程，默认情况下是所有线程继续执行。<ul>
+<li>简写：<code>c、continue</code>。</li>
+</ul>
+</li>
+<li><code>step-in</code>：源级单步，步入调用(进入子方法)。 除非指定，否则默认为当前线程。<ul>
+<li>简写：<code>step、s</code>。</li>
+</ul>
+</li>
+<li><code>step-inst</code>：指令级单步，步入调用。 除非指定，否则默认为当前线程。<ul>
+<li>简写：<code>si</code>。</li>
+</ul>
+</li>
+<li><code>step-out</code>：完成对当前堆栈帧的执行，返回后停止。 除非指定，否则默认为当前线程。<ul>
+<li>简写：<code>finish</code>。</li>
+</ul>
+</li>
+<li><code>step-inst-over</code>：指令级单步，跨步调用。 除非指定，否则默认为当前线程。<ul>
+<li>简写：<code>ni</code>。</li>
+</ul>
+</li>
+<li><code>step-over</code>：源码级单步，跨步调用。 除非指定，否则默认为当前线程。<ul>
+<li>简写：<code>next、n</code>。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>frame</code>命令：<ul>
+<li>格式：<code>frame &lt;subcommand&gt; [&lt;subcommand-options&gt;]</code>。</li>
+<li>功能：用于选择和检查当前线程的栈帧。</li>
+<li>命令选项：<ul>
+<li><code>info</code>：列出当前线程中关于当前堆栈框架的信息。</li>
+<li><code>variable</code>：显示当前堆栈帧的变量。默认为范围内的所有参数和局部变量。可以指定参数、局部、文件静态和文件全局变量的名称。例如：<code>frame variable -O a</code>。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>target modules</code>命令：<ul>
+<li>格式：<code>target modules &lt;sub-command&gt;</code>。</li>
+<li>简写：<code>image &lt;sub-command&gt;</code>。</li>
+<li>功能：用于访问一个或多个目标模块信息的命令。。</li>
+<li>子命令：<ul>
+<li><code>list -o -f</code>：列出当前可执行的和依赖的共享库的偏移及其路径。</li>
+<li><code>modules &lt;sub-command&gt;</code>：在可执行文件和依赖库中查找信息。<ul>
+<li>子选项：<ul>
+<li><code>-F &lt;function-name&gt;</code>:查找方法名，例如：<code>image lookup -F viewDidLoad</code>。</li>
+<li><code>-n &lt;function-or-symbol&gt;</code>：使用名称查找方法或者符号，例如：<code>image lookup -n maxShowTimes</code>。</li>
+<li><code>-t &lt;name&gt;</code>：按名称查找一个类型，例如：<code>image lookup -t SignalView</code>。</li>
+<li><code>-a &lt;address-expression&gt;</code>：查找符号地址所对应的信息，例如<code>image lookup -v -a 0x10433d3f0</code>。</li>
+<li><code>-v</code>：打印粗略信息。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>register</code>：命令：<ul>
+<li>格式：<code>register [read|write]</code>。</li>
+<li>功能：访问当前栈帧和线程的寄存器。</li>
+<li>子命令：<ul>
+<li><code>read</code>：读取寄存器内容，例如：<code>register read x0</code>。</li>
+<li><code>write</code>：设置寄存器内容。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code>x</code>：命令；</p>
+<ul>
+<li>功能：从当前进程的内存中读取数据，是命令<code>memory read</code>的简写。</li>
+<li>格式：<code>x/[数量][进制格式][字节数] 内存地址</code></li>
+<li><p>参数格式：</p>
+<ul>
+<li>进制格式：x(十六进制)、f(浮点数)、d(十进制)。</li>
+<li>字节数：b(byte 1字节)、h(half word 2 字节)、w(word 4字节)、g(giant word 8 字节)。    </li>
+</ul>
+</li>
+<li><p>例子：<code>x/3xg $x0</code>，x0中保存一个地址，以十六进制查看在这个地址开始的三组，每组长度为 8 字节的数据。</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>小技巧：</p>
+<ul>
+<li><p>在 LLDB 中对着空行敲回车键，会自动执行上一条命令。</p>
+</li>
+<li><p>由于在 arm 汇编中 Objective-C 的方法总是会转换为<code>objc_msgSend(class,className,params...)</code>，所以在 Objective-C 方法的汇编中，有如下指令打印调用者、方法名和参数：</p>
+<ul>
+<li>打印调用者：<code>po $x0</code></li>
+<li>打印方法名：<code>x/s $x1</code></li>
+<li>打印参数：<code>po $x2....</code></li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2021/12/02/LLDB动态调试/" data-id="ckwozp2m70003wy92o5wapdt5" class="article-share-link">
+        分享
+      </a>
+      
+    </footer>
+
+  </div>
+
+  
+  
+<nav class="article-nav">
+  
+  
+  <a href="/2021/12/02/arm汇编命令/" class="article-nav-link">
+    <strong class="article-nav-caption">后一篇</strong>
+    <div class="article-nav-title">arm汇编命令</div>
+  </a>
+  
+</nav>
+
+  
+
+  
+  
+  
+  
+
+</article>
+</section>
+    <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+  <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+  <li><i class="fe fe-bookmark"></i> <span id="busuanzi_value_page_pv"></span></li>
+  
+</ul>
+    </div>
+    <ul class="list-inline">
+      <li>John 的技术博客 &copy; 2021</li>
+      
+        <li>ZHWANGART</li>
+      
+      <li>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></li>
+      <li>theme  <a href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li>
+    </ul>
+  </div>
+</footer>
+  </main>
+  <aside class="sidebar">
+    <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/hexo.svg" alt="John 的技术博客"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">Home</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">Archives</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">About</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link nav-item-search" title="搜索">
+        <i class="fe fe-search"></i>
+        搜索
+      </a>
+    </li>
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+</div>
+    </li>
+    <li class="nav-item">
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="fe fe-feed"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+<script src="/js/copybtn.js"></script>
+
+
+
+<script src="/js/tocbot.min.js"></script>
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+  });
+</script>
+
+
+<script src="/js/ocean.js"></script>
+</body>
+
+</html>

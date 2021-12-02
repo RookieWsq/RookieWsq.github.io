@@ -1,422 +1,72 @@
 <!DOCTYPE html>
+<html lang="en">
 
-
-
-  
-
-
-<html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
-
-
-
-
-
-
-
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
-
-
-
-
-
-  <meta name="keywords" content="Hexo, NexT" />
-
-
-
-
-
-
-
-
-
-
-<meta name="description" content="Instrument文档翻译关于InstrumentInstruments概述Instrument是 Xcode 工具集中的一个强大且灵活的性能分析和测试工具。它能够分析iOS，watchOS和 macOS的 app，以便您能够更好的理解和优化其行为并提高其性能。在您 app 开发的最初就将 Instrument 加入您的工作流当中能够在app 开发早期就帮助您发现问题以便减少后来的时间。 在In">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Instrument文档翻译">
-<meta property="og:url" content="http://yoursite.com/2021/04/11/Instrument文档翻译/index.html">
-<meta property="og:site_name" content="John 的技术博客">
-<meta property="og:description" content="Instrument文档翻译关于InstrumentInstruments概述Instrument是 Xcode 工具集中的一个强大且灵活的性能分析和测试工具。它能够分析iOS，watchOS和 macOS的 app，以便您能够更好的理解和优化其行为并提高其性能。在您 app 开发的最初就将 Instrument 加入您的工作流当中能够在app 开发早期就帮助您发现问题以便减少后来的时间。 在In">
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/51452EE2-B973-4C3C-A19F-A398AD0E5A59.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/3EB44883-494C-4B0C-8C4C-06EFE03313A4.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/82A15CE7-10F3-4DDA-B79B-E5F9E8951416.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/64707226-3F58-4156-8C51-7C205735C864.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/4AFEA707-9FC7-45C4-9243-225D355F2E9F.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/74EABEE3-8F29-43D6-8D85-95E9CF8A382C.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_detail_pane.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_detail_pane_navigation_bar.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_detail_pane_collected_data_table.png">
-<meta property="og:image" content="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACWElEQVRYw+2XZ4siQRCG9///EXNAVMQsooIJFQOCYkJBPyiiKMZanoZZ2r05xvO8deFWKJjQ9dYz1VXd7Zu8+Pf2A/DtAa7Xq2y3WxmPx9JqtaRcLksul5NsNiuZTEYZ1zzjHWMYiw++DwHgeLlcZL/fy3K5lOFwKJVKRVKplIRCIfH5fOLxeMTtdivjmme8Ywxj8cEXDbR+B2MKgMPhcJDFYiH1el2SyeRNYKfTaWo6CD74ooEWmncDQI1ju92WWCymhB0Oh9jt9ruMsfjgiwZaaN4FQKpIHfQI+P3+PwquQ+CLBlpomk3DLwCbzUbNHyk0vtxms5kGcblcEggElFELOig+RiaoCzQpTEuA0Wikqpl5tPpyAufzeSkUChIMBlUdfPbhHi0Kk+6wBKCNIKaYrNIciUSk0+lIr9dTENyTdjKjg6CFJtqWAMbXkzorgHg8LpPJRNbrtUynU2k2m2rqDAhjHFpolkolawAWFIhJpy7A1yGuW7ValdVqJefzWVX5fD6XRqOhFqdwOCxer/ejRdFE2xKAVc3odT3V3W5XBdCN4MfjUVW3AUG1DwYDKRaLEo1GPyDQRNsSAHoqWgdIJBIym83kdDrdGEH11jJAgGC+0+m0mg600ET7IQB6mTaiRXXb7XYq4FMBzKaAAqrVatLv92+MrJD2p06BWRFCDwSCulHVBHxqEf7LNkT7+y9ELJcsmy9bitkwjM3I2GD+djNC6+7NyNiOqfqXbMfPOpCQkYcOJM88kpHFh45kZodSWujLDqWfYVh2Oah82bH855/RfwXwDvGnbAtXk4lSAAAAAElFTkSuQmCC">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_detail_pane_filter_config_bar.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_inspector_pane_navigation_bar.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_inspector_pane_run_information.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_inspector_pane_extended_detail.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_library_palette.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_flags_window.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_profilingtemplateselection_dialog.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_profilingtemplate_dialog.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_prefs_general.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_instruments_menu.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/dock_xcode_contextualmenu_instruments.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_instruments_menu2.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_dock_contextual_menu_options_keepindock.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_instruments_menu.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_app_icon_small.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_dock_contextual_menu_options.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/launchpad_instruments.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_profiling_dialog_target.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_save_menu.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_save_dialog.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_save_menu.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_save_dialog.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/trace_document.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_drag_and_open_trace_doc.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_file_open_menu.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_open_trace_doc_dialog.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_targetspecificprocess_menuitem.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_targetallprocesses_menuitem.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_choosetarget_menuitem.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_choosetargetdialog.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_targetiosdevice.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/graphic_computerconnectedtodevice.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_targets_enablewireless.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_targtetlist_selectwirelessprocess.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/graphic_computerconnectedtodevice.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_devices_pairedwatch.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_targetwatch.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_library_palette.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_library_menu.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_library_palette_filterterm.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_trace_document_addinstrument.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_trace_document_selectedinstrument.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_deleteinstrument_menu.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_deleteinstrumentconfirmation_dialog.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_trace_document_timeline_config_popover.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_detail_pane_filter_config_bar.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/inline_record_button.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_recordtrace_menu.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/FAB7CADB-6C17-439F-8811-CF7511D35243.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/pause.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/11ACD438-6F73-4A25-A067-0E5099AB9423.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/inline_stop_button.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_stoptrace_menu.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_toolbar_build_menu_profile_option.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_product_menu_profile_menu.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_profiling_template_window_initiatedbyxcode.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_targetdevice_list_editscheme_option.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_product_menu_editscheme_menu.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_scheme_editor_dialog_sidebar_profile_option.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_scheme_editor_dialog_profile_option_instrument_popup.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_activitymonitorprofilingfromxcode.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_navigatorselector_bar_debugnaviagator_button.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_view_menu_debugnavigator_menu.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_debug_navigator_selectedgauge.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_gauge_profileininstruments_button.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_timeprofiler_gauge_profileininstruments_button.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/xcode_profileininstrruments_alert.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_app_icon_small.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_dock_menu.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_fileopen_menu.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_opentracefile_dialog.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_loadedtrace_file.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_recordoptions_menu.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_preferences_menu.png">
-<meta property="og:image" content="https://help.apple.com/instruments/mac/current/en.lproj/Art/instruments_prefs_recording_deferred_option.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_trace_document_timeline_pane_zooming.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_view_menu_snaptracktofit_menuitem.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_view_menu_increasedecksize_menuitem.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_trace_document_timeline_pane_largertrack.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_view_menu_decreasedecksize_menuitem.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_trace_document_timeline_pane_selectedrange.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_trace_document_timeline_pane_selectingrange.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_clearinspectionrange_menu.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_trace_document_timeline_pane_flags.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_addflag_menu.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_manageflags_menu.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_flags_palette_disabledflag.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/pin_add_button.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/timeline_pin_add.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/timeline_pin_delete.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_detail_pane_detailtypelist.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_detail_pane_calltreeexpanded.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_extendeddetail_button_inline.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_inspector_pane_navigation_bar.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/inline_hidesystemcalls_button.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_extendeddetail_pane_hiddensystemcalls.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_strategy_pane_multipleruns.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/inline_usercode_icon.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_detail_pane_usersourcecode_popover.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_file_menu_symbols_menuitem.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_symbols_dialog_binaries.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_symbols_dialog_locatedysmpath_button.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_prefs_general.png">
-<meta property="og:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/instruments_prefs_recording.png">
-<meta property="og:updated_time" content="2021-05-09T15:21:44.725Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Instrument文档翻译">
-<meta name="twitter:description" content="Instrument文档翻译关于InstrumentInstruments概述Instrument是 Xcode 工具集中的一个强大且灵活的性能分析和测试工具。它能够分析iOS，watchOS和 macOS的 app，以便您能够更好的理解和优化其行为并提高其性能。在您 app 开发的最初就将 Instrument 加入您的工作流当中能够在app 开发早期就帮助您发现问题以便减少后来的时间。 在In">
-<meta name="twitter:image" content="http://yoursite.com/2021/04/11/Instrument文档翻译/51452EE2-B973-4C3C-A19F-A398AD0E5A59.png">
-
-
-
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Muse',
-    version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: true,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    duoshuo: {
-      userId: '0',
-      author: '博主'
-    },
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
-
-  <link rel="canonical" href="http://yoursite.com/2021/04/11/Instrument文档翻译/"/>
-
-
-
-
-
-  <title>Instrument文档翻译 | John 的技术博客</title>
   
-
-
-
-
-
-
-
-
+  <meta name="description" content="别在机会来临之时却无法握住。">
+  
+  <title>
+    Instrument文档翻译 |
+    
+    John 的技术博客
+  </title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+  
+  <script src="/js/pace.min.js"></script>
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<body>
+  <main class="content">
+    <section class="outer">
+  <article id="post-Instrument文档翻译" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
 
-  
-  
+  <div class="article-inner">
     
-  
-
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta ">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">John 的技术博客</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
-      
-        <p class="site-subtitle"></p>
-      
-  </div>
-
-  <div class="site-nav-toggle">
-    <button>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
-  </div>
-</div>
-
-<nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
-        
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
-            
-            首页
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-archives">
-          <a href="/archives/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
-            
-            归档
-          </a>
-        </li>
+    <header class="article-header">
       
 
-      
-    </ul>
-  
-
-  
-</nav>
+<h1 class="article-title" itemprop="name">
+  Instrument文档翻译
+</h1>
 
 
 
- </div>
     </header>
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
     
 
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/04/11/Instrument文档翻译/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="John Wong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="John 的技术博客">
-    </span>
-
     
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">Instrument文档翻译</h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-11T17:11:59+08:00">
-                2021-04-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
+    <div class="article-meta">
+      <a href="/2021/04/11/Instrument文档翻译/" class="article-date">
+  <time datetime="2021-04-11T09:11:59.000Z" itemprop="datePublished">2021-04-11</time>
+</a>
+      
+    </div>
     
 
     
     
-    
-    <div class="post-body" itemprop="articleBody">
+<div class="tocbot"></div>
 
+    
+
+    <div class="article-entry" itemprop="articleBody">
       
       
-
       
-        <h1 id="Instrument文档翻译"><a href="#Instrument文档翻译" class="headerlink" title="Instrument文档翻译"></a>Instrument文档翻译</h1><h2 id="关于Instrument"><a href="#关于Instrument" class="headerlink" title="关于Instrument"></a>关于Instrument</h2><h3 id="Instruments概述"><a href="#Instruments概述" class="headerlink" title="Instruments概述"></a>Instruments概述</h3><p>Instrument是 Xcode 工具集中的一个强大且灵活的性能分析和测试工具。它能够分析iOS，watchOS和 macOS的 app，以便您能够更好的理解和优化其行为并提高其性能。在您 app 开发的最初就将 Instrument 加入您的工作流当中能够在app 开发早期就帮助您发现问题以便减少后来的时间。</p>
+      <h1 id="Instrument文档翻译"><a href="#Instrument文档翻译" class="headerlink" title="Instrument文档翻译"></a>Instrument文档翻译</h1><h2 id="关于Instrument"><a href="#关于Instrument" class="headerlink" title="关于Instrument"></a>关于Instrument</h2><h3 id="Instruments概述"><a href="#Instruments概述" class="headerlink" title="Instruments概述"></a>Instruments概述</h3><p>Instrument是 Xcode 工具集中的一个强大且灵活的性能分析和测试工具。它能够分析iOS，watchOS和 macOS的 app，以便您能够更好的理解和优化其行为并提高其性能。在您 app 开发的最初就将 Instrument 加入您的工作流当中能够在app 开发早期就帮助您发现问题以便减少后来的时间。</p>
 <p>在Instrument中您使用的特殊工具被称作instruments，他们能够跟踪您app进程和硬件设备等不同方面。instruments将会手机数据以作分析，并将分析结果以图标的形式呈现出来。</p>
 <p>Instruments与其他性能和调试工具不同的是，instruments允许你收集多种不同类型的数据并将其并排展示。这养能够轻易的分辨可能被遗漏的趋势。举个例子，由于多个开放的网络连接，您 app 出现巨大的内存增长时，通过同时使用Allocations和Connections这俩instruments工具，你能够识别出因未关闭而导致内存暴增的连接。</p>
+<a id="more"></a>
 <p>通过高效使用Instrument，你能够</p>
 <ul>
 <li>检查一个或多个 app 或进程</li>
@@ -1280,366 +930,149 @@
 
       
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2019/09/02/iOS推送-APNs/" rel="next" title="iOS推送(APNs)">
-                <i class="fa fa-chevron-left"></i> iOS推送(APNs)
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2021/12/02/Mach-O文件结构初探索/" rel="prev" title="Mach-O文件结构初探索">
-                Mach-O文件结构初探索 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2021/04/11/Instrument文档翻译/" data-id="ckwozp2m10000wy923gtzvyix" class="article-share-link">
+        分享
+      </a>
       
     </footer>
+
   </div>
+
   
   
+<nav class="article-nav">
   
-  </article>
-
-
-
-    <div class="post-spread">
+  <a href="/2021/12/02/Mach-O文件结构初探索/" class="article-nav-link">
+    <strong class="article-nav-caption">前一篇</strong>
+    <div class="article-nav-title">
+      
+      Mach-O文件结构初探索
       
     </div>
-  </div>
-
-
-          </div>
-          
-
-
-          
+  </a>
+  
+  
+  <a href="/2019/09/02/iOS推送-APNs/" class="article-nav-link">
+    <strong class="article-nav-caption">后一篇</strong>
+    <div class="article-nav-title">iOS推送(APNs)</div>
+  </a>
+  
+</nav>
 
   
 
-
-
-        </div>
-        
-          
   
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  
+  
+  
+
+</article>
+</section>
+    <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+  <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+  <li><i class="fe fe-bookmark"></i> <span id="busuanzi_value_page_pv"></span></li>
+  
+</ul>
     </div>
+    <ul class="list-inline">
+      <li>John 的技术博客 &copy; 2021</li>
+      
+        <li>ZHWANGART</li>
+      
+      <li>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></li>
+      <li>theme  <a href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li>
+    </ul>
   </div>
-
-  <aside id="sidebar" class="sidebar">
+</footer>
+  </main>
+  <aside class="sidebar">
+    <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/hexo.svg" alt="John 的技术博客"></a>
+  </div>
+  
+  <ul class="nav nav-main">
     
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <p class="site-author-name" itemprop="name">John Wong</p>
-              <p class="site-description motion-element" itemprop="description">别在机会来临之时却无法握住。</p>
-          </div>
-
-          <nav class="site-state motion-element">
-
-            
-              <div class="site-state-item site-state-posts">
-              
-                <a href="/archives/">
-              
-                  <span class="site-state-item-count">22</span>
-                  <span class="site-state-item-name">日志</span>
-                </a>
-              </div>
-            
-
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-tags">
-                
-                  <span class="site-state-item-count">7</span>
-                  <span class="site-state-item-name">标签</span>
-                
-              </div>
-            
-
-          </nav>
-
-          
-
-          
-
-          
-          
-
-          
-          
-
-          
-
-        </div>
-      </section>
-
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Instrument文档翻译"><span class="nav-number">1.</span> <span class="nav-text">Instrument文档翻译</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#关于Instrument"><span class="nav-number">1.1.</span> <span class="nav-text">关于Instrument</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Instruments概述"><span class="nav-number">1.1.1.</span> <span class="nav-text">Instruments概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于跟踪-trace-的文档"><span class="nav-number">1.1.2.</span> <span class="nav-text">关于跟踪(trace)的文档</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于跟踪文档工具栏"><span class="nav-number">1.1.3.</span> <span class="nav-text">关于跟踪文档工具栏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于跟踪文档时间线窗格"><span class="nav-number">1.1.4.</span> <span class="nav-text">关于跟踪文档时间线窗格</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于显示配置弹窗"><span class="nav-number">1.1.5.</span> <span class="nav-text">关于显示配置弹窗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于跟踪文档详情窗格"><span class="nav-number">1.1.6.</span> <span class="nav-text">关于跟踪文档详情窗格</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#导航栏"><span class="nav-number">1.1.6.1.</span> <span class="nav-text">导航栏</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据收集区"><span class="nav-number">1.1.6.2.</span> <span class="nav-text">数据收集区</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#筛选配置栏"><span class="nav-number">1.1.6.3.</span> <span class="nav-text">筛选配置栏</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于跟踪文档的监视器窗格"><span class="nav-number">1.1.7.</span> <span class="nav-text">关于跟踪文档的监视器窗格</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#运行信息区域"><span class="nav-number">1.1.7.1.</span> <span class="nav-text">运行信息区域</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#额外详情区域"><span class="nav-number">1.1.7.2.</span> <span class="nav-text">额外详情区域</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于库面板"><span class="nav-number">1.1.8.</span> <span class="nav-text">关于库面板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于标记面板"><span class="nav-number">1.1.9.</span> <span class="nav-text">关于标记面板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于分析模板"><span class="nav-number">1.1.10.</span> <span class="nav-text">关于分析模板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于分析模板选择框"><span class="nav-number">1.1.11.</span> <span class="nav-text">关于分析模板选择框</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于引用窗口"><span class="nav-number">1.1.12.</span> <span class="nav-text">关于引用窗口</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动Instruments"><span class="nav-number">1.2.</span> <span class="nav-text">启动Instruments</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#从Xcode中启动Instruments"><span class="nav-number">1.2.1.</span> <span class="nav-text">从Xcode中启动Instruments</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从Docker中启动Instruments"><span class="nav-number">1.2.2.</span> <span class="nav-text">从Docker中启动Instruments</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将Instruments添加到Docker中"><span class="nav-number">1.2.3.</span> <span class="nav-text">将Instruments添加到Docker中</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加Instruments到Launchpad"><span class="nav-number">1.2.4.</span> <span class="nav-text">添加Instruments到Launchpad</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从命令行中启动Instruments"><span class="nav-number">1.2.5.</span> <span class="nav-text">从命令行中启动Instruments</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建，保存和打开跟踪文档"><span class="nav-number">1.3.</span> <span class="nav-text">创建，保存和打开跟踪文档</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建一个跟踪文档"><span class="nav-number">1.3.1.</span> <span class="nav-text">创建一个跟踪文档</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#保存一个跟踪文档"><span class="nav-number">1.3.2.</span> <span class="nav-text">保存一个跟踪文档</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将跟踪文档保存为分析模板"><span class="nav-number">1.3.3.</span> <span class="nav-text">将跟踪文档保存为分析模板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#打开跟踪文档"><span class="nav-number">1.3.4.</span> <span class="nav-text">打开跟踪文档</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关闭跟踪文档"><span class="nav-number">1.3.5.</span> <span class="nav-text">关闭跟踪文档</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目标设备和进程"><span class="nav-number">1.4.</span> <span class="nav-text">目标设备和进程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#目标设备和进程-1"><span class="nav-number">1.4.1.</span> <span class="nav-text">目标设备和进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#以iOS设备作为目标"><span class="nav-number">1.4.2.</span> <span class="nav-text">以iOS设备作为目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动iOS设备无线分析"><span class="nav-number">1.4.3.</span> <span class="nav-text">启动iOS设备无线分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#准备Apple-Watch分析"><span class="nav-number">1.4.4.</span> <span class="nav-text">准备Apple Watch分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#访问和使用Instruments"><span class="nav-number">1.5.</span> <span class="nav-text">访问和使用Instruments</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#显示模板库"><span class="nav-number">1.5.1.</span> <span class="nav-text">显示模板库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在模板库中筛选出指定instrument"><span class="nav-number">1.5.2.</span> <span class="nav-text">在模板库中筛选出指定instrument</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#将一个instrument添加到跟踪文档"><span class="nav-number">1.5.3.</span> <span class="nav-text">将一个instrument添加到跟踪文档</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在跟踪文档中移除一个instrument"><span class="nav-number">1.5.4.</span> <span class="nav-text">在跟踪文档中移除一个instrument</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置instrument的显示设置"><span class="nav-number">1.5.5.</span> <span class="nav-text">配置instrument的显示设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置详情显示设置"><span class="nav-number">1.5.6.</span> <span class="nav-text">配置详情显示设置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#记录，暂停和开始跟踪"><span class="nav-number">1.6.</span> <span class="nav-text">记录，暂停和开始跟踪</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#记录跟踪"><span class="nav-number">1.6.1.</span> <span class="nav-text">记录跟踪</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置收集选项"><span class="nav-number">1.6.2.</span> <span class="nav-text">配置收集选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#暂停跟踪"><span class="nav-number">1.6.3.</span> <span class="nav-text">暂停跟踪</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#停止跟踪"><span class="nav-number">1.6.4.</span> <span class="nav-text">停止跟踪</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在-Xcode-构建和产品菜单中分析您的-App"><span class="nav-number">1.6.5.</span> <span class="nav-text">在 Xcode 构建和产品菜单中分析您的 App</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在-Xcode-构建和产品菜单中启动分析时使用默认模板"><span class="nav-number">1.6.6.</span> <span class="nav-text">在 Xcode 构建和产品菜单中启动分析时使用默认模板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#debug时从-Xcode-仪器中分析"><span class="nav-number">1.6.7.</span> <span class="nav-text">debug时从 Xcode 仪器中分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在-Dock-中启动分析"><span class="nav-number">1.6.8.</span> <span class="nav-text">在 Dock 中启动分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用instruments命令行工具启动分析"><span class="nav-number">1.6.9.</span> <span class="nav-text">使用instruments命令行工具启动分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#延时启动分析"><span class="nav-number">1.6.10.</span> <span class="nav-text">延时启动分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在延迟模式下启动Instruments"><span class="nav-number">1.6.11.</span> <span class="nav-text">在延迟模式下启动Instruments</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#导航所收集的数据"><span class="nav-number">1.7.</span> <span class="nav-text">导航所收集的数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#在时间线窗格中放大或者缩小"><span class="nav-number">1.7.1.</span> <span class="nav-text">在时间线窗格中放大或者缩小</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#扩大或者缩小您的数据"><span class="nav-number">1.7.1.1.</span> <span class="nav-text">扩大或者缩小您的数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#选中所有在时间线窗格中的数据"><span class="nav-number">1.7.1.2.</span> <span class="nav-text">选中所有在时间线窗格中的数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#增加在时间线窗格中显示的数据"><span class="nav-number">1.7.1.3.</span> <span class="nav-text">增加在时间线窗格中显示的数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#减少在时间线窗格中显示的数据"><span class="nav-number">1.7.1.4.</span> <span class="nav-text">减少在时间线窗格中显示的数据</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在详情窗格中筛选一段数据"><span class="nav-number">1.7.2.</span> <span class="nav-text">在详情窗格中筛选一段数据</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#选择时间区域用于查看"><span class="nav-number">1.7.2.1.</span> <span class="nav-text">选择时间区域用于查看</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#清除所选区域"><span class="nav-number">1.7.2.2.</span> <span class="nav-text">清除所选区域</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在时间线窗格中设置标记"><span class="nav-number">1.7.3.</span> <span class="nav-text">在时间线窗格中设置标记</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#固定和取消固定时间线"><span class="nav-number">1.7.4.</span> <span class="nav-text">固定和取消固定时间线</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在详情窗格中查看不同类型的数据"><span class="nav-number">1.7.5.</span> <span class="nav-text">在详情窗格中查看不同类型的数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用额外详情区域"><span class="nav-number">1.7.6.</span> <span class="nav-text">使用额外详情区域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#访问多次运行的跟踪数据"><span class="nav-number">1.7.7.</span> <span class="nav-text">访问多次运行的跟踪数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在Instruments中访问源代码"><span class="nav-number">1.7.8.</span> <span class="nav-text">在Instruments中访问源代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置instruments"><span class="nav-number">1.8.</span> <span class="nav-text">配置instruments</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#将数据映射到源码中"><span class="nav-number">1.8.1.</span> <span class="nav-text">将数据映射到源码中</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#为跟踪文档查找dSYM路径"><span class="nav-number">1.8.1.1.</span> <span class="nav-text">为跟踪文档查找dSYM路径</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置通用选项"><span class="nav-number">1.8.2.</span> <span class="nav-text">设置通用选项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置收集选项"><span class="nav-number">1.8.3.</span> <span class="nav-text">设置收集选项</span></a></li></ol></li></ol></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
-
-
-        
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
-  <span class="with-love">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">John Wong</span>
-
-  
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">Home</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">Archives</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">About</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link nav-item-search" title="搜索">
+        <i class="fe fe-search"></i>
+        搜索
+      </a>
+    </li>
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
 </div>
+    </li>
+    <li class="nav-item">
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="fe fe-feed"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
 
 
-  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+<script src="/js/copybtn.js"></script>
 
 
 
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
-
-
-
-
-        
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
-    
-
-    
-
-  </div>
-
-  
-
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
+<script src="/js/tocbot.min.js"></script>
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+  });
 </script>
 
 
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
-
-
-
-  
-  
-
-  
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  
-
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-  
-
-  
-
-  
-  
-
-  
-
-  
-
-  
-
+<script src="/js/ocean.js"></script>
 </body>
+
 </html>

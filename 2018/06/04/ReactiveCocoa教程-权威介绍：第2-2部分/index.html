@@ -1,324 +1,70 @@
 <!DOCTYPE html>
+<html lang="en">
 
-
-
-  
-
-
-<html class="theme-next muse use-motion" lang="zh-Hans">
 <head>
-  <meta charset="UTF-8"/>
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-<meta name="theme-color" content="#222">
-
-
-
-
-
-
-
-
-
-<meta http-equiv="Cache-Control" content="no-transform" />
-<meta http-equiv="Cache-Control" content="no-siteapp" />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
-
-
-
-
-
-
-
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
-
-<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
-
-
-
-
-
-  <meta name="keywords" content="iOS 翻译," />
-
-
-
-
-
-
-
-
-
-
-<meta name="description" content="对于一个四级都没有过的人来说，翻译一篇文章这个过程真的好艰难，第一部分断断续续的翻译耗时有近一个月(期间把 Effective Objective-C 看完了)，耗费的时间很长，并且翻译质量也不是很好，不过在这个过程中，我对这篇文章的理解又加深了很多。翻译外文博客真的是一个能提升自身水平的极好的一个方式，话不多说，接下来就请看我为大家带来的第二篇翻译吧。 原文:ReactiveCocoa Tut">
-<meta name="keywords" content="iOS 翻译">
-<meta property="og:type" content="article">
-<meta property="og:title" content="ReactiveCocoa教程 - 权威介绍：第2&#x2F;2部分">
-<meta property="og:url" content="http://yoursite.com/2018/06/04/ReactiveCocoa教程-权威介绍：第2-2部分/index.html">
-<meta property="og:site_name" content="John 的技术博客">
-<meta property="og:description" content="对于一个四级都没有过的人来说，翻译一篇文章这个过程真的好艰难，第一部分断断续续的翻译耗时有近一个月(期间把 Effective Objective-C 看完了)，耗费的时间很长，并且翻译质量也不是很好，不过在这个过程中，我对这篇文章的理解又加深了很多。翻译外文博客真的是一个能提升自身水平的极好的一个方式，话不多说，接下来就请看我为大家带来的第二篇翻译吧。 原文:ReactiveCocoa Tut">
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/2018/06/04/ReactiveCocoa教程-权威介绍：第2-2部分/TwitterInstantStarter.png">
-<meta property="og:image" content="http://yoursite.com/2018/06/04/ReactiveCocoa教程-权威介绍：第2-2部分/ValidatedTextField.png">
-<meta property="og:image" content="http://yoursite.com/2018/06/04/ReactiveCocoa教程-权威介绍：第2-2部分/TextValidationPipeline.png">
-<meta property="og:image" content="http://yoursite.com/2018/06/04/ReactiveCocoa教程-权威介绍：第2-2部分/PipelineFormatting.png">
-<meta property="og:image" content="http://yoursite.com/Users/sq/Desktop/Hexo/source/_posts/ReactiveCocoa教程-权威介绍：第2-2部分/AvoidRetainSelf.png">
-<meta property="og:image" content="http://yoursite.com/2018/06/04/ReactiveCocoa教程-权威介绍：第2-2部分/TwitterCredentials.png">
-<meta property="og:image" content="http://yoursite.com/2018/06/04/ReactiveCocoa教程-权威介绍：第2-2部分/RequestAccessToTwitter.png">
-<meta property="og:image" content="http://yoursite.com/2018/06/04/ReactiveCocoa教程-权威介绍：第2-2部分/PipelineWithThen.png">
-<meta property="og:image" content="http://yoursite.com/2018/06/04/ReactiveCocoa教程-权威介绍：第2-2部分/RemoveTwitterAccount.png">
-<meta property="og:image" content="http://yoursite.com/2018/06/04/ReactiveCocoa教程-权威介绍：第2-2部分/BreakpointLocation.png">
-<meta property="og:image" content="http://yoursite.com/2018/06/04/ReactiveCocoa教程-权威介绍：第2-2部分/BreakpointResult.png">
-<meta property="og:image" content="http://yoursite.com/2018/06/04/ReactiveCocoa教程-权威介绍：第2-2部分/BreakpointNowOnUIThread.png">
-<meta property="og:image" content="http://yoursite.com/2018/06/04/ReactiveCocoa教程-权威介绍：第2-2部分/AddedLinqToObjectiveC.png">
-<meta property="og:image" content="http://yoursite.com/2018/06/04/ReactiveCocoa教程-权威介绍：第2-2部分/FinallyWeSeeTweets.png">
-<meta property="og:image" content="http://yoursite.com/2018/06/04/ReactiveCocoa教程-权威介绍：第2-2部分/AvatarsAtAlast.png">
-<meta property="og:image" content="http://yoursite.com/2018/06/04/ReactiveCocoa教程-权威介绍：第2-2部分/CompletePipeline.png">
-<meta property="og:updated_time" content="2018-08-14T05:03:06.889Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ReactiveCocoa教程 - 权威介绍：第2&#x2F;2部分">
-<meta name="twitter:description" content="对于一个四级都没有过的人来说，翻译一篇文章这个过程真的好艰难，第一部分断断续续的翻译耗时有近一个月(期间把 Effective Objective-C 看完了)，耗费的时间很长，并且翻译质量也不是很好，不过在这个过程中，我对这篇文章的理解又加深了很多。翻译外文博客真的是一个能提升自身水平的极好的一个方式，话不多说，接下来就请看我为大家带来的第二篇翻译吧。 原文:ReactiveCocoa Tut">
-<meta name="twitter:image" content="http://yoursite.com/2018/06/04/ReactiveCocoa教程-权威介绍：第2-2部分/TwitterInstantStarter.png">
-
-
-
-<script type="text/javascript" id="hexo.configurations">
-  var NexT = window.NexT || {};
-  var CONFIG = {
-    root: '/',
-    scheme: 'Muse',
-    version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: true,
-    tabs: true,
-    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
-    duoshuo: {
-      userId: '0',
-      author: '博主'
-    },
-    algolia: {
-      applicationID: '',
-      apiKey: '',
-      indexName: '',
-      hits: {"per_page":10},
-      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
-    }
-  };
-</script>
-
-
-
-  <link rel="canonical" href="http://yoursite.com/2018/06/04/ReactiveCocoa教程-权威介绍：第2-2部分/"/>
-
-
-
-
-
-  <title>ReactiveCocoa教程 - 权威介绍：第2/2部分 | John 的技术博客</title>
   
-
-
-
-
-
-
-
-
+  <meta name="description" content="别在机会来临之时却无法握住。">
+  
+  <title>
+    ReactiveCocoa教程 - 权威介绍：第2/2部分 |
+    
+    John 的技术博客
+  </title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+  
+  <script src="/js/pace.min.js"></script>
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<body>
+  <main class="content">
+    <section class="outer">
+  <article id="post-ReactiveCocoa教程-权威介绍：第2-2部分" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
 
-  
-  
+  <div class="article-inner">
     
-  
-
-  <div class="container sidebar-position-left page-post-detail">
-    <div class="headband"></div>
-
-    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
-  <div class="site-meta ">
-    
-
-    <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
-        <span class="logo-line-before"><i></i></span>
-        <span class="site-title">John 的技术博客</span>
-        <span class="logo-line-after"><i></i></span>
-      </a>
-    </div>
-      
-        <p class="site-subtitle"></p>
-      
-  </div>
-
-  <div class="site-nav-toggle">
-    <button>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-      <span class="btn-bar"></span>
-    </button>
-  </div>
-</div>
-
-<nav class="site-nav">
-  
-
-  
-    <ul id="menu" class="menu">
-      
-        
-        <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
-            
-            首页
-          </a>
-        </li>
-      
-        
-        <li class="menu-item menu-item-archives">
-          <a href="/archives/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
-            
-            归档
-          </a>
-        </li>
+    <header class="article-header">
       
 
-      
-    </ul>
-  
-
-  
-</nav>
+<h1 class="article-title" itemprop="name">
+  ReactiveCocoa教程 - 权威介绍：第2/2部分
+</h1>
 
 
 
- </div>
     </header>
-
-    <main id="main" class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          <div id="content" class="content">
-            
-
-  <div id="posts" class="posts-expand">
     
 
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/04/ReactiveCocoa教程-权威介绍：第2-2部分/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="John Wong">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="John 的技术博客">
-    </span>
-
     
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">ReactiveCocoa教程 - 权威介绍：第2/2部分</h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-04T10:25:54+08:00">
-                2018-06-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
+    <div class="article-meta">
+      <a href="/2018/06/04/ReactiveCocoa教程-权威介绍：第2-2部分/" class="article-date">
+  <time datetime="2018-06-04T02:25:54.000Z" itemprop="datePublished">2018-06-04</time>
+</a>
+      
+    </div>
     
 
     
     
-    
-    <div class="post-body" itemprop="articleBody">
+<div class="tocbot"></div>
 
+    
+
+    <div class="article-entry" itemprop="articleBody">
       
       
-
       
-        <blockquote>
-<p>对于一个四级都没有过的人来说，翻译一篇文章这个过程真的好艰难，第一部分断断续续的翻译耗时有近一个月(期间把 Effective Objective-C 看完了)，耗费的时间很长，并且翻译质量也不是很好，不过在这个过程中，我对这篇文章的理解又加深了很多。翻译外文博客真的是一个能提升自身水平的极好的一个方式，话不多说，接下来就请看我为大家带来的第二篇翻译吧。</p>
+      <blockquote>
+<p>对于一个英语渣来说，翻译一篇文章这个过程真的好艰难，第一部分断断续续的翻译耗时有近一个月(期间把 Effective Objective-C 看完了)，耗费的时间很长，并且翻译质量也不是很好，不过在这个过程中，我对这篇文章的理解又加深了很多。翻译外文博客真的是一个能提升自身水平的极好的一个方式，话不多说，接下来就请看我为大家带来的第二篇翻译吧。</p>
 <p>原文:<a href="https://www.raywenderlich.com/62796/reactivecocoa-tutorial-pt2" target="_blank" rel="noopener">ReactiveCocoa Tutorial – The Definitive Introduction: Part 2/2</a></p>
 <p>作者:Colin Eberhardt</p>
 </blockquote>
@@ -332,6 +78,7 @@
 <li>….和更多的特性！</li>
 </ul>
 <p>是时候开始了！</p>
+<a id="more"></a>
 <h2 id="Twitter时刻"><a href="#Twitter时刻" class="headerlink" title="Twitter时刻"></a>Twitter时刻</h2><p>在此部分中你要开发的应用程序名为Twitter时刻(以 Google 概念为蓝本)，Twitter搜索将会在你输入的时候实时更新你的搜索结果。</p>
 <p>在这个程序的<a href="https://koenig-media.raywenderlich.com/uploads/2014/01/TwitterInstant-Starter2.zip" target="_blank" rel="noopener">初始项目</a>中包含了一些基础的用户接口和一些你在项目开始时需要的普通代码。和<a href="https://www.raywenderlich.com/?p=62699" target="_blank" rel="noopener">第一部分</a>一样，你需要使用<a href="http://cocoapods.org/" target="_blank" rel="noopener">CocoaPods</a>来获得并整合ReactiveCocoa到你的框架中。初始化项目已经包含了必须的 Podfile文件，所以你只需要打开终端并输入如下代码即可：</p>
 <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod install</span><br></pre></td></tr></table></figure>
@@ -565,372 +312,151 @@
 
       
     </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/06/04/ReactiveCocoa教程-权威介绍：第2-2部分/" data-id="ckwozp2mo000dwy924o8kszll" class="article-share-link">
+        分享
+      </a>
       
-        <div class="post-tags">
-          
-            <a href="/tags/iOS-翻译/" rel="tag"># iOS 翻译</a>
-          
-        </div>
-      
+<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS-翻译/">iOS 翻译</a></li></ul>
 
-      
-      
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2018/06/04/ReactiveCocoa教程-权威介绍：第1-2部分/" rel="next" title="ReactiveCocoa教程 - 权威介绍：第1/2部分">
-                <i class="fa fa-chevron-left"></i> ReactiveCocoa教程 - 权威介绍：第1/2部分
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/07/16/读书笔记-一/" rel="prev" title="读书笔记(一)">
-                读书笔记(一) <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
-      
     </footer>
+
   </div>
+
   
   
+<nav class="article-nav">
   
-  </article>
-
-
-
-    <div class="post-spread">
+  <a href="/2018/07/16/读书笔记-一/" class="article-nav-link">
+    <strong class="article-nav-caption">前一篇</strong>
+    <div class="article-nav-title">
+      
+      读书笔记(一)
       
     </div>
-  </div>
-
-
-          </div>
-          
-
-
-          
+  </a>
+  
+  
+  <a href="/2018/06/04/ReactiveCocoa教程-权威介绍：第1-2部分/" class="article-nav-link">
+    <strong class="article-nav-caption">后一篇</strong>
+    <div class="article-nav-title">ReactiveCocoa教程 - 权威介绍：第1/2部分</div>
+  </a>
+  
+</nav>
 
   
 
-
-
-        </div>
-        
-          
   
-  <div class="sidebar-toggle">
-    <div class="sidebar-toggle-line-wrap">
-      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
-      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  
+  
+  
+
+</article>
+</section>
+    <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+  <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+  <li><i class="fe fe-bookmark"></i> <span id="busuanzi_value_page_pv"></span></li>
+  
+</ul>
     </div>
+    <ul class="list-inline">
+      <li>John 的技术博客 &copy; 2021</li>
+      
+        <li>ZHWANGART</li>
+      
+      <li>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></li>
+      <li>theme  <a href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li>
+    </ul>
   </div>
-
-  <aside id="sidebar" class="sidebar">
+</footer>
+  </main>
+  <aside class="sidebar">
+    <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/hexo.svg" alt="John 的技术博客"></a>
+  </div>
+  
+  <ul class="nav nav-main">
     
-    <div class="sidebar-inner">
-
-      
-
-      
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
-
-      <section class="site-overview-wrap sidebar-panel">
-        <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-            
-              <p class="site-author-name" itemprop="name">John Wong</p>
-              <p class="site-description motion-element" itemprop="description">别在机会来临之时却无法握住。</p>
-          </div>
-
-          <nav class="site-state motion-element">
-
-            
-              <div class="site-state-item site-state-posts">
-              
-                <a href="/archives/">
-              
-                  <span class="site-state-item-count">22</span>
-                  <span class="site-state-item-name">日志</span>
-                </a>
-              </div>
-            
-
-            
-
-            
-              
-              
-              <div class="site-state-item site-state-tags">
-                
-                  <span class="site-state-item-count">7</span>
-                  <span class="site-state-item-name">标签</span>
-                
-              </div>
-            
-
-          </nav>
-
-          
-
-          
-
-          
-          
-
-          
-          
-
-          
-
-        </div>
-      </section>
-
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Twitter时刻"><span class="nav-number">1.</span> <span class="nav-text">Twitter时刻</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#验证搜索内容"><span class="nav-number">2.</span> <span class="nav-text">验证搜索内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#管道格式化"><span class="nav-number">3.</span> <span class="nav-text">管道格式化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内存管理"><span class="nav-number">4.</span> <span class="nav-text">内存管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#避免循环引用"><span class="nav-number">5.</span> <span class="nav-text">避免循环引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#请求访问-Twitter"><span class="nav-number">6.</span> <span class="nav-text">请求访问 Twitter</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#链接信号"><span class="nav-number">7.</span> <span class="nav-text">链接信号</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搜索-Twitter"><span class="nav-number">8.</span> <span class="nav-text">搜索 Twitter</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线程"><span class="nav-number">9.</span> <span class="nav-text">线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更新-UI"><span class="nav-number">10.</span> <span class="nav-text">更新 UI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#异步加载图片"><span class="nav-number">11.</span> <span class="nav-text">异步加载图片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#节流"><span class="nav-number">12.</span> <span class="nav-text">节流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#复习"><span class="nav-number">13.</span> <span class="nav-text">复习</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
-      
-
-      
-
-    </div>
-  </aside>
-
-
-        
-      </div>
-    </main>
-
-    <footer id="footer" class="footer">
-      <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
-  <span class="with-love">
-    <i class="fa fa-user"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">John Wong</span>
-
-  
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">Home</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">Archives</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">About</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link nav-item-search" title="搜索">
+        <i class="fe fe-search"></i>
+        搜索
+      </a>
+    </li>
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
 </div>
+    </li>
+    <li class="nav-item">
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="fe fe-feed"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
 
 
-  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+<script src="/js/copybtn.js"></script>
 
 
 
-  <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
-
-
-
-
-        
-
-
-
-
-
-
-
-        
-      </div>
-    </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
-    
-
-    
-
-  </div>
-
-  
-
-<script type="text/javascript">
-  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
-    window.Promise = null;
-  }
+<script src="/js/tocbot.min.js"></script>
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+  });
 </script>
 
 
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-  
-
-  
-  
-    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-  
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
-
-
-
-  
-  
-
-  
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
-
-
-
-  
-
-
-  
-
-
-
-
-	
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-  
-
-  
-
-  
-
-  
-  
-
-  
-
-  
-
-  
-
+<script src="/js/ocean.js"></script>
 </body>
+
 </html>
