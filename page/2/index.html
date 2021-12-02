@@ -59,6 +59,150 @@
     <h1 class="page-type-title"></h1>
     
     
+    <article id="post-MTQQ-介绍" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+      
+
+<h2 itemprop="name">
+  <a class="article-title" href="/2018/12/16/MTQQ-介绍/">MTQQ 介绍</a>
+</h2>
+
+
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2018/12/16/MTQQ-介绍/" class="article-date">
+  <time datetime="2018-12-16T06:51:14.000Z" itemprop="datePublished">2018-12-16</time>
+</a>
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+        
+      
+      
+        <blockquote>
+<p>原文出处:<a href="https://mcxiaoke.gitbooks.io/mqtt-cn/content/mqtt/01-Introduction.html" target="_blank" rel="noopener">https://mcxiaoke.gitbooks.io/mqtt-cn/content/mqtt/01-Introduction.html</a></p>
+<p>本文只为自己快速查看资料，原文出处如上。</p>
+</blockquote>
+<h2 id="2-1-MQTT控制报文的结构-Structure-of-an-MQTT-Control-Packet"><a href="#2-1-MQTT控制报文的结构-Structure-of-an-MQTT-Control-Packet" class="headerlink" title="2.1 MQTT控制报文的结构 Structure of an MQTT Control Packet"></a>2.1 MQTT控制报文的结构 Structure of an MQTT Control Packet</h2><h5 id="MQTT控制报文的结构"><a href="#MQTT控制报文的结构" class="headerlink" title="MQTT控制报文的结构"></a>MQTT控制报文的结构</h5><table>
+<thead>
+<tr>
+<th>Fixed header</th>
+<th>固定报头，所有控制报文都包含</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Variable header</td>
+<td>可变报头，部分控制报文包含</td>
+</tr>
+<tr>
+<td>Payload</td>
+<td>有效载荷，部分控制报文包含</td>
+</tr>
+</tbody>
+</table>
+        
+          <p>
+            <a class="article-more-link" href="/2018/12/16/MTQQ-介绍/">
+              Read More...
+            </a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://devjohn.cn/2018/12/16/MTQQ-介绍/" data-id="ckwp0ws740005aq92ystc4sw8" class="article-share-link">
+        分享
+      </a>
+      
+<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/随手记录/">随手记录</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+
+  
+
+</article>
+    
+    <article id="post-Objective-C-代码转换为-C-代码" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+      
+
+<h2 itemprop="name">
+  <a class="article-title" href="/2018/12/05/Objective-C-代码转换为-C-代码/"> Objective-C 代码转换为 C++代码</a>
+</h2>
+
+
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2018/12/05/Objective-C-代码转换为-C-代码/" class="article-date">
+  <time datetime="2018-12-05T03:22:30.000Z" itemprop="datePublished">2018-12-05</time>
+</a>
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+        
+      
+      
+        <p>在研究 iOS 系统方法实现的时候，由于有时苹果未将改方法的实现开源，所以此时我们就需要将指定你文件转换为C++文件，这样就可以看到部分底层实现。</p>
+<p>当你在谷歌搜索如何创建C++文件文件的时候，你得到的答案可能是这样:</p>
+        
+          <p>
+            <a class="article-more-link" href="/2018/12/05/Objective-C-代码转换为-C-代码/">
+              Read More...
+            </a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://devjohn.cn/2018/12/05/Objective-C-代码转换为-C-代码/" data-id="ckwp0ws6x0001aq921hwkfr5m" class="article-share-link">
+        分享
+      </a>
+      
+<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS知识点/">iOS知识点</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+
+  
+
+</article>
+    
     <article id="post-iOS-中的-weak" class="article article-type-post" itemscope
   itemprop="blogPost" data-scroll-reveal>
 
@@ -93,8 +237,8 @@
         
       
       
-        <h2 id="什么是-weak"><a href="#什么是-weak" class="headerlink" title="什么是 __weak"></a>什么是 __weak</h2><p>前段时间因为项目忙(lan)，好久没有写博客了，现在趁着项目结束，赶紧写两篇博客来巩固一下知识。今天我们来了解一下 <code>weak</code>。</p>
-<p>首先，<code>weak</code>是一个修饰符，也是内存管理语义的一种(有关内存管理语义请看<a href="http://devjohn.cn/2018/08/14/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E8%AF%AD%E4%B9%89/" target="_blank" rel="noopener">这里</a>)，用于修饰对象的所有权。请注意<code>weak</code>修饰符是在自动引用计数出现前就已经存在了，在那个时候iOS 的内存管理机制还是垃圾收集机制。</p>
+        <p>前段时间因为项目忙(lan)，好久没有写博客了，现在趁着项目结束，赶紧写两篇博客来巩固一下知识。今天我们来了解一下 <code>weak</code>。</p>
+<p>首先，<code>weak</code>是一个修饰符，也是内存管理语义的一种(有关内存管理语义请看<a href="http://devjohn.cn/2018/08/14/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E8%AF%AD%E4%B9%89/">这里</a>)，用于修饰对象的所有权。请注意<code>weak</code>修饰符是在自动引用计数出现前就已经存在了，在那个时候iOS 的内存管理机制还是垃圾收集机制。</p>
 <p><code>weak</code>定义的是一种非拥有关系，为这个属性设置新值的时候，设置方法既不会保留新值，也不会释放旧值。</p>
 <p>接下来我们用一个例子来了解一下，具体<code>weak</code>是如何实现的。</p>
         
@@ -107,11 +251,11 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/03/iOS-中的-weak/" data-id="ckwozp2mu000iwy92g1ts13yo" class="article-share-link">
+      <a data-url="http://devjohn.cn/2018/12/03/iOS-中的-weak/" data-id="ckwp0ws7c000gaq92jio9ymub" class="article-share-link">
         分享
       </a>
       
-<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS-知识点/">iOS 知识点</a></li></ul>
+<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS知识点/">iOS知识点</a></li></ul>
 
     </footer>
 
@@ -157,7 +301,8 @@
         
       
       
-        <h2 id="对于普通对象来说，isa-指针包含对象的类"><a href="#对于普通对象来说，isa-指针包含对象的类" class="headerlink" title="对于普通对象来说，isa 指针包含对象的类"></a>对于普通对象来说，isa 指针包含对象的类</h2><p>oc 中所有的 isa 指针指向的都是类。</p>
+        <p>对于普通对象来说，isa 指针包含对象的类</p>
+<p>oc 中所有的 isa 指针指向的都是类。</p>
 <p>在 oc 中每一个类的对象都都有一个指向类的指针 isa。并且在 oc 中任何数据结构也在一个正确的位置上都有一个指向类的指针，使其能够被视为对象。</p>
 <p>所以一个对象的类型是由 isa 指针决定的，isa 指针指向对象的类。</p>
         
@@ -170,11 +315,11 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/15/类和-isa-指针/" data-id="ckwozp2np0010wy92joo9d4s4" class="article-share-link">
+      <a data-url="http://devjohn.cn/2018/08/15/类和-isa-指针/" data-id="ckwp0ws7q0013aq9249aez6ks" class="article-share-link">
         分享
       </a>
       
-<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS-知识点/">iOS 知识点</a></li></ul>
+<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS知识点/">iOS知识点</a></li></ul>
 
     </footer>
 
@@ -237,11 +382,11 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/14/内存管理语义/" data-id="ckwozp2n4000pwy92pl2xa912" class="article-share-link">
+      <a data-url="http://devjohn.cn/2018/08/14/内存管理语义/" data-id="ckwp0ws7l000uaq92bxt3qqvo" class="article-share-link">
         分享
       </a>
       
-<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS-知识点/">iOS 知识点</a></li></ul>
+<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS知识点/">iOS知识点</a></li></ul>
 
     </footer>
 
@@ -287,7 +432,7 @@
         
       
       
-        <h1 id="iOS-中的指针、指针变量、变量和对象"><a href="#iOS-中的指针、指针变量、变量和对象" class="headerlink" title="iOS-中的指针、指针变量、变量和对象"></a>iOS-中的指针、指针变量、变量和对象</h1><h2 id="指针"><a href="#指针" class="headerlink" title="指针"></a>指针</h2><p>指针是 C 语言的一个重要概念。OC 系统类型的变量,自定义类型的变量都是指针。</p>
+        <h2 id="指针"><a href="#指针" class="headerlink" title="指针"></a>指针</h2><p>指针是 C 语言的一个重要概念。OC 系统类型的变量,自定义类型的变量都是指针。</p>
 <p>在很多国内的博客中将指针和指针变量分为两个概念，他们认为<strong>指针是一个变量的地址，而指针变量是保存另一个变量指针的变量</strong>。</p>
 <p>而我查了很多资料发现大部分资料上写的，<strong>指针就是一个变量，他是保存另一个变量的地址的变量</strong>。就是国内很多博客中说到的’指针变量‘其实就是指针。关于指针的定义有如下几个可以参考：</p>
         
@@ -300,11 +445,11 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/20/iOS-中的指针、指针变量和对象/" data-id="ckwozp2my000kwy92s6s05m72" class="article-share-link">
+      <a data-url="http://devjohn.cn/2018/07/20/iOS-中的指针、指针变量和对象/" data-id="ckwp0ws7e000laq923vp6xiwn" class="article-share-link">
         分享
       </a>
       
-<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS-知识点/">iOS 知识点</a></li></ul>
+<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS知识点/">iOS知识点</a></li></ul>
 
     </footer>
 
@@ -350,7 +495,7 @@
         
       
       
-        <h1 id="iOS-中的拷贝-copy-和-mutableCopy"><a href="#iOS-中的拷贝-copy-和-mutableCopy" class="headerlink" title="iOS 中的拷贝(copy 和 mutableCopy)"></a>iOS 中的拷贝(copy 和 mutableCopy)</h1><h2 id="NSCopying和NSMutableCopying协议"><a href="#NSCopying和NSMutableCopying协议" class="headerlink" title="NSCopying和NSMutableCopying协议"></a>NSCopying和NSMutableCopying协议</h2><p>在 iOS 中并不是所有的的对象都具有拷贝功能，而是只有遵守了NSCopying 或 NSMutableCopying协议的类的对象才能具有拷贝功能。遵守了NSMutableCopying类的对象可以发送 mutableCopy 消息，遵守了NSCopying的类的对象可以发送 copy 消息。</p>
+        <h2 id="NSCopying和NSMutableCopying协议"><a href="#NSCopying和NSMutableCopying协议" class="headerlink" title="NSCopying和NSMutableCopying协议"></a>NSCopying和NSMutableCopying协议</h2><p>在 iOS 中并不是所有的的对象都具有拷贝功能，而是只有遵守了NSCopying 或 NSMutableCopying协议的类的对象才能具有拷贝功能。遵守了NSMutableCopying类的对象可以发送 mutableCopy 消息，遵守了NSCopying的类的对象可以发送 copy 消息。</p>
 <p>对于NSCopying协议我们先看看官方文档是怎么写的:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">NSCopying declares one method, copyWithZone:, but copying is commonly invoked with </span><br><span class="line">the convenience method copy. The copy method is defined for all objects inheriting </span><br><span class="line">from NSObject and simply invokes copyWithZone: with the default zone.</span><br></pre></td></tr></table></figure>
         
@@ -363,11 +508,11 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/20/iOS-中的拷贝-copy-和-mutableCopy/" data-id="ckwozp2ml000bwy92ue2i5t9j" class="article-share-link">
+      <a data-url="http://devjohn.cn/2018/07/20/iOS-中的拷贝-copy-和-mutableCopy/" data-id="ckwp0ws7d000iaq925r7qp0l8" class="article-share-link">
         分享
       </a>
       
-<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS-知识点/">iOS 知识点</a></li></ul>
+<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS知识点/">iOS知识点</a></li></ul>
 
     </footer>
 
@@ -413,7 +558,7 @@
         
       
       
-        <h1 id="iOS-面试题-一"><a href="#iOS-面试题-一" class="headerlink" title="iOS 面试题(一)"></a>iOS 面试题(一)</h1><p>1、如何令自己所写的对象具有拷贝功能?</p>
+        <p>1、如何令自己所写的对象具有拷贝功能?</p>
 <p>在 iOS 让对象具有拷贝功能即是让对象具备发送 <code>copy</code> 消息或者是 <code>mutableCopy</code> 消息。但是在 iOS 中并不是所有对象都能发送这两个消息，而是只有在遵循了<code>NSCopying</code> 或者是<code>NSMutableCopying</code>的协议的类才能发送这两个消息。详细请看这里——<a href="/2018/07/20/iOS-中的拷贝-copy-和-mutableCopy/" title="iOS 中的拷贝(copy 和 mutableCopy)">iOS 中的拷贝(copy 和 mutableCopy)</a></p>
         
           <p>
@@ -425,11 +570,11 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/19/iOS-面试题-一/" data-id="ckwozp2mq000fwy923ns56j9n" class="article-share-link">
+      <a data-url="http://devjohn.cn/2018/07/19/iOS-面试题-一/" data-id="ckwp0ws79000caq92vij5b39w" class="article-share-link">
         分享
       </a>
       
-<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS面试题/">iOS面试题</a></li></ul>
+<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS知识点/">iOS知识点</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS面试题/">iOS面试题</a></li></ul>
 
     </footer>
 
@@ -487,7 +632,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/16/读书笔记-一/" data-id="ckwozp2ox0016wy9291qqydnm" class="article-share-link">
+      <a data-url="http://devjohn.cn/2018/07/16/读书笔记-一/" data-id="ckwp0wsad0018aq92p93yyly8" class="article-share-link">
         分享
       </a>
       
@@ -562,147 +707,11 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/06/04/ReactiveCocoa教程-权威介绍：第2-2部分/" data-id="ckwozp2mo000dwy924o8kszll" class="article-share-link">
+      <a data-url="http://devjohn.cn/2018/06/04/ReactiveCocoa教程-权威介绍：第2-2部分/" data-id="ckwp0ws7b000eaq92849ip2ky" class="article-share-link">
         分享
       </a>
       
-<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS-翻译/">iOS 翻译</a></li></ul>
-
-    </footer>
-
-  </div>
-
-  
-
-  
-
-</article>
-    
-    <article id="post-ReactiveCocoa教程-权威介绍：第1-2部分" class="article article-type-post" itemscope
-  itemprop="blogPost" data-scroll-reveal>
-
-  <div class="article-inner">
-    
-    <header class="article-header">
-      
-
-<h2 itemprop="name">
-  <a class="article-title" href="/2018/06/04/ReactiveCocoa教程-权威介绍：第1-2部分/">ReactiveCocoa教程 - 权威介绍：第1/2部分</a>
-</h2>
-
-
-
-    </header>
-    
-
-    
-    <div class="article-meta">
-      <a href="/2018/06/04/ReactiveCocoa教程-权威介绍：第1-2部分/" class="article-date">
-  <time datetime="2018-06-04T02:25:46.000Z" itemprop="datePublished">2018-06-04</time>
-</a>
-      
-    </div>
-    
-
-    
-
-    <div class="article-entry" itemprop="articleBody">
-      
-      
-        
-      
-      
-        <h1 id="ReactiveCocoa教程-权威介绍：第1-2部分"><a href="#ReactiveCocoa教程-权威介绍：第1-2部分" class="headerlink" title="ReactiveCocoa教程 - 权威介绍：第1/2部分"></a>ReactiveCocoa教程 - 权威介绍：第1/2部分</h1><blockquote>
-<p>五月初来到新公司之后，新公司开发使用的是 RAC+MVVM 的开发模式。以前就想学这样的响应式编程，现在正好趁着这个机会学习一下。就从翻译一篇好文章开始。</p>
-<p>原文:<a href="https://www.raywenderlich.com/62699/reactivecocoa-tutorial-pt1" target="_blank" rel="noopener">ReactiveCocoa Tutorial – The Definitive Introduction: Part 1/2</a></p>
-<p>作者:Colin Eberhardt</p>
-</blockquote>
-<p>作为一个 iOS 开发者，你写的每一行代码基本上都是对一个事件的响应。例如:一个按钮的点击、一个受到的网络消息、一个属性的变化(通过键值观察)或者是通过CoreLocation更改了用户位置，这些都是一些很好的例子。然而这些事件都以不同的方式编码。例如动作(actions)、代理(delegate)、键值观察(KVO)、回调(callbacks)和其他的一些事件。ReactiveCocoa为这些事件定义了一个标准的接口，所以他们能够更轻松的被链接，并使用一组基本工具进行过滤和组合。</p>
-<p>听起来很困惑、很奇妙？感觉很兴奋？让我们继续看下去:]</p>
-        
-          <p>
-            <a class="article-more-link" href="/2018/06/04/ReactiveCocoa教程-权威介绍：第1-2部分/">
-              Read More...
-            </a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/06/04/ReactiveCocoa教程-权威介绍：第1-2部分/" data-id="ckwozp2me0007wy92kyw91xwv" class="article-share-link">
-        分享
-      </a>
-      
-<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS-翻译/">iOS 翻译</a></li></ul>
-
-    </footer>
-
-  </div>
-
-  
-
-  
-
-</article>
-    
-    <article id="post-博客搭建篇" class="article article-type-post" itemscope
-  itemprop="blogPost" data-scroll-reveal>
-
-  <div class="article-inner">
-    
-    <header class="article-header">
-      
-
-<h2 itemprop="name">
-  <a class="article-title" href="/2018/06/01/博客搭建篇/">博客搭建篇</a>
-</h2>
-
-
-
-    </header>
-    
-
-    
-    <div class="article-meta">
-      <a href="/2018/06/01/博客搭建篇/" class="article-date">
-  <time datetime="2018-06-01T06:05:47.000Z" itemprop="datePublished">2018-06-01</time>
-</a>
-      
-    </div>
-    
-
-    
-
-    <div class="article-entry" itemprop="articleBody">
-      
-      
-        
-      
-      
-        <h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><p>这是本博客开通之后正经的第一篇文章，博客搭建也是别人的经验才成功的，但是期间也遇到了挺多的坑。写这篇博客权当是记录一下这些坑吧。</p>
-<p>博客搭建大纲:</p>
-<ol>
-<li>申请一个<code>github pages</code></li>
-<li>在电脑中配置<code>Hexo</code>的环境</li>
-<li>设置 Hexo 主题</li>
-<li>绑定自己的域名(可以不绑定，绑定之后有逼格)</li>
-<li>开始写博客</li>
-</ol>
-        
-          <p>
-            <a class="article-more-link" href="/2018/06/01/博客搭建篇/">
-              Read More...
-            </a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/06/01/博客搭建篇/" data-id="ckwozp2n8000rwy92ylul3wpy" class="article-share-link">
-        分享
-      </a>
-      
-<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/折腾/">折腾</a></li></ul>
+<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS翻译/">iOS翻译</a></li></ul>
 
     </footer>
 

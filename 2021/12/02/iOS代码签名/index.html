@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="别在机会来临之时却无法握住。">
+  
+  <title>
+    iOS代码签名 |
+    
+    John 的技术博客
+  </title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+  
+  <script src="/js/pace.min.js"></script>
+</head>
+
+<body>
+  <main class="content">
+    <section class="outer">
+  <article id="post-iOS代码签名" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+      
+
+<h1 class="article-title" itemprop="name">
+  iOS代码签名
+</h1>
+
+
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2021/12/02/iOS代码签名/" class="article-date">
+  <time datetime="2021-12-02T13:54:56.000Z" itemprop="datePublished">2021-12-02</time>
+</a>
+      
+    </div>
+    
+
+    
+    
+<div class="tocbot"></div>
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+      
+      <h2 id="什么是-iOS代码签名机制"><a href="#什么是-iOS代码签名机制" class="headerlink" title="什么是 iOS代码签名机制"></a>什么是 iOS代码签名机制</h2><p>代码签名是在 iOS 和 macOS 上保证代码来源可靠性的一个机制(当然不仅仅是 Apple 在使用)。</p>
+<h2 id="代码签名过程"><a href="#代码签名过程" class="headerlink" title="代码签名过程"></a>代码签名过程</h2><blockquote>
+<p>强烈推荐看 <a href="http://xelz.info/blog/2019/01/11/ios-code-signature/" target="_blank" rel="noopener">深度长文：细说iOS代码签名</a> 和 <a href="http://blog.cnbang.net/tech/3386/" target="_blank" rel="noopener">iOS App 签名的原理</a> 这两个大神写的博客，本篇博客仅仅是记录一些粗浅的知识。</p>
+</blockquote>
+<p>首先看整个代码签名逻辑：</p>
+<a id="more"></a>
+<ol>
+<li>生成 CSR 文件：在本地使用 keychain 中的证书助理小工具，生成<code>*.certSigningRequest</code>(CSR)文件。在生成 CSR 文件之前会自动在本地产生一对公/私密钥对，并且自动导入到 keychain 中。而在 CSR 文件中保存的内容就是该公钥和<a href="https://en.wikipedia.org/wiki/Certificate_signing_request#Structure" target="_blank" rel="noopener">附加信息</a>。</li>
+<li>上传 CSR 文件获得 cer 文件：在 Apple Developer 网站上将 CSR 上传到 Apple 的后台，上传成功后 Apple 会在后台取出 CSR 的中包含的 Mac 公钥，并使用 Apple 私钥对该公钥进行签名，签名后产生 cer 文件即证书文件，这个文件中所包含的信息就是 mac 公钥和对公钥的签名。</li>
+<li>利用 cer 证书文件获得 mobilepervision 文件：在第二步中的 cer 文件保存到本地，并在 Apple Developer 网站上上传该 cer 文件，在 Apple 后台会使用 Apple 私钥对appid、entitlements、已注册的 deviceid 列表和 cer 中 Mac 私钥进行签名，并生成 mobileprovision 文件。</li>
+<li>使用 codesign 命令，对 app 和 mobilepervision 和 entitlements 文件使用本地 mac 私钥进行签名，签名之后会产生_CodeSignature/CodeSignature 文件，CodeSignature实际上是一个 plist 文件，文件中保存的是对 app 中除了可执行文件以外所有文件的哈希值。对于可执行文件，则是产生 <code>LC_CODE_SIGNATURE</code> 加载命令和该加载命令相关的信息。</li>
+<li>在安装到手机之后，点击 app 会有验证的步骤：<ol>
+<li>使用iPhone中保存的Apple公钥信息对 mobileprovision 进行签名检验，</li>
+<li>mobileprovision签名检验通过之后比对 mobileprovision 中的 Devices 是否包含此设备。</li>
+<li>设备信息检验通过之后会取出 mobileprovision 中证书部分信息，对证书信息使用 iPhone 中保存的Apple 公钥进行签名验证。</li>
+<li>证书签名验证通过之后会取出证书中所保存的 Mac 公钥信息，对 App 进行签名验证。</li>
+<li>验证通过，成功运行 app。</li>
+</ol>
+</li>
+</ol>
+<p>注意，平时在不同 manc 之间共享的p12 实际上就保存了 mac 的私钥。</p>
+<p>借用一下 bang 神的图片(<a href="http://blog.cnbang.net/tech/3386/" target="_blank" rel="noopener">原博客地址</a> )能够更加详细的说明：</p>
+<p><img src="/2021/12/02/iOS代码签名/bang-codesign.png" alt="sign4"></p>
+<h2 id="重签名"><a href="#重签名" class="headerlink" title="重签名"></a>重签名</h2><p>对于可执行文件修改过或者是 hook 过的 app 由于签名机制的关系无法直接安装到非越狱 iPhone 设备上，此时就需要对修改后的 app 进行重签名。</p>
+<p>我们重温一下签名所需要的前置条件：</p>
+<ul>
+<li>开发者证书及其证书所对应的密钥。</li>
+<li>entitlements文件。</li>
+<li>mobileprovision文件。</li>
+</ul>
+<p>第一个条件没有什么要求，只要是付费开发者就行。第二个条件就必须要有前置条件，这个指定的 entitlements 文件需要包含可执行文件所需的权限。最后的 mobileprovision 也仅需包含新的 .entitlements 就行。</p>
+<p>真正开始签名前，由于 app 功能的修改有两种方式，第一种直接修改可执行文件的源代码，使用这种方式修改代码的重签名只需直接使用 codesign命令就行。</p>
+<p>对于使用 Tweak 之类产生 dylib 动态库的方式来 hook 代码的方式，则在签名前还需要额外的步骤。</p>
+<p>由于 dylib 的加载信息是保存在 Mach-O 可执行文件中的，所以还要对 Mach-O 进行插入对动态库的引用。我们使用<a href="https://github.com/Tyilo/insert_dylib" target="_blank" rel="noopener">insert_dylib</a>工具进行对 dylib 的插入工作，由于 <code>LC_LOAD_DYLIB</code> 加载命令在未找到指定动态库会杀掉进程，所以需要在使用 insert_dylib 工具的时候注意通过添加参数<code>--weak</code>的方式使用<code>LC_LOAD_WEAK_DYLIB</code>来加载动态库。完成动态库的插入之后执行正常的 codesign 命令步骤即可。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://devjohn.cn/2021/12/02/iOS代码签名/" data-id="ckwp0ws7g000naq92jmfj5w0x" class="article-share-link">
+        分享
+      </a>
+      
+    </footer>
+
+  </div>
+
+  
+  
+<nav class="article-nav">
+  
+  <a href="/2021/12/02/iOS脱壳与-Tweak/" class="article-nav-link">
+    <strong class="article-nav-caption">前一篇</strong>
+    <div class="article-nav-title">
+      
+      iOS脱壳与 Tweak
+      
+    </div>
+  </a>
+  
+  
+  <a href="/2021/12/02/LLDB动态调试/" class="article-nav-link">
+    <strong class="article-nav-caption">后一篇</strong>
+    <div class="article-nav-title">LLDB动态调试</div>
+  </a>
+  
+</nav>
+
+  
+
+  
+  
+  
+  
+
+</article>
+</section>
+    <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+  <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+  <li><i class="fe fe-bookmark"></i> <span id="busuanzi_value_page_pv"></span></li>
+  
+</ul>
+    </div>
+    <ul class="list-inline">
+      <li>John 的技术博客 &copy; 2021</li>
+      
+        <li>ZHWANGART</li>
+      
+      <li>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></li>
+      <li>theme  <a href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li>
+    </ul>
+  </div>
+</footer>
+  </main>
+  <aside class="sidebar">
+    <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/hexo.svg" alt="John 的技术博客"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">Home</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">Archives</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">About</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link nav-item-search" title="搜索">
+        <i class="fe fe-search"></i>
+        搜索
+      </a>
+    </li>
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+</div>
+    </li>
+    <li class="nav-item">
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="fe fe-feed"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+<script src="/js/copybtn.js"></script>
+
+
+
+<script src="/js/tocbot.min.js"></script>
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+  });
+</script>
+
+
+<script src="/js/ocean.js"></script>
+</body>
+
+</html>

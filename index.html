@@ -59,6 +59,138 @@
     <h1 class="page-type-title"></h1>
     
     
+    <article id="post-iOS脱壳与-Tweak" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+      
+
+<h2 itemprop="name">
+  <a class="article-title" href="/2021/12/02/iOS脱壳与-Tweak/">iOS脱壳与 Tweak</a>
+</h2>
+
+
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2021/12/02/iOS脱壳与-Tweak/" class="article-date">
+  <time datetime="2021-12-02T13:56:15.000Z" itemprop="datePublished">2021-12-02</time>
+</a>
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+        
+      
+      
+        <h2 id="脱壳"><a href="#脱壳" class="headerlink" title="脱壳"></a>脱壳</h2><p>加壳：利用特殊算法对可执行文件的编码进行改变(如压缩、加密)，以达到保护程序代码的目的。加壳后的可执行文件外层由壳程序运行，操作系统运行可程序，壳程序对可执行文件进行解密并运行可执行文件。</p>
+<p>脱壳：摘掉壳程序，将未加密的可执行文件还原出来。</p>
+<ul>
+<li>软脱壳：在可执行文件运行时，从内存中导出解密过的可执行文件。</li>
+<li>硬脱壳：对加壳过的可执行文件执行解密算法。</li>
+<li>验证是否以脱壳：<ul>
+<li>原理：Load Commands -&gt; LC_ENCRYPTION_INFO -&gt; Crypt ID的值，0代表未加密</li>
+<li>命令：otool  -l  可执行文件路径  |  grep  crypt </li>
+</ul>
+</li>
+</ul>
+        
+          <p>
+            <a class="article-more-link" href="/2021/12/02/iOS脱壳与-Tweak/">
+              Read More...
+            </a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://devjohn.cn/2021/12/02/iOS脱壳与-Tweak/" data-id="ckwp0ws7k000saq92s4cwmrf4" class="article-share-link">
+        分享
+      </a>
+      
+    </footer>
+
+  </div>
+
+  
+
+  
+
+</article>
+    
+    <article id="post-iOS代码签名" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+      
+
+<h2 itemprop="name">
+  <a class="article-title" href="/2021/12/02/iOS代码签名/">iOS代码签名</a>
+</h2>
+
+
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2021/12/02/iOS代码签名/" class="article-date">
+  <time datetime="2021-12-02T13:54:56.000Z" itemprop="datePublished">2021-12-02</time>
+</a>
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+        
+      
+      
+        <h2 id="什么是-iOS代码签名机制"><a href="#什么是-iOS代码签名机制" class="headerlink" title="什么是 iOS代码签名机制"></a>什么是 iOS代码签名机制</h2><p>代码签名是在 iOS 和 macOS 上保证代码来源可靠性的一个机制(当然不仅仅是 Apple 在使用)。</p>
+<h2 id="代码签名过程"><a href="#代码签名过程" class="headerlink" title="代码签名过程"></a>代码签名过程</h2><blockquote>
+<p>强烈推荐看 <a href="http://xelz.info/blog/2019/01/11/ios-code-signature/" target="_blank" rel="noopener">深度长文：细说iOS代码签名</a> 和 <a href="http://blog.cnbang.net/tech/3386/" target="_blank" rel="noopener">iOS App 签名的原理</a> 这两个大神写的博客，本篇博客仅仅是记录一些粗浅的知识。</p>
+</blockquote>
+<p>首先看整个代码签名逻辑：</p>
+        
+          <p>
+            <a class="article-more-link" href="/2021/12/02/iOS代码签名/">
+              Read More...
+            </a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://devjohn.cn/2021/12/02/iOS代码签名/" data-id="ckwp0ws7g000naq92jmfj5w0x" class="article-share-link">
+        分享
+      </a>
+      
+    </footer>
+
+  </div>
+
+  
+
+  
+
+</article>
+    
     <article id="post-LLDB动态调试" class="article article-type-post" itemscope
   itemprop="blogPost" data-scroll-reveal>
 
@@ -93,7 +225,7 @@
         
       
       
-        <h1 id="LLDB动态调试"><a href="#LLDB动态调试" class="headerlink" title="LLDB动态调试"></a>LLDB动态调试</h1><blockquote>
+        <blockquote>
 <p>资料：</p>
 <ol>
 <li><a href="https://developer.apple.com/library/archive/documentation/General/Conceptual/lldb-guide/chapters/Introduction.html#//apple_ref/doc/uid/TP40016717-CH1-DontLinkElementID_42" target="_blank" rel="noopener">LLDB 调试指南</a></li>
@@ -117,10 +249,12 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2021/12/02/LLDB动态调试/" data-id="ckwozp2m70003wy92o5wapdt5" class="article-share-link">
+      <a data-url="http://devjohn.cn/2021/12/02/LLDB动态调试/" data-id="ckwp0ws6t0000aq921gwisryq" class="article-share-link">
         分享
       </a>
       
+<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS知识点/">iOS知识点</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS逆向/">iOS逆向</a></li></ul>
+
     </footer>
 
   </div>
@@ -167,8 +301,8 @@
   <div class="article-gallery-photos">
     
     
-    <a class="article-gallery-img" href="/2021/12/02/arm汇编命令/" rel="gallery_ckwozp2mi000awy92brpw74zo">
-      <img src="https://hbimg.huabanimg.com/77fbaccbd8550331939dc1afbc52718b51c033bc53ec7-KbNMYf_fw658/format/webp" itemprop="image">
+    <a class="article-gallery-img" href="/2021/12/02/arm汇编命令/" rel="gallery_ckwp0ws760009aq925xtjg6er">
+      <img src="https://cdn.dribbble.com/users/287797/screenshots/3366795/media/189bf516455e7cdd3e19b031b0310b2d.gif" itemprop="image">
     </a>
     
     
@@ -177,7 +311,7 @@
 
       
       
-        <h2 id="arm-汇编"><a href="#arm-汇编" class="headerlink" title="arm 汇编"></a>arm 汇编</h2><h3 id="寄存器组成"><a href="#寄存器组成" class="headerlink" title="寄存器组成"></a>寄存器组成</h3><p>arm64 通用寄存器：x0~x30 一共31 个64bit 寄存器。这 31 个通用的 64bit 寄存器又各包含了一个 32bit 寄存器w0~w30，一个 31 个 32bit 通用寄存器。</p>
+        <h3 id="寄存器组成"><a href="#寄存器组成" class="headerlink" title="寄存器组成"></a>寄存器组成</h3><p>arm64 通用寄存器：x0~x30 一共31 个64bit 寄存器。这 31 个通用的 64bit 寄存器又各包含了一个 32bit 寄存器w0~w30，一个 31 个 32bit 通用寄存器。</p>
 <p>通用寄存器：</p>
         
           <p>
@@ -189,11 +323,11 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2021/12/02/arm汇编命令/" data-id="ckwozp2mi000awy92brpw74zo" class="article-share-link">
+      <a data-url="http://devjohn.cn/2021/12/02/arm汇编命令/" data-id="ckwp0ws760009aq925xtjg6er" class="article-share-link">
         分享
       </a>
       
-<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ios逆向/">ios逆向</a></li></ul>
+<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS知识点/">iOS知识点</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS逆向/">iOS逆向</a></li></ul>
 
     </footer>
 
@@ -239,7 +373,7 @@
         
       
       
-        <h1 id="Mach-O文件结构初探索"><a href="#Mach-O文件结构初探索" class="headerlink" title="Mach-O文件结构初探索"></a>Mach-O文件结构初探索</h1><h2 id="什么是-Mach-O-文件"><a href="#什么是-Mach-O-文件" class="headerlink" title="什么是 Mach-O 文件"></a>什么是 Mach-O 文件</h2><p><strong>Mach-O</strong>（Mach Object File Format）是 macOS 上的可执行文件格式，类似于 Linux 和大部分 UNIX 的原生格式 <strong>ELF</strong>（Extensible Firmware Interface）以及 Windows 上的 PE。</p>
+        <h2 id="什么是-Mach-O-文件"><a href="#什么是-Mach-O-文件" class="headerlink" title="什么是 Mach-O 文件"></a>什么是 Mach-O 文件</h2><p><strong>Mach-O</strong>（Mach Object File Format）是 macOS 上的可执行文件格式，类似于 Linux 和大部分 UNIX 的原生格式 <strong>ELF</strong>（Extensible Firmware Interface）以及 Windows 上的 PE。</p>
 <h2 id="Mach-O-构成"><a href="#Mach-O-构成" class="headerlink" title="Mach-O 构成"></a>Mach-O 构成</h2><p>Mach-O文件分成四部分：</p>
 <p><img src="/2021/12/02/Mach-O文件结构初探索/Mach-O 结构.png" alt="image-20211115214823308" style="zoom:67%;"></p>
 <ul>
@@ -258,11 +392,11 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2021/12/02/Mach-O文件结构初探索/" data-id="ckwozp2m50002wy92drep3otu" class="article-share-link">
+      <a data-url="http://devjohn.cn/2021/12/02/Mach-O文件结构初探索/" data-id="ckwp0ws6z0002aq92bne6dawe" class="article-share-link">
         分享
       </a>
       
-<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ios基础知识/">ios基础知识</a></li></ul>
+<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS知识点/">iOS知识点</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS逆向/">iOS逆向</a></li></ul>
 
     </footer>
 
@@ -308,7 +442,7 @@
         
       
       
-        <h1 id="Instrument文档翻译"><a href="#Instrument文档翻译" class="headerlink" title="Instrument文档翻译"></a>Instrument文档翻译</h1><h2 id="关于Instrument"><a href="#关于Instrument" class="headerlink" title="关于Instrument"></a>关于Instrument</h2><h3 id="Instruments概述"><a href="#Instruments概述" class="headerlink" title="Instruments概述"></a>Instruments概述</h3><p>Instrument是 Xcode 工具集中的一个强大且灵活的性能分析和测试工具。它能够分析iOS，watchOS和 macOS的 app，以便您能够更好的理解和优化其行为并提高其性能。在您 app 开发的最初就将 Instrument 加入您的工作流当中能够在app 开发早期就帮助您发现问题以便减少后来的时间。</p>
+        <h2 id="关于Instrument"><a href="#关于Instrument" class="headerlink" title="关于Instrument"></a>关于Instrument</h2><h3 id="Instruments概述"><a href="#Instruments概述" class="headerlink" title="Instruments概述"></a>Instruments概述</h3><p>Instrument是 Xcode 工具集中的一个强大且灵活的性能分析和测试工具。它能够分析iOS，watchOS和 macOS的 app，以便您能够更好的理解和优化其行为并提高其性能。在您 app 开发的最初就将 Instrument 加入您的工作流当中能够在app 开发早期就帮助您发现问题以便减少后来的时间。</p>
 <p>在Instrument中您使用的特殊工具被称作instruments，他们能够跟踪您app进程和硬件设备等不同方面。instruments将会手机数据以作分析，并将分析结果以图标的形式呈现出来。</p>
 <p>Instruments与其他性能和调试工具不同的是，instruments允许你收集多种不同类型的数据并将其并排展示。这养能够轻易的分辨可能被遗漏的趋势。举个例子，由于多个开放的网络连接，您 app 出现巨大的内存增长时，通过同时使用Allocations和Connections这俩instruments工具，你能够识别出因未关闭而导致内存暴增的连接。</p>
         
@@ -321,10 +455,12 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2021/04/11/Instrument文档翻译/" data-id="ckwozp2m10000wy923gtzvyix" class="article-share-link">
+      <a data-url="http://devjohn.cn/2021/04/11/Instrument文档翻译/" data-id="ckwp0ws720004aq9227r7o2tu" class="article-share-link">
         分享
       </a>
       
+<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS翻译/">iOS翻译</a></li></ul>
+
     </footer>
 
   </div>
@@ -369,7 +505,7 @@
         
       
       
-        <h1 id="iOS推送-APNs"><a href="#iOS推送-APNs" class="headerlink" title="iOS推送(APNs)"></a>iOS推送(APNs)</h1><h2 id="什么是APNs"><a href="#什么是APNs" class="headerlink" title="什么是APNs"></a>什么是APNs</h2><p>iOS 在系统层面与苹果 APNs（Apple Push Notification service）服务器建立连接，应用通过观察者模式向 iOS 系统注册关注的消息，系统收到 APNs Server 消息后转发到相应的应用程序，整个过程很清晰，并且所有 APP 都共用同一个系统级的连接，减少了系统开销，虽然 APNs 能无障碍的访问，但实际使用过程中，发现延时和丢消息的情况偶有发生。</p>
+        <h2 id="什么是APNs"><a href="#什么是APNs" class="headerlink" title="什么是APNs"></a>什么是APNs</h2><p>iOS 在系统层面与苹果 APNs（Apple Push Notification service）服务器建立连接，应用通过观察者模式向 iOS 系统注册关注的消息，系统收到 APNs Server 消息后转发到相应的应用程序，整个过程很清晰，并且所有 APP 都共用同一个系统级的连接，减少了系统开销，虽然 APNs 能无障碍的访问，但实际使用过程中，发现延时和丢消息的情况偶有发生。</p>
         
           <p>
             <a class="article-more-link" href="/2019/09/02/iOS推送-APNs/">
@@ -380,10 +516,12 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/09/02/iOS推送-APNs/" data-id="ckwozp2nd000twy92papfmgz6" class="article-share-link">
+      <a data-url="http://devjohn.cn/2019/09/02/iOS推送-APNs/" data-id="ckwp0ws7i000qaq92uqmxcl2q" class="article-share-link">
         分享
       </a>
       
+<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS知识点/">iOS知识点</a></li></ul>
+
     </footer>
 
   </div>
@@ -439,10 +577,12 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/01/27/年度总结——追寻危机感/" data-id="ckwozp2nv0013wy92ydzk9gux" class="article-share-link">
+      <a data-url="http://devjohn.cn/2019/01/27/年度总结——追寻危机感/" data-id="ckwp0ws7n000yaq92nh8z3tlg" class="article-share-link">
         分享
       </a>
       
+<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/心情随笔/">心情随笔</a></li></ul>
+
     </footer>
 
   </div>
@@ -458,11 +598,22 @@
 
   <div class="article-inner">
     
+    <header class="article-header">
+      
+
+<h2 itemprop="name">
+  <a class="article-title" href="/2019/01/17/接口安全及签名规范/">接口安全及签名规范</a>
+</h2>
+
+
+
+    </header>
+    
 
     
     <div class="article-meta">
       <a href="/2019/01/17/接口安全及签名规范/" class="article-date">
-  <time datetime="2019-01-17T07:49:58.356Z" itemprop="datePublished">2019-01-17</time>
+  <time datetime="2019-01-17T07:56:14.000Z" itemprop="datePublished">2019-01-17</time>
 </a>
       
     </div>
@@ -476,7 +627,7 @@
         
       
       
-        <h1 id="接口安全及签名规范"><a href="#接口安全及签名规范" class="headerlink" title="接口安全及签名规范"></a>接口安全及签名规范</h1><h2 id="0-敏感数据本地加密后传输"><a href="#0-敏感数据本地加密后传输" class="headerlink" title="0.敏感数据本地加密后传输"></a>0.敏感数据本地加密后传输</h2><ul>
+        <h2 id="0-敏感数据本地加密后传输"><a href="#0-敏感数据本地加密后传输" class="headerlink" title="0.敏感数据本地加密后传输"></a>0.敏感数据本地加密后传输</h2><ul>
 <li>数据安全:所有敏感数据如：登录密码、支付密码、手机号等在传输过程之中需要加密。</li>
 <li>加密方式:HMAC+MD5+key 。</li>
 </ul>
@@ -490,10 +641,12 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/01/17/接口安全及签名规范/" data-id="ckwozp2nl000ywy92ob8re06d" class="article-share-link">
+      <a data-url="http://devjohn.cn/2019/01/17/接口安全及签名规范/" data-id="ckwp0ws7o0011aq92p3kgdqdc" class="article-share-link">
         分享
       </a>
       
+<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/心情随笔/">心情随笔</a></li></ul>
+
     </footer>
 
   </div>
@@ -538,7 +691,7 @@
         
       
       
-        <h1 id="iOS-CALayer-教程-入门"><a href="#iOS-CALayer-教程-入门" class="headerlink" title="iOS CALayer 教程:入门"></a>iOS CALayer 教程:入门</h1><blockquote>
+        <blockquote>
 <p>原文链接:<a href="https://www.raywenderlich.com/402-calayer-tutorial-for-ios-getting-started" target="_blank" rel="noopener">CALayer Tutorial for iOS: Getting Started</a></p>
 <p>作者:Michael Ciurus</p>
 <p>最近在研究 CALayer 和 UIView 之间的联系和区别，看完这篇文章介绍的 <code>CALayer</code>子类和其使用介绍的挺详细的，所以翻译一下这篇文章。</p>
@@ -560,153 +713,11 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/01/01/iOS-CALayer-教程-入门/" data-id="ckwozp2n1000nwy92tyq46uuo" class="article-share-link">
+      <a data-url="http://devjohn.cn/2019/01/01/iOS-CALayer-教程-入门/" data-id="ckwp0ws78000aaq928kh5brdf" class="article-share-link">
         分享
       </a>
       
-<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS-翻译/">iOS 翻译</a></li></ul>
-
-    </footer>
-
-  </div>
-
-  
-
-  
-
-</article>
-    
-    <article id="post-MTQQ-介绍" class="article article-type-post" itemscope
-  itemprop="blogPost" data-scroll-reveal>
-
-  <div class="article-inner">
-    
-    <header class="article-header">
-      
-
-<h2 itemprop="name">
-  <a class="article-title" href="/2018/12/16/MTQQ-介绍/">MTQQ 介绍</a>
-</h2>
-
-
-
-    </header>
-    
-
-    
-    <div class="article-meta">
-      <a href="/2018/12/16/MTQQ-介绍/" class="article-date">
-  <time datetime="2018-12-16T06:51:14.000Z" itemprop="datePublished">2018-12-16</time>
-</a>
-      
-    </div>
-    
-
-    
-
-    <div class="article-entry" itemprop="articleBody">
-      
-      
-        
-      
-      
-        <blockquote>
-<p>原文出处:<a href="https://mcxiaoke.gitbooks.io/mqtt-cn/content/mqtt/01-Introduction.html" target="_blank" rel="noopener">https://mcxiaoke.gitbooks.io/mqtt-cn/content/mqtt/01-Introduction.html</a></p>
-<p>本文只为自己快速查看资料，原文出处如上。</p>
-</blockquote>
-<h2 id="2-1-MQTT控制报文的结构-Structure-of-an-MQTT-Control-Packet"><a href="#2-1-MQTT控制报文的结构-Structure-of-an-MQTT-Control-Packet" class="headerlink" title="2.1 MQTT控制报文的结构 Structure of an MQTT Control Packet"></a>2.1 MQTT控制报文的结构 Structure of an MQTT Control Packet</h2><h5 id="MQTT控制报文的结构"><a href="#MQTT控制报文的结构" class="headerlink" title="MQTT控制报文的结构"></a>MQTT控制报文的结构</h5><table>
-<thead>
-<tr>
-<th>Fixed header</th>
-<th>固定报头，所有控制报文都包含</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Variable header</td>
-<td>可变报头，部分控制报文包含</td>
-</tr>
-<tr>
-<td>Payload</td>
-<td>有效载荷，部分控制报文包含</td>
-</tr>
-</tbody>
-</table>
-        
-          <p>
-            <a class="article-more-link" href="/2018/12/16/MTQQ-介绍/">
-              Read More...
-            </a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/16/MTQQ-介绍/" data-id="ckwozp2mb0006wy92opz7pac4" class="article-share-link">
-        分享
-      </a>
-      
-    </footer>
-
-  </div>
-
-  
-
-  
-
-</article>
-    
-    <article id="post-Objective-C-代码转换为-C-代码" class="article article-type-post" itemscope
-  itemprop="blogPost" data-scroll-reveal>
-
-  <div class="article-inner">
-    
-    <header class="article-header">
-      
-
-<h2 itemprop="name">
-  <a class="article-title" href="/2018/12/05/Objective-C-代码转换为-C-代码/"> Objective-C 代码转换为 C++代码</a>
-</h2>
-
-
-
-    </header>
-    
-
-    
-    <div class="article-meta">
-      <a href="/2018/12/05/Objective-C-代码转换为-C-代码/" class="article-date">
-  <time datetime="2018-12-05T03:22:30.000Z" itemprop="datePublished">2018-12-05</time>
-</a>
-      
-    </div>
-    
-
-    
-
-    <div class="article-entry" itemprop="articleBody">
-      
-      
-        
-      
-      
-        <p>在研究 iOS 系统方法实现的时候，由于有时苹果未将改方法的实现开源，所以此时我们就需要将指定你文件转换为C++文件，这样就可以看到部分底层实现。</p>
-<p>当你在谷歌搜索如何创建C++文件文件的时候，你得到的答案可能是这样:</p>
-        
-          <p>
-            <a class="article-more-link" href="/2018/12/05/Objective-C-代码转换为-C-代码/">
-              Read More...
-            </a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/12/05/Objective-C-代码转换为-C-代码/" data-id="ckwozp2ma0005wy924efqk8ce" class="article-share-link">
-        分享
-      </a>
-      
-<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS-知识点/">iOS 知识点</a></li></ul>
+<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS翻译/">iOS翻译</a></li></ul>
 
     </footer>
 

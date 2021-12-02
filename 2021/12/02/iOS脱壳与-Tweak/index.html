@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="别在机会来临之时却无法握住。">
+  
+  <title>
+    iOS脱壳与 Tweak |
+    
+    John 的技术博客
+  </title>
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+  <link rel="stylesheet" href="/css/style.css">
+  
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+  
+  <script src="/js/pace.min.js"></script>
+</head>
+
+<body>
+  <main class="content">
+    <section class="outer">
+  <article id="post-iOS脱壳与-Tweak" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+      
+
+<h1 class="article-title" itemprop="name">
+  iOS脱壳与 Tweak
+</h1>
+
+
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2021/12/02/iOS脱壳与-Tweak/" class="article-date">
+  <time datetime="2021-12-02T13:56:15.000Z" itemprop="datePublished">2021-12-02</time>
+</a>
+      
+    </div>
+    
+
+    
+    
+<div class="tocbot"></div>
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+      
+      <h2 id="脱壳"><a href="#脱壳" class="headerlink" title="脱壳"></a>脱壳</h2><p>加壳：利用特殊算法对可执行文件的编码进行改变(如压缩、加密)，以达到保护程序代码的目的。加壳后的可执行文件外层由壳程序运行，操作系统运行可程序，壳程序对可执行文件进行解密并运行可执行文件。</p>
+<p>脱壳：摘掉壳程序，将未加密的可执行文件还原出来。</p>
+<ul>
+<li>软脱壳：在可执行文件运行时，从内存中导出解密过的可执行文件。</li>
+<li>硬脱壳：对加壳过的可执行文件执行解密算法。</li>
+<li>验证是否以脱壳：<ul>
+<li>原理：Load Commands -&gt; LC_ENCRYPTION_INFO -&gt; Crypt ID的值，0代表未加密</li>
+<li>命令：otool  -l  可执行文件路径  |  grep  crypt </li>
+</ul>
+</li>
+</ul>
+<a id="more"></a>
+<p>硬脱壳：</p>
+<ul>
+<li>Clutch：<ul>
+<li>Clutch -i：打印已安装列表中被加密的应用程序。</li>
+<li>Clutch-d APP 序号或 BundleID：对 App 进行脱壳。脱壳成功后会产生一个 ipa 文件。</li>
+<li><a href="https://github.com/KJCracks/Clutch" target="_blank" rel="noopener">https://github.com/KJCracks/Clutch</a></li>
+<li>ps:目前所有包含 Extension 的应用脱壳都会失败。</li>
+</ul>
+</li>
+<li>dumpdecrypted：目前脱壳也会失败，</li>
+</ul>
+<p>软脱壳：</p>
+<ul>
+<li><p>frida：</p>
+<ol>
+<li><p>越狱手机在Cydia 中添加<code>https://build.frida.re</code>源后安装 frida。</p>
+</li>
+<li><p>在 mac 上安装 pip：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py</span><br><span class="line">python3 get-pip.py</span><br><span class="line">pip3 install requests</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>克隆 <a href="https://github.com/AloneMonkey/frida-ios-dump" target="_blank" rel="noopener">frida 仓库</a>到本地</p>
+</li>
+<li><p>在 frida 文件夹中输入 <code>sudo pip install -r requirements.txt --upgrade</code>来安装依赖。</p>
+</li>
+<li><p>连接越狱手机用 usbmuxd 将本地端口与手机 ssh 端口映射（默认电脑端口 2222，手机端口 22，可以在<code>dump.py</code>中修改）。</p>
+</li>
+<li><p>cd 进入 frida 仓库下，在手机上运行希望脱壳的文件，并使用如下命令脱壳<code>python3 dump.py 目标App名或bundleID -o 输入路径/xxx.ipa</code>。</p>
+</li>
+</ol>
+</li>
+</ul>
+<h2 id="class-dump"><a href="#class-dump" class="headerlink" title="class-dump"></a>class-dump</h2><p>安装：</p>
+<ol>
+<li>克隆<code>https://github.com/AloneMonkey/MonkeyDev</code>到本地(原 class-dump 仓库年久失修，dump 时会遇到很多问题)。</li>
+<li>将在MonkeyDev/bin/class-dump可执行文件放在/usr/local/bin目录下。</li>
+<li>执行命令<code>class-dump</code>验证是否安装成功。</li>
+</ol>
+<p>导出头文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">class-dump -S -s --arch arm64 已脱壳ipa -H -o 导出地址</span><br></pre></td></tr></table></figure>
+<p>​    -S：方法以方法名排序。</p>
+<p>​    -s：类与分类以名字排序。</p>
+<p>​    –arch arm64：输出目标架构为 arm64。</p>
+<p>​    -H：输入头文件信息。</p>
+<p>​    -o 导出地址：输入目录</p>
+<h2 id="theos"><a href="#theos" class="headerlink" title="theos"></a>theos</h2><blockquote>
+<p>theos 资料:<a href="https://github.com/theos/theos/wiki、https://iphonedev.wiki/index.php/Theos" target="_blank" rel="noopener">https://github.com/theos/theos/wiki、https://iphonedev.wiki/index.php/Theos</a></p>
+</blockquote>
+<p>修改环境变量</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">vim  ~/.bash_profile</span><br><span class="line"><span class="built_in">export</span> THEOS=/opt/theos</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:<span class="variable">$THEOS</span>/bin</span><br><span class="line">// 注意：<span class="variable">$PATH</span> 表示原 PATH 值，:表示连接，指令中意为原 PATH 和 /opt/theos/bin 目录</span><br><span class="line">// 修改后使用 <span class="built_in">source</span> ~/.bash_profile 命令更新环境变量</span><br></pre></td></tr></table></figure>
+<p>安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> --recursive https://github.com/theos/theos.git <span class="variable">$THEOS</span></span><br></pre></td></tr></table></figure>
+<p>使用tweak：</p>
+<ol>
+<li>在安装好 theos 之后在终端输入<code>nic.pl</code>启动 NIC。</li>
+<li>输入 tweak 模板序号。</li>
+<li>输入项目名。</li>
+<li>输入 package 名。</li>
+<li>输入作者名。</li>
+<li>输入想要 hook 的原程序的 BundleID。</li>
+<li>输入<code>tweak</code>安装完成后需要重启的应用，以进程名表示。</li>
+<li>在<code>tweak</code>中编写需要 hook 的代码和类。</li>
+<li>代码完成之后在同一文件夹下在终端中输入<code>make</code>，会编译当前<code>.xm/.x</code> 等文件。</li>
+<li>代码完成之后在同一文件夹下在终端中输入<code>make package</code>并执行，执行成功之后会在同一目录中创建一个包含<code>.deb</code>的packages文件夹。</li>
+<li>在同一文件夹下在终端中输入<code>make install</code>,接着 <code>.deb</code>文件安装到<code>Cydia</code>中。在桌面重启后 hook 功能生效。</li>
+</ol>
+<p>Tweak命令：</p>
+<ul>
+<li>清除已构建 deb 文件：<code>make clean</code>。</li>
+<li>编译文件：<code>make</code></li>
+<li>打包文件：<code>make package</code>，注意此命令也会包含<code>make</code>命令的功能和动作。打包正式版<code>make package debug=0</code>。</li>
+<li>安装 deb：<code>make install</code>。</li>
+</ul>
+<p>tewak 文件结构及其功能：</p>
+<ul>
+<li>makefile:makefile 文件。</li>
+<li>Tweak.x：编写代码的文件。</li>
+<li>control：指定 deb 包的一些信息，包括名字、描述、版本号等。</li>
+<li>.plist：包含了需要指定注入的目标程序的 BundleID。</li>
+<li>layout 文件夹(可选)：若在 Tweak 时需要用到资源文件，可以放在 layout 文件夹目录下，thos 在安装 deb 包的时，会将资源文件按照 layout 文件中的路径放在手机中，例如：<code>layout/Library/Application\Support/TweakDemo/</code>会被放在<code>/Library/Application\Support/TweakDemo/</code>路径下，需要通过<code>contentOfFile:</code>方法读取该文件内容。</li>
+</ul>
+<p>tweak 使用 Logs 语法，参考 <a href="https://iphonedev.wiki/index.php/Logos" target="_blank" rel="noopener">Logos语法</a>：</p>
+<ul>
+<li><p>%hook className/%end：成对出现，%hook表示hook一个类的开始，%end 表示 hook 一个类的结束。</p>
+</li>
+<li><p>%log：在函数内部使用，功能是将函数名，参数等信息写入 syslog 中，格式<code>%log</code>或<code>%log([(&lt;type&gt;)&lt;expr&gt;, …])</code>。</p>
+</li>
+<li><p>%orig：打印原函数，并可以选择性的传递参数。格式<code>%orig</code>或<code>%orig(arg1, …)</code>。</p>
+</li>
+<li><p>%group groupName/%end和%init：</p>
+<ul>
+<li>%group 和%end 成对出现，表示一个hook 组的开始，在一个 group 中可以拥有多个 hook，所有未指定组的 hook 都会保存在%group _ungrouped中。</li>
+<li>group需要初始化后才能被加载，初始化方法：%init(Groupname)，%init 可以在 group 中使用或者在%ctor 中使用。</li>
+</ul>
+</li>
+<li><p>%ctor：tweak的构造器，完成初始化工作，若不显示定义，则会自动生成一个%ctor{…}，并在其中调用%init(_ungrouped)。</p>
+</li>
+<li><p>%dtor：tweak的解构器，与%ctor功能相反完成解构工作（程序退出时调用）。</p>
+</li>
+<li><p>%new：在%hook 内部使用，作用是给当前 class 添加新函数，功能与 objc_addMethod(char<em>)相同，格式：`%new<br>-(void)yourNewMethod { /</em> code */ }<code>。在使用</code>%new<code>的时候如果提示方法不存在，需要随意在一个</code>@interface xxx @end` 中声明这个方法，声明完毕之后才能调用。</p>
+</li>
+<li><p>%c：在%hook 或者%ctor 内使用，等同于 objc_getClass 或 NSClassFromString()。格式：<code>%c([+|-]Class)</code>，默认为-，表示普通类，+则表示元类。</p>
+</li>
+<li><p>logify.pl：可以将一个头文件快速转换成已经包含打印信息的 xm 文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">logify.pl xx.h &gt; xx.xm</span><br><span class="line">-------------------------</span><br><span class="line">%hook SSDownloadAsset</span><br><span class="line">- (NSString *)finalizedPath &#123; %log; NSString * r = %orig; NSLog(@&quot; = %@&quot;, r); return r; &#125;</span><br><span class="line">- (NSString *)downloadPath &#123; %log; NSString * r = %orig; NSLog(@&quot; = %@&quot;, r); return r; &#125;</span><br><span class="line">- (NSString *)downloadFileName &#123; %log; NSString * r = %orig; NSLog(@&quot; = %@&quot;, r); return r; &#125;</span><br><span class="line">+ (id)assetWithURL:(id)url type:(int)type &#123; %log; id r = %orig; NSLog(@&quot; = %@&quot;, r); return r; &#125;</span><br><span class="line">- (id)initWithURLRequest:(id)urlrequest type:(int)type &#123; %log; id r = %orig; NSLog(@&quot; = %@&quot;, r); return r; &#125;</span><br><span class="line">- (id)initWithURLRequest:(id)urlrequest &#123; %log; id r = %orig; NSLog(@&quot; = %@&quot;, r); return r; &#125;</span><br><span class="line">- (id)_initWithDownloadMetadata:(id)downloadMetadata type:(id)type &#123; %log; id r = %orig; NSLog(@&quot; = %@&quot;, r); return r; &#125;</span><br><span class="line">%end</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>ps.如果执行 make install 命令出错，则需要在 makefile 文件中设置环境变量<code>export THEOS_DEVICE_IP=手机IP</code>和<code>export THEOS_DEVICE_PORT=手机端口</code>。</p>
+<h2 id="多文件编译"><a href="#多文件编译" class="headerlink" title="多文件编译"></a>多文件编译</h2><p>可被编译的文件类型：.m、.h、.xm、.x 等</p>
+<p>步骤：</p>
+<ol>
+<li>创建自定义文件并放在 Tweak 文件目录下。</li>
+<li>在.xm 文件中导入需要使用到的自定义文件。<code>#import xxx/xxx/xxx.h</code></li>
+<li>在 <code>makefile</code>中<code>flipclockTweak_FILES</code>字段中添加需要参与编译的文件，以空格分隔。例：<code>flipclockTweak_FILES = Tweak.x classes/Signal.m</code>，也可以使用通配符表示文件夹下所有指定文件参与编译，例：<code>flipclockTweak_FILES = Tweak.x classes/*.m</code>。</li>
+</ol>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><ol>
+<li>在执行了<code>make package</code>之后会产生一个包含 Cydia 插件包的<code>package</code>文件夹和包含动态库文件、plist与多个文件夹的<code>.theos</code>文件夹。</li>
+<li>在执行了<code>make install</code>后 theos 会通过 ssh 将产生的<code>.plist</code>和<code>.dylib</code>动态库通过 Cydia 使用 ssh 命令移动到设备中的<code>/Library/MobileSubstrate/DynamicLibraries/</code>目录下。</li>
+<li>当App 程序执行之后，在<code>/Library/MobileSubstrate/MobileSubstrate</code>路径下的<code>.plist</code>中根据<code></code>BundleID<code>查找是否包含当前运行的 app，如果包含则会将</code>dyld<code>中的</code>DYLD_INSERT_LIBRARIES<code>变量设置为在步骤 2 中生成的动态库地址，并载入</code>dyld`共享库中。</li>
+</ol>
+<p>逆向可能用到的工具：<a href="https://iphonedev.wiki/index.php/Reverse_Engineering_Tools" target="_blank" rel="noopener">https://iphonedev.wiki/index.php/Reverse_Engineering_Tools</a></p>
+<p>逆向遇到的问题：</p>
+<ol>
+<li>字符串编码变成 <code>\xe6\x9c\x80\xe6\x96\xb0</code> ，这为十六进制字符串，需要转换之后才能正常显示<ul>
+<li>网站：<a href="https://www.bejson.com/convert/ox2str/" target="_blank" rel="noopener">https://www.bejson.com/convert/ox2str/</a></li>
+</ul>
+</li>
+<li>实例变量需要在 implementation 中以 @public 定义之后才能用。</li>
+<li>在调用原有方法或者新增方法时，Tweak 编译不通过，可以通过在任意 <code>@interface xxx @end</code>中添加方法声明来通过编译。</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://devjohn.cn/2021/12/02/iOS脱壳与-Tweak/" data-id="ckwp0ws7k000saq92s4cwmrf4" class="article-share-link">
+        分享
+      </a>
+      
+    </footer>
+
+  </div>
+
+  
+  
+<nav class="article-nav">
+  
+  
+  <a href="/2021/12/02/iOS代码签名/" class="article-nav-link">
+    <strong class="article-nav-caption">后一篇</strong>
+    <div class="article-nav-title">iOS代码签名</div>
+  </a>
+  
+</nav>
+
+  
+
+  
+  
+  
+  
+
+</article>
+</section>
+    <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+  <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+  <li><i class="fe fe-bookmark"></i> <span id="busuanzi_value_page_pv"></span></li>
+  
+</ul>
+    </div>
+    <ul class="list-inline">
+      <li>John 的技术博客 &copy; 2021</li>
+      
+        <li>ZHWANGART</li>
+      
+      <li>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></li>
+      <li>theme  <a href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li>
+    </ul>
+  </div>
+</footer>
+  </main>
+  <aside class="sidebar">
+    <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/hexo.svg" alt="John 的技术博客"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">Home</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">Archives</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">About</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link nav-item-search" title="搜索">
+        <i class="fe fe-search"></i>
+        搜索
+      </a>
+    </li>
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+</div>
+    </li>
+    <li class="nav-item">
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="fe fe-feed"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/lazyload.min.js"></script>
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+<script src="/js/copybtn.js"></script>
+
+
+
+<script src="/js/tocbot.min.js"></script>
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+  });
+</script>
+
+
+<script src="/js/ocean.js"></script>
+</body>
+
+</html>
